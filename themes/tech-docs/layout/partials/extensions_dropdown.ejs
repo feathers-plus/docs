@@ -1,0 +1,15 @@
+<li class="nav-dropdown-container learn">
+  <a class="nav-link<%- page.dropdown === dropdown ? ' current' : '' %>">Extensions</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li><ul>
+        <li><a href="<%- url_for("/v1/feathers-hooks-common/") %>" class="nav-link<%- page.repo === 'feathers-hooks-common' ? ' current' : '' %>">feathers-hooks-common</a></li>
+        <li><a href="<%- url_for("/v1/feathers-dataloader/") %>" class="nav-link<%- page.repo === 'feathers-dataloader' ? ' current' : '' %>">feathers-dataloader</a></li>
+        <li><a href="<%- url_for("/v1/feathers-authentication-management/") %>" class="nav-link<%- page.repo === 'feathers-authentication-management' ? ' current' : '' %>">feathers-authentication-management</a></li>
+    </ul></li>
+    <li><h4>Offline First</h4></li>
+    <li><ul>
+        <li><a href="<%- url_for("/v1/feathers-offline-snapshot/") %>" class="nav-link<%- page.repo === 'feathers-offline-snapshot' ? ' current' : '' %>">feathers-offline-snapshot</a></li>
+        <li><a href="<%- url_for("/v1/feathers-offline-realtime/") %>" class="nav-link<%- page.repo === 'feathers-offline-realtime' ? ' current' : '' %>">feathers-offline-realtime</a></li>
+    </ul></li>
+  </ul>
+</li>

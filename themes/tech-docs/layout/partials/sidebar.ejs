@@ -1,0 +1,14 @@
+<div class="sidebar">
+  <div class="sidebar-inner">
+    <ul class="main-menu">
+        <%- partial('partials/main_menu', { context: 'sidebar' }) %>
+    </ul>
+    <div class="list">
+      <h3><%- page.repo %>
+        <select class="version-select">
+          <option value="SELF" selected>1.0</option>
+        </select></h3>
+        <%- partial('partials/toc') %>
+    </div>
+  </div>
+</div>

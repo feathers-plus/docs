@@ -1,0 +1,58 @@
+{
+  "name": "hexo-site",
+  "description": "Web site for Feathers-Plus.",
+  "version": "0.0.0",
+  "private": true,
+  "keywords": [
+    "feathers",
+    "feathers-plus",
+    "hexo",
+    "technical",
+    "documentation"
+  ],
+  "license": "Copyright (c)",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/feathers-plus/doc.feathers-plus.org.git"
+  },
+  "author": {
+    "name": "John J. Szwaronek",
+    "email": "johnsz9999@gmail.com"
+  },
+  "contributors": [],
+  "bugs": {
+    "url": "https://github.com/feathers-plus/doc.feathers-plus.org/issues"
+  },
+  "engines": {
+    "node": ">= 6.0.0"
+  },
+  "hexo": {
+    "version": "3.4.0"
+  },
+  "scripts": {
+    "webpack": "webpack"
+  },
+  "dependencies": {
+    "hexo": "^3.2.0",
+    "hexo-generator-alias": "git+https://github.com/chrisvfritz/vuejs.org-hexo-generator-alias.git",
+    "hexo-generator-archive": "^0.1.4",
+    "hexo-generator-category": "^0.1.3",
+    "hexo-generator-index": "^0.2.0",
+    "hexo-generator-tag": "^0.2.0",
+    "hexo-renderer-ejs": "^0.3.0",
+    "hexo-renderer-marked": "^0.3.0",
+    "hexo-renderer-stylus": "^0.3.1",
+    "hexo-server": "^0.2.0"
+  },
+  "devDependencies": {
+    "@feathersjs/errors": "3.0.0",
+    "babel-core": "6.26.0",
+    "babel-loader": "7.1.2",
+    "babel-plugin-add-module-exports": "0.2.1",
+    "babel-preset-env": "1.6.1",
+    "babel-preset-es2015": "6.24.1",
+    "babili-webpack-plugin": "0.1.2",
+    "feathers-batchloader": "0.1.1",
+    "webpack": "3.8.1"
+  }
+}

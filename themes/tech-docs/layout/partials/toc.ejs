@@ -1,0 +1,8 @@
+<ul class="menu-root">
+  <% getPagesInFolder(site, page.path).forEach(function (p) { %>
+    <% p.path.replace(/^.+?\/([\w-]+)\.html/, '$1') %>
+    <li>
+      <a href="<%- url_for(p.path) %>" class="sidebar-link<%- page.title === p.title ? ' current' : '' %><%- p.is_new ? ' new' : '' %>"><%- p.title %></a>
+    </li>
+  <% }) %>
+</ul>

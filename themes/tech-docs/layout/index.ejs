@@ -1,0 +1,94 @@
+<div class="sidebar">
+  <div class="sidebar-inner-index">
+    <ul class="main-menu">
+      <%- partial('partials/main_menu', { context: 'sidebar' }) %>
+    </ul>
+  </div>
+</div>
+
+<div id="hero">
+  <div class="inner">
+    <div class="left">
+      <img class="hero-logo" src="<%- url_for("/images/logo.png") %>">
+    </div><div class="right">
+
+      <h1>
+        Bridging FeathersJS and<br/>real world apps
+      </h1>
+      <p>
+        <a class="button" href="<%- url_for("/v1/whats-new") %>">What's New</a>
+        <a class="button white" href="https://github.com/feathers-plus" target="_blank">GitHub</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="highlights">
+  <div class="inner">
+    <div class="point">
+      <h2>Extend FeathersJS</h2>
+      <p>
+        <strong>feathers-hooks-common</strong> contains the official FeathersJS hooks.<br/><br/>
+
+        <strong>feathers-dataloader</strong> transparently reduces the number of DB calls.<br/><br/>
+        <strong>feathers-offline-*</strong> offline-first, realtime synchronization.
+      </p>
+    </div>
+
+    <div class="point">
+      <h2>Service Adapters</h2>
+      <p>
+        <strong>feathers-mongoose-advanced</strong> full access to Mongoose schema features.<br/><br/>
+        <strong>feathers-graphql</strong> for GraphQL.<br/><br/>
+        <strong>feathers-postmark</strong> for Postmark.
+      </p>
+    </div>
+
+    <div class="point">
+      <h2>Framework Integration</h2>
+      <p>
+        <strong>feathers-vuex</strong> for Vue/Vuex.<br/><br/>
+        <strong>feathers-redux</strong> for React/Redux.
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<div id="footer">
+  <p>This web site is based on Evan You's vuejs.org site.</p>
+</div>
+
+<script>
+(function () {
+  var topScrolled = false
+  var sponsors = document.getElementById('sponsors')
+  var sponsorTop = sponsors.offsetTop
+  var sponsorActive = false
+
+  window.addEventListener('resize', function () {
+    sponsorTop = sponsors.offsetTop
+  })
+
+  window.addEventListener('scroll', function () {
+    if (window.pageYOffset > 165 && !topScrolled) {
+      topScrolled = true
+      document.getElementById('mobile-bar').classList.remove('top')
+    } else if (window.pageYOffset <= 165 && topScrolled) {
+      topScrolled = false
+      document.getElementById('mobile-bar').classList.add('top')
+    }
+    if (window.pageYOffset > sponsorTop - 100) {
+      if (!sponsorActive) {
+        sponsorActive = true
+        sponsors.classList.add('active')
+      }
+    } else {
+      if (sponsorActive) {
+        sponsorActive = false
+        sponsors.classList.remove('active')
+      }
+    }
+  })
+})()
+</script>
