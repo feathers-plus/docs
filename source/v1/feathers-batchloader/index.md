@@ -3,7 +3,7 @@ title: API
 type: guide
 order: 2
 dropdown: extensions
-repo: feathers-dataloader
+repo: feathers-batchloader
 ---
 
 <!---

@@ -14,10 +14,7 @@
   typeof global != 'undefined' ? global : this,
   function(root) {
     // Only works in Node
-    console.log('inject-feathers-plus.js');
     root.feathers = root.feathers || {};
 
     root.feathers.feathersBatchLoader = 'a';
-
-    console.log('x', Object.keys(feathers));
   }));
