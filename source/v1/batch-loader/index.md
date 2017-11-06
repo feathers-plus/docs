@@ -3,8 +3,37 @@ title: API
 type: guide
 order: 2
 dropdown: extensions
-repo: feathers-batchloader
+repo: batch-loader
 ---
+
+<h3 id="Usage">Usage</h3>
+
+``` js
+// command line
+npm install --save @feathers-plus/batch-loader
+
+// JS
+const BatchLoader = require('@feathers-plus/batch-loader');
+const { getResultsByKey, getUniqueKeys } = BatchLoader;
+
+const usersLoader = new BatchLoader(keys =>
+  users.find({ query: { id: { $in: getUniqueKeys(keys) } } })
+    .then(users => getResultsByKey(keys, users, user => user.id '')),
+  options
+);
+
+usersLoader.load(key).then(data => ...);
+```
+
+<h3 id="new-batchloader">new BatchLoader( batchLoaderFunc, options )</h3>
+
+- **Arguments:**
+  - `{Function} batchLoaderFunc`
+  - `{Object} options`
+  
+- **Usage:**
+
+  Instantiate a batch-loader.
 
 <!---
 ## Global API
@@ -20,7 +49,6 @@ repo: feathers-batchloader
 
 - **Usage:**
 
-aa `bbb` ccc
   Delete a property on an object. If the object is reactive, ensure the deletion triggers view updates. This is primarily used to get around the limitation that Vue cannot detect property deletions, but you should rarely need to use it.
 
   <p class="tip">The target object cannot be a Vue instance, or the root data object of a Vue instance.</p>

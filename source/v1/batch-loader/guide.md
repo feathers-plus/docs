@@ -3,15 +3,15 @@ title: Guide
 type: guide
 order: 1
 dropdown: extensions
-repo: feathers-batchloader
+repo: batch-loader
 ---
 
 ## Batching
 
-Batching is BatchLoader's primary feature. You create a BatchLoader by providing a batch loading function which accepts an array of keys and returns a Promise which resolves to an array of values.
+Batching is batch-loader's primary feature. You create a batch-loader by providing a batch loading function which accepts an array of keys and returns a Promise which resolves to an array of values.
 
 ``` js
-const BatchLoader = require('feathers-batchloader');
+const BatchLoader = require('@feathers-plus/batch-loader');
 const usersLoader = new BatchLoader(keys => {
   return app.service('users').find({ query: { id: { $in: keys } } })
     .then(records => {
@@ -21,7 +21,7 @@ const usersLoader = new BatchLoader(keys => {
 });
 ```
 
-You can then call the BatchLoader with individual keys. The BatchLoader will coalesce all requests made within the current event loop into a single call to the BatchLoader function, and return the results to each call.
+You can then call the batch-loader with individual keys. It will coalesce all requests made within the current event loop into a single call to the batch-loader function, and return the results to each call.
 
 ``` js
 usersLoader.load(1).then(user => console.log('key 1', user));
@@ -31,7 +31,7 @@ usersLoader.loadMany([1, 2, 3, 4]).then(users => console.log(users.length, users
 
 The above will result in one database service call, i.e. `users.find({ query: { id: { $in: [1, 2, 3, 4] } } })`, instead of 6.
 
-<p class="tip">*"[W]ill coalesce all requests made within the current event loop into a single call"* sounds ominous. Just don't worry about it. Make `usersLoader.load` and `usersLoader.loadMany` calls the same way you would `users.get` and `users.find`. Everything will work as expected while, behind the scenes, BatchLoader is making the fewest database calls logically possible.</p>
+<p class="tip">*"[W]ill coalesce all requests made within the current event loop into a single call"* sounds ominous. Just don't worry about it. Make `usersLoader.load` and `usersLoader.loadMany` calls the same way you would `users.get` and `users.find`. Everything will work as expected while, behind the scenes, batch-loader is making the fewest database calls logically possible.</p>
 
 ### Batch Function
 
@@ -60,10 +60,10 @@ The batch function has to to reorganize the above results and return:
 
 The `null` indicating there is no record for `user.id === 99`.
 
-BatchLoader provides two convenience functions that will perform this reorganization for you.
+batch-loader provides two convenience functions that will perform this reorganization for you.
 
 ``` js
-const BatchLoader = require('feathers-batchloader');
+const BatchLoader = require('@feathers-plus/batch-loader');
 const { getResultsByKey, getUniqueKeys } = BatchLoader;
 
 const usersLoader = new BatchLoader(keys =>
@@ -74,13 +74,13 @@ const usersLoader = new BatchLoader(keys =>
 
 **getUniqueKeys** eliminates any duplicate elements in the keys.
 
-<p class="tip">The array of keys may contain duplicates when the BatchLoader's memoization cache is disabled.</p>
+<p class="tip">The array of keys may contain duplicates when the batch-loader's memoization cache is disabled.</p>
 
 **getResultsByKey** reorganizes the records from the service call into the result expected from the batch function. The `''` parameter indicates each key expects a single record or `null`. Other options are `'!'` when each key requires a record, and `'[]'` when each key requires an array or 0, 1 or more records.
 
 ## Caching
 
-Each BatchLoader instance contains a unique memoized cache. Once `load` or `loadMany` is called, the resulting value is cached. This eliminates redundant database requests, relieving pressure on your database. It also creates fewer objects which may relieve memory pressure on your application.
+Each batch-loader instance contains a unique memoized cache. Once `load` or `loadMany` is called, the resulting value is cached. This eliminates redundant database requests, relieving pressure on your database. It also creates fewer objects which may relieve memory pressure on your application.
 
 ``` js
 Promise.all([
@@ -94,22 +94,22 @@ Promise.all([
 
 ### Caching Per Request
 
-It may be dangerous to use one cache across many users, and it is encouraged to create a new BatchLoader per request. Typically BatchLoader instances are requested when a request begins and are not used once the request ends.
+It may be dangerous to use one cache across many users, and it is encouraged to create a new batch-loader per request. Typically batch-loader instances are requested when a request begins and are not used once the request ends.
 
 Since the cache exists for a limited time only, the cache contents should not normally grow large enough to cause memory pressure on the application.
 
 ### Persistent Caches
 
-A BatchLoader can be shared between requests and between users if care is taken. The main advantage is having the cache already primed at the start of each request, which could result in fewer initial database requests.
+A batch-loader can be shared between requests and between users if care is taken. The main advantage is having the cache already primed at the start of each request, which could result in fewer initial database requests.
 
 #### Memory pressure
 
 There are two concerns though. First the cache could keep filling up with records causing memory pressure. This can be handled with a custom cache.
 
-**feathers-cache** is a least-recently-used (LRU) cache which you can inject when initializing the BatchLoader. You can specify the maximum number of records to be kept in the cache, and it will retain the least recently used records.
+**feathers-cache** is a least-recently-used (LRU) cache which you can inject when initializing the batch-loader. You can specify the maximum number of records to be kept in the cache, and it will retain the least recently used records.
 
 ``` js
-const BatchLoader = require('feathers-batchloader');
+const BatchLoader = require('@feathers-plus/batch-loader');
 const cache = require('feathers-cache');
 
 const usersLoader = new BatchLoader(
@@ -163,7 +163,7 @@ const usersStore = [
 ];
 ```
 
-We want to see how using BatchLoader affects the number of database calls, and we will do that by populating the `posts` records with related information.
+We want to see how using batch-loader affects the number of database calls, and we will do that by populating the `posts` records with related information.
 
 ### Using Plain JavaScript
 
@@ -212,10 +212,10 @@ Both of these make the following database service calls, and both get the follow
 
 ### Using Neither Batching nor Caching
 
-The BatchLoader function will be called for every `load` and `loadMany` when batching and caching are disabled in the BatchLoader. This means the BatchLoader acts just like individual `get` and `find` method calls. Let's rewrite the above example using such a rudimentary BatchLoader:
+The batch-loader function will be called for every `load` and `loadMany` when batching and caching are disabled in the batch-loader. This means it acts just like individual `get` and `find` method calls. Let's rewrite the above example using such a rudimentary batch-loader:
 
 ``` js
-const BatchLoader = require('feathers-batchloader');
+const BatchLoader = require('@feathers-plus/batch-loader');
 const { getResultsByKey, getUniqueKeys } = BatchLoader;
 
 // Populate using Promises.
@@ -260,7 +260,7 @@ Both of these make the same database service calls as did the [plain JavaScript 
 ... comments find { postId: { '$in': [ 4 ] } }
 ```
 
-<p class="tip">A BatchLoader with neither batching nor caching makes the same database calls as does a plain Javascript implementation. This is a convenient way to debug issues you might have with BatchLoader. The *"magic"* disappears when you disable batching and caching, which makes it simpler to understand what is happening.</p>
+<p class="tip">A batch-loader with neither batching nor caching makes the same database calls as does a plain Javascript implementation. This is a convenient way to debug issues you might have with batch-loader. The *"magic"* disappears when you disable batching and caching, which makes it simpler to understand what is happening.</p>
 
 ### Using Batching and Caching
 
@@ -275,11 +275,11 @@ Only 1 service call was made for the `comments` records, instead of the previous
 
 ### A Realistic Example
 
-The more service calls made, the better BatchLoader performs. The above example populated the `posts` records with just the `comments` records. Let's see the effect BatchLoader has when we fully populate the `posts` records.
+The more service calls made, the better batch-loader performs. The above example populated the `posts` records with just the `comments` records. Let's see the effect batch-loader has when we fully populate the `posts` records.
 
 ``` js
 const { map, parallel } = require('asyncro');
-const BatchLoader = require('feathers-batchloader');
+const BatchLoader = require('@feathers-plus/batch-loader');
 
 const { getResultsByKey, getUniqueKeys } = BatchLoader;
 
@@ -287,14 +287,14 @@ tester({ batch: false, cache: false })
   .then(data => { ... )
 
 async function tester (options) {
-  const commentsBatchLoader = new BatchLoader(async keys => {
+  const commentsLoader = new BatchLoader(async keys => {
       const result = await comments.find({ query: { postId: { $in: getUniqueKeys(keys) } } });
       return getResultsByKey(keys, result, comment => comment.postId, '[]');
     },
     options
   );
 
-  const usersBatchLoader = new BatchLoader(async keys => {
+  const usersLoader = new BatchLoader(async keys => {
       const result = await users.find({ query: { id: { $in: getUniqueKeys(keys) } } });
       return getResultsByKey(keys, result, user => user.id, '');
     },
@@ -307,23 +307,23 @@ async function tester (options) {
     await parallel([
       // Join one users record to posts, for post.userId === users.id
       async () => {
-        post.userRecord = await usersBatchLoader.load(post.userId);
+        post.userRecord = await usersLoader.load(post.userId);
       },
       // Join 0, 1 or many comments records to posts, where comments.postId === posts.id
       async () => {
-        const commentRecords = await commentsBatchLoader.load(post.id);
+        const commentRecords = await commentsLoader.load(post.id);
         post.commentRecords = commentRecords;
 
         // Join one users record to comments, for comments.userId === users.id
         await map(commentRecords, async comment => {
-          comment.userRecord = await usersBatchLoader.load(comment.userId);
+          comment.userRecord = await usersLoader.load(comment.userId);
         });
       },
       // Join 0, 1 or many users record to posts, where posts.starIds === users.id 
       async () => {
         if (!post.starIds) return null;
 
-        post.starUserRecords = await usersBatchLoader.loadMany(post.starIds);
+        post.starUserRecords = await usersLoader.loadMany(post.starIds);
       }
     ]);
   });
@@ -332,7 +332,7 @@ async function tester (options) {
 }
 ```
 
-<p class="tip">Notice `usersBatchLoader` is being called within 3 quite different joins. These joins will share their batching and cache, noticeably improving overall performance.</p>
+<p class="tip">Notice `usersLoader` is being called within 3 quite different joins. These joins will share their batching and cache, noticeably improving overall performance.</p>
 
 This example has batching and caching disabled. These 22 service calls are made when it is run. They are the same calls which a plain JavaScript implementation would have made:
 
@@ -436,3 +436,7 @@ The final populated result is:
          userId: 102,
          userRecord: { id: 102, name: 'Marshall' } } ] } ]
 ```
+
+## See also
+
+- [facebook/dataloader](https://github.com/facebook/dataloader) from which batch-loader is derived.

@@ -3,7 +3,7 @@ title: Common Patterns
 type: guide
 order: 3
 dropdown: extensions
-repo: feathers-batchloader
+repo: batch-loader
 ---
 
 ## Sample Data
