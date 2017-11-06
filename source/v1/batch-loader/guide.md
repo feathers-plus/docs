@@ -60,6 +60,8 @@ The batch function has to to reorganize the above results and return:
 
 The `null` indicating there is no record for `user.id === 99`.
 
+### Convenience Methods
+
 batch-loader provides two convenience functions that will perform this reorganization for you.
 
 ``` js
@@ -74,7 +76,7 @@ const usersLoader = new BatchLoader(keys =>
 
 **getUniqueKeys** eliminates any duplicate elements in the keys.
 
-<p class="tip">The array of keys may contain duplicates when the batch-loader's memoization cache is disabled.</p>
+> The array of keys may contain duplicates when the batch-loader's memoization cache is disabled.
 
 **getResultsByKey** reorganizes the records from the service call into the result expected from the batch function. The `''` parameter indicates each key expects a single record or `null`. Other options are `'!'` when each key requires a record, and `'[]'` when each key requires an array or 0, 1 or more records.
 
@@ -100,7 +102,9 @@ Since the cache exists for a limited time only, the cache contents should not no
 
 ### Persistent Caches
 
-A batch-loader can be shared between requests and between users if care is taken. The main advantage is having the cache already primed at the start of each request, which could result in fewer initial database requests.
+A batch-loader can be shared between requests and between users if care is taken. Use caution when used in long-lived applications or those which serve many users with different access permissions.
+
+The main advantage is having the cache already primed at the start of each request, which could result in fewer initial database requests.
 
 #### Memory pressure
 
@@ -260,7 +264,7 @@ Both of these make the same database service calls as did the [plain JavaScript 
 ... comments find { postId: { '$in': [ 4 ] } }
 ```
 
-<p class="tip">A batch-loader with neither batching nor caching makes the same database calls as does a plain Javascript implementation. This is a convenient way to debug issues you might have with batch-loader. The *"magic"* disappears when you disable batching and caching, which makes it simpler to understand what is happening.</p>
+> A batch-loader with neither batching nor caching makes the same database calls as does a plain Javascript implementation. This is a convenient way to debug issues you might have with batch-loader. The *"magic"* disappears when you disable batching and caching, which makes it simpler to understand what is happening.
 
 ### Using Batching and Caching
 
@@ -332,7 +336,7 @@ async function tester (options) {
 }
 ```
 
-<p class="tip">Notice `usersLoader` is being called within 3 quite different joins. These joins will share their batching and cache, noticeably improving overall performance.</p>
+> Notice `usersLoader` is being called within 3 quite different joins. These joins will share their batching and cache, noticeably improving overall performance.
 
 This example has batching and caching disabled. These 22 service calls are made when it is run. They are the same calls which a plain JavaScript implementation would have made:
 
@@ -369,7 +373,7 @@ Now let's enable batching and caching by changing `tester({ batch: false, cache:
 ... comments find { postId: { '$in': [ 1, 2, 3, 4 ] } }
 ```
 
-<p class="tip">The 2 BatchLoaders reduced the number of services calls from 22 for a plain implementation, to just 3!</p>
+> The 2 BatchLoaders reduced the number of services calls from 22 for a plain implementation, to just 3!
 
 The final populated result is:
 
