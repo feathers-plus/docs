@@ -8,17 +8,19 @@ repo: batch-loader
 
 ## Batching
 
-Batching is batch-loader's primary feature. You create a batch-loader by providing a batch loading function which accepts an array of keys and returns a Promise which resolves to an array of values.
+Batching is batch-loader's primary feature. You create a batch-loader by providing a batch loading function which accepts an array of keys and an optional context. It returns a Promise which resolves to an array of values.
 
 ``` js
 const BatchLoader = require('@feathers-plus/batch-loader');
-const usersLoader = new BatchLoader(keys => {
+const usersLoader = new BatchLoader((keys, context) => {
   return app.service('users').find({ query: { id: { $in: keys } } })
     .then(records => {
       recordsByKey = /* recordsByKey[i] is the value for key[i] */;
       return recordsByKey;
     });
-});
+  },
+  { context: {} }
+);
 ```
 
 You can then call the batch-loader with individual keys. It will coalesce all requests made within the current event loop into a single call to the batch-loader function, and return the results to each call.
@@ -35,7 +37,7 @@ The above will result in one database service call, i.e. `users.find({ query: { 
 
 ### Batch Function
 
-The batch loading function accepts an array of keys and returns a Promise which resolves to an array of values. Each index in the returned array of values must correspond to the same index in the array of keys.
+The batch loading function accepts an array of keys and an optional context. It returns a Promise which resolves to an array of values. Each index in the returned array of values must correspond to the same index in the array of keys.
 
 For example, if the `usersLoader` from above is called with `[1, 2, 3, 4]`, we would execute `users.find({ query: { id: { $in: [1, 2, 3, 4, 99] } } })`. The Feathers service could return the results:
 

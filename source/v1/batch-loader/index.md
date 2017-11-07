@@ -16,11 +16,11 @@ npm install --save @feathers-plus/batch-loader
 const BatchLoader = require('@feathers-plus/batch-loader');
 const { getResultsByKey, getUniqueKeys } = BatchLoader;
 
-const usersLoader = new BatchLoader(async keys =>
+const usersLoader = new BatchLoader(async (keys, context) =>
     const usersRecords = await users.find({ query: { id: { $in: getUniqueKeys(keys) } } });
     return getResultsByKey(keys, usersRecords, user => user.id, '')
   ),
-  options
+  { context: {} }
 );
 
 const user = await usersLoader.load(key);
@@ -41,11 +41,11 @@ const user = await usersLoader.load(key);
   const BatchLoader = require('@feathers-plus/batch-loader');
   const { getResultsByKey, getUniqueKeys } = BatchLoader;
   
-  const usersLoader = new BatchLoader(async keys =>
+  const usersLoader = new BatchLoader(async (keys, context) =>
       const data = await users.find({ query: { id: { $in: getUniqueKeys(keys) } } });
       return getResultsByKey(keys, data, user => user.id, '')
     ),
-    { batch: true, cache: true }
+    { context: {}, batch: true, cache: true }
   );
   ```
   
