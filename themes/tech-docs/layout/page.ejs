@@ -24,18 +24,20 @@
   <%- page.content %>
   <% if (page.type === 'guide') { %>
     <div class="guide-links">
-      <% site.pages.find({ type: page.type, order: page.order - 1 }).each(function (page) { %>
-        <span>← <a href="<%- url_for(page.path) %>"><%- page.title %></a></span>
-      <% }) %>
-      <% site.pages.find({ type: page.type, order: page.order + 1 }).each(function (page) { %>
-        <span style="float: right;"><a href="<%- url_for(page.path) %>"><%- page.title %></a> →</span>
-      <% }) %>
+      <!-- link to previous page -->
+      <% getPagesInFolder(site, page.path).forEach(p => { if(p.order === page.order - 1 ) {%>
+        <span>← <a href="<%- url_for(p.path) %>"><%- p.title %></a></span>
+      <% } }) %>
+      <!-- link to next page -->
+      <% getPagesInFolder(site, page.path).forEach(p => { if(p.order === page.order + 1 ) {%>
+        <span style="float: right;"><a href="<%- url_for(p.path) %>"><%- p.title %></a> →</span>
+      <% } }) %>
     </div>
   <% } %>
   <div class="footer">
 
     Caught a mistake or want to contribute to the documentation?
-    <a href="https://github.com/vuejs/vuejs.org/blob/master/src/<%- page.path.replace(/\.html$/, '.md') %>" target="_blank">
+    <a href="https://github.com/feathers-plus/docs.feathers-plus.org/blob/master/src/<%- page.path.replace(/\.html$/, '.md') %>" target="_blank">
       Edit this page on Github!
     </a>
   </div>
