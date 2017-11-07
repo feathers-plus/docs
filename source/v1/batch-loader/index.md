@@ -123,9 +123,6 @@ onError | Function | (i, msg) => {} | Handler for detected errors.
   
 <!--- load ------------------------------------------------------------------------------------- -->
 <h2 id="load">batchLoader.load( key )</h2>
-
-- **Arguments:**
-  - `{String | Number | Object} key`
   
 - **Usage:**
 
@@ -138,9 +135,6 @@ onError | Function | (i, msg) => {} | Handler for detected errors.
 
 <!--- loadMany --------------------------------------------------------------------------------- -->
 <h2 id="loadmany">batchLoader.loadMany( keys )</h2>
-
-- **Arguments:**
-  - `{Array<String | Number | Object>} keys`
   
 - **Usage:**
 
@@ -164,9 +158,6 @@ onError | Function | (i, msg) => {} | Handler for detected errors.
 
 <!--- clear ------------------------------------------------------------------------------------ -->
 <h2 id="clear">batchLoader.clear( key )</h2>
-
-- **Arguments:**
-  - `{String | Number | Object} key`
   
 - **Usage:**
 

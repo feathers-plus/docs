@@ -114,10 +114,10 @@ There are two concerns though. First the cache could keep filling up with record
 
 ``` js
 const BatchLoader = require('@feathers-plus/batch-loader');
-const cache = require('feathers-cache');
+const cache = require('@feathers-plus/cache');
 
 const usersLoader = new BatchLoader(
-  keys => {},
+  keys => { ... },
   { cacheMap: cache({ max: 100 })
 );
 ```

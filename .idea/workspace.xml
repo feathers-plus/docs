@@ -14,12 +14,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="guide.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/guide.md">
+      <file leaf-file-name="common-patterns.md" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/common-patterns.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="284">
-                <caret line="33" column="13" lean-forward="false" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="13" />
+              <first_editor relative-caret-position="320">
+                <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -27,15 +27,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/index.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="711">
-                <caret line="198" column="0" lean-forward="true" selection-start-line="198" selection-start-column="0" selection-end-line="198" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor />
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="7" column="6" lean-forward="true" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -54,16 +51,25 @@
       <find>usersBatchLoader</find>
       <find>usersRecords</find>
       <find>reorganizes the records from the service call into the result expected from the batch function.&quot;tip</find>
+      <find>DataLoader</find>
+      <find>data</find>
+      <find>current</find>
+      <find>sidebar-link</find>
+      <find>sidebar</find>
       <find>&quot;tip</find>
     </findStrings>
     <replaceStrings>
       <replace>batchloader</replace>
       <replace>@feathers-plus/batch-loader</replace>
       <replace>commentsLoader</replace>
-      <replace>batch-loader</replace>
       <replace>h2</replace>
-      <replace>batchLoader</replace>
       <replace>usersLoader</replace>
+      <replace>batch-loader</replace>
+      <replace>BatchLoader</replace>
+      <replace>const</replace>
+      <replace>batchLoadFunc</replace>
+      <replace>batch</replace>
+      <replace>batchLoader</replace>
       <replace>data</replace>
     </replaceStrings>
     <dirStrings>
@@ -82,8 +88,11 @@
         <option value="$PROJECT_DIR$/source/v1/batchloader/common-patterns.md" />
         <option value="$PROJECT_DIR$/source/v1/batchloader/guide.md" />
         <option value="$PROJECT_DIR$/source/v1/batchloader/index.md" />
-        <option value="$PROJECT_DIR$/source/v1/batch-loader/guide.md" />
         <option value="$PROJECT_DIR$/source/v1/batch-loader/index.md" />
+        <option value="$PROJECT_DIR$/source/v1/batch-loader/guide.md" />
+        <option value="$PROJECT_DIR$/themes/tech-docs/layout/index.ejs" />
+        <option value="$PROJECT_DIR$/source/v1/batch-loader/common-patterns.md" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -181,28 +190,6 @@
               <item name="layout" type="462c0819:PsiDirectoryNode" />
               <item name="partials" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="docs.feathers-plus.org" type="b2602c69:ProjectViewProjectNode" />
-              <item name="docs.feathers-plus.org" type="462c0819:PsiDirectoryNode" />
-              <item name="themes" type="462c0819:PsiDirectoryNode" />
-              <item name="tech-docs" type="462c0819:PsiDirectoryNode" />
-              <item name="scripts" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="docs.feathers-plus.org" type="b2602c69:ProjectViewProjectNode" />
-              <item name="docs.feathers-plus.org" type="462c0819:PsiDirectoryNode" />
-              <item name="themes" type="462c0819:PsiDirectoryNode" />
-              <item name="tech-docs" type="462c0819:PsiDirectoryNode" />
-              <item name="source" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="docs.feathers-plus.org" type="b2602c69:ProjectViewProjectNode" />
-              <item name="docs.feathers-plus.org" type="462c0819:PsiDirectoryNode" />
-              <item name="themes" type="462c0819:PsiDirectoryNode" />
-              <item name="tech-docs" type="462c0819:PsiDirectoryNode" />
-              <item name="source" type="462c0819:PsiDirectoryNode" />
-              <item name="css" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -247,12 +234,12 @@
       <option name="presentableId" value="Default" />
       <updated>1509882986209</updated>
       <workItem from="1509882988089" duration="22601000" />
-      <workItem from="1509975460620" duration="14037000" />
+      <workItem from="1509975460620" duration="19891000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="36638000" />
+    <option name="totallyTimeSpent" value="42492000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1563" y="-1068" width="1558" height="1062" extended-state="0" />
@@ -388,30 +375,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/partials/extensions_dropdown.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/partials/sidebar.ejs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/common-patterns.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="FIRST">
-          <first_editor relative-caret-position="85">
-            <caret line="5" column="12" lean-forward="false" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
-            <folding />
-          </first_editor>
-          <second_editor />
         </state>
       </provider>
     </entry>
@@ -423,25 +391,92 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/guide.md">
+    <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/index.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="284">
-            <caret line="33" column="13" lean-forward="false" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="13" />
+          <first_editor relative-caret-position="-190">
+            <caret line="133" column="5" lean-forward="true" selection-start-line="133" selection-start-column="5" selection-end-line="133" selection-end-column="5" />
             <folding />
           </first_editor>
           <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/index.md">
+    <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/guide.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="711">
-            <caret line="198" column="0" lean-forward="true" selection-start-line="198" selection-start-column="0" selection-end-line="198" selection-end-column="0" />
+          <first_editor relative-caret-position="199">
+            <caret line="94" column="7" lean-forward="false" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="15" />
             <folding />
           </first_editor>
           <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/partials/extensions_dropdown.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/tech-docs/source/css/page.styl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="203" column="11" lean-forward="true" selection-start-line="203" selection-start-column="11" selection-end-line="203" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/tech-docs/source/css/index.styl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-17">
+          <caret line="2" column="17" lean-forward="false" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/index.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="22" column="8" lean-forward="true" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/tech-docs/source/css/_sidebar.styl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="31" column="3" lean-forward="false" selection-start-line="31" selection-start-column="3" selection-end-line="31" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/partials/main_menu.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/common-patterns.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="320">
+            <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="6" lean-forward="true" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+          <folding />
         </state>
       </provider>
     </entry>
