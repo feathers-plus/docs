@@ -1,3 +1,4 @@
+<% console.log('...index.ejs running') %>
 <div class="sidebar">
   <div class="sidebar-inner-index">
     <ul class="main-menu">
@@ -28,7 +29,7 @@
     <div class="point">
       <h2>Extend FeathersJS</h2>
       <p>
-        <strong>feathers-hooks-common</strong> contains the FeathersJS common hooks.<br/><br/>
+        <a href="<%- url_for("/v1/feathers-hooks-common") %>"><strong>feathers-hooks-common</strong></a> contains the FeathersJS common hooks.<br/><br/>
         <a href="<%- url_for("/v1/batch-loader") %>"><strong>batch-loader</strong></a> transparently reduces the number of database calls.<br/><br/>
         <a href="<%- url_for("/v1/authentication-management") %>"><strong>authentication-management</strong></a> sign up verification, password reset, etc.<br/><br/>
         <strong>offline-*</strong> offline-first, realtime synchronization.
