@@ -10,7 +10,7 @@ Loading data from database is one of the major tasks for most web applications. 
 
 ## Batching
 
-Batching is batch-loader's primary feature. The criteria of batching is to merge multiple similar database queries into one single query when possible. For example:
+Batching is batch-loader's primary feature. The reason for batching is to merge multiple similar database queries into one single query when possible. For example:
 
 ```js
 Promise.all([
@@ -99,13 +99,13 @@ const usersLoader = new BatchLoader(keys =>
 
 **getUniqueKeys** eliminates any duplicate elements in the keys.
 
-> The array of keys may contain duplicates when the batch-loader's memorization cache is disabled.
+> The array of keys may contain duplicates when the batch-loader's memoization cache is disabled.
 
 **getResultsByKey** reorganizes the records from the service call into the result expected from the batch function. The `''` parameter indicates each key expects a single record or `null`. Other options are `'!'` when each key requires a single record, and `'[]'` when each key requires an array of 0, 1 or more records.
 
 ## Caching
 
-Each batch-loader instance contains a unique memorized cache. Once `load` or `loadMany` is called, the resulting value is cached. This eliminates redundant database requests, relieving pressure on your database. It also creates fewer objects which may relieve memory pressure on your application.
+Each batch-loader instance contains a unique memoized cache. Once `load` or `loadMany` is called, the resulting value is cached. This eliminates redundant database requests, relieving pressure on your database. It also creates fewer objects which may relieve memory pressure on your application.
 
 ``` js
 Promise.all([
@@ -119,7 +119,7 @@ Promise.all([
 
 ### Caching Per Request
 
-It may be dangerous to use one cache across many users, and it is encouraged to create a new batch-loader per request. Typically batch-loader instances are created when a request begins and are dismissed once the request ends.
+It may be dangerous to use one cache across many users, and it is encouraged to create a new batch-loader per request. Typically batch-loader instances are created when a request begins and are released once the request ends.
 
 Since the cache exists for a limited time only, the cache contents should not normally grow large enough to cause memory pressure on the application.
 
