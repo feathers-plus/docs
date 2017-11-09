@@ -1,24 +1,25 @@
 <li class="nav-dropdown-container learn">
-    <a class="nav-link<%- page.dropdown === dropdown ? ' current' : '' %>">Extensions</a><span class="arrow"></span>
-    <ul class="nav-dropdown">
-        <li>
-            <ul>
-                <li><a href="<%- url_for("/v1/feathers-hooks-common/") %>" class="nav-link<%- page.repo === 'feathers-hooks-common' ? ' current' : '' %>">feathers-hooks-common</a></li>
-
-                <li><a href="<%- url_for("/v1/authentication-management/") %>" class="nav-link<%- page.repo === 'authentication-management' ? ' current' : '' %>">authentication-management</a></li>
-            </ul>
-        </li>
-        <li><h4>Batch Loader</h4></li>
-        <li>
-            <ul>
-                <li><a href="<%- url_for("/v1/batch-loader/") %>" class="nav-link<%- page.repo === 'batch-loader' ? ' current' : '' %>">batch-loader</a></li>
-                <li><a href="<%- url_for("/v1/cache") %>" class="nav-link<%- page.repo === 'cache' ? ' current' : '' %>">cache</a></li>
-            </ul>
-        </li>
-        <li><h4>Offline First</h4></li>
-        <li><ul>
-                <li><a href="<%- url_for("/v1/offline-snapshot/") %>" class="nav-link<%- page.repo === 'offline-snapshot' ? ' current' : '' %>">offline-snapshot</a></li>
-                <li><a href="<%- url_for("/v1/offline-realtime/") %>" class="nav-link<%- page.repo === 'offline-realtime' ? ' current' : '' %>">offline-realtime</a></li>
-            </ul></li>
-    </ul>
+  <a class="nav-link<%- page.dropdown === dropdown ? ' current' : '' %>">Extensions</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="<%- url_for("/v1/feathers-hooks-common/") %>" class="nav-link<%- page.repo === 'feathers-hooks-common' ? ' current' : '' %>">feathers-hooks-common</a></li>
+        <li><a href="<%- url_for("/v1/authentication-management/") %>" class="nav-link<%- page.repo === 'authentication-management' ? ' current' : '' %>">authentication-management</a></li>
+      </ul>
+    </li>
+    <li><h4>Batch Loader</h4></li>
+    <li>
+      <ul>
+        <li><a href="<%- url_for("/v1/batch-loader/") %>" class="nav-link<%- page.repo === 'batch-loader' ? ' current' : '' %>">batch-loader</a></li>
+        <li><a href="<%- url_for("/v1/cache") %>" class="nav-link<%- page.repo === 'cache' ? ' current' : '' %>">cache</a></li>
+      </ul>
+    </li>
+    <li><h4>Offline First</h4></li>
+    <li>
+      <ul>
+        <li><a href="<%- url_for("/v1/offline-snapshot/") %>" class="nav-link<%- page.repo === 'offline-snapshot' ? ' current' : '' %>">offline-snapshot</a></li>
+        <li><a href="<%- url_for("/v1/offline-realtime/") %>" class="nav-link<%- page.repo === 'offline-realtime' ? ' current' : '' %>">offline-realtime</a></li>
+      </ul>
+    </li>
+  </ul>
 </li>

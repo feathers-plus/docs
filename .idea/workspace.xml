@@ -14,100 +14,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="layout.ejs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/layout.ejs">
+      <file leaf-file-name="extensions_dropdown.ejs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/partials/extensions_dropdown.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="96" column="24" lean-forward="false" selection-start-line="96" selection-start-column="24" selection-end-line="96" selection-end-column="24" />
+            <state relative-caret-position="136">
+              <caret line="8" column="9" lean-forward="true" selection-start-line="8" selection-start-column="9" selection-end-line="8" selection-end-column="9" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="guide.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/guide.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="17">
-                <caret line="1" column="12" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="6" selection-end-column="3" />
-                <folding />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/index.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="0">
-                <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/index.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="85">
-                <caret line="5" column="18" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="29" selection-end-column="78" />
-                <folding />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="common-patterns.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/source/v1/feathers-hooks-common/common-patterns.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="153">
-                <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="256" column="0" lean-forward="true" selection-start-line="256" selection-start-column="0" selection-end-line="256" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="guide.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/v1/feathers-hooks-common/guide.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="136">
-                <caret line="8" column="11" lean-forward="true" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
-                <folding />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/v1/feathers-hooks-common/index.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="68">
-                <caret line="4" column="20" lean-forward="true" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
-                <folding />
-              </first_editor>
-              <second_editor />
             </state>
           </provider>
         </entry>
@@ -115,18 +27,18 @@
       <file leaf-file-name="index.ejs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/index.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="27" column="21" lean-forward="true" selection-start-line="27" selection-start-column="21" selection-end-line="27" selection-end-column="21" />
+            <state relative-caret-position="85">
+              <caret line="5" column="66" lean-forward="true" selection-start-line="5" selection-start-column="66" selection-end-line="5" selection-end-column="66" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="post.ejs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/post.ejs">
+      <file leaf-file-name="frameworks_dropdown.ejs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/partials/frameworks_dropdown.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="27" column="0" lean-forward="false" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -136,9 +48,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>dataloader</find>
-      <find>feathers-</find>
-      <find>feathers-batchloader</find>
       <find>BatchLoader</find>
       <find>batchloader</find>
       <find>td</find>
@@ -165,7 +74,10 @@
       <find>Hello World</find>
       <find>page</find>
       <find>&lt;div class=&quot;sidebar-inner&quot;&gt;</find>
+      <find>'writeFile</find>
       <find>body</find>
+      <find>'firstGenerate</find>
+      <find>console</find>
     </findStrings>
     <replaceStrings>
       <replace>batchloader</replace>
@@ -185,8 +97,8 @@
       <dir>Z:\repos\docs.feathers-plus.org\themes\tech-docs\source\css</dir>
       <dir>Z:\repos\docs.feathers-plus.org\node_modules</dir>
       <dir>Z:\repos\docs.feathers-plus.org\themes</dir>
-      <dir>Z:\repos\docs.feathers-plus.org</dir>
       <dir>Z:\repos\docs.feathers-plus.org\themes\tech-docs</dir>
+      <dir>Z:\repos\docs.feathers-plus.org</dir>
     </dirStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -210,21 +122,21 @@
         <option value="$PROJECT_DIR$/source/v1/hooks-common/common-patterns.md" />
         <option value="$PROJECT_DIR$/source/v1/hooks-common/guide.md" />
         <option value="$PROJECT_DIR$/source/v1/hooks-common/index.md" />
-        <option value="$PROJECT_DIR$/themes/tech-docs/layout/partials/extensions_dropdown.ejs" />
         <option value="$PROJECT_DIR$/source/v1/batch-loader/index.md" />
         <option value="$PROJECT_DIR$/_config.yml" />
         <option value="$PROJECT_DIR$/ejs-lint.js" />
         <option value="$PROJECT_DIR$/node_modules/.bin/ejslint" />
         <option value="$PROJECT_DIR$/node_modules/ejs-lint/cli.js" />
         <option value="$PROJECT_DIR$/themes/tech-docs/layout/post.ejs" />
-        <option value="$PROJECT_DIR$/node_modules/hexo/lib/plugins/console/generate.js" />
         <option value="$PROJECT_DIR$/z/works.html" />
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/source/index.md" />
+        <option value="$PROJECT_DIR$/source/v1/feathers-hooks-common/index.md" />
         <option value="$PROJECT_DIR$/themes/tech-docs/layout/layout.ejs" />
+        <option value="$PROJECT_DIR$/node_modules/hexo/lib/plugins/console/generate.js" />
         <option value="$PROJECT_DIR$/public/index.html" />
         <option value="$PROJECT_DIR$/themes/tech-docs/layout/index.ejs" />
-        <option value="$PROJECT_DIR$/source/v1/feathers-hooks-common/index.md" />
+        <option value="$PROJECT_DIR$/themes/tech-docs/layout/partials/extensions_dropdown.ejs" />
       </list>
     </option>
   </component>
@@ -332,6 +244,14 @@
               <item name="docs.feathers-plus.org" type="462c0819:PsiDirectoryNode" />
               <item name="themes" type="462c0819:PsiDirectoryNode" />
               <item name="tech-docs" type="462c0819:PsiDirectoryNode" />
+              <item name="layout" type="462c0819:PsiDirectoryNode" />
+              <item name="partials" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="docs.feathers-plus.org" type="b2602c69:ProjectViewProjectNode" />
+              <item name="docs.feathers-plus.org" type="462c0819:PsiDirectoryNode" />
+              <item name="themes" type="462c0819:PsiDirectoryNode" />
+              <item name="tech-docs" type="462c0819:PsiDirectoryNode" />
               <item name="source" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -393,17 +313,18 @@
       <updated>1509882986209</updated>
       <workItem from="1509882988089" duration="22601000" />
       <workItem from="1509975460620" duration="30977000" />
-      <workItem from="1510145714058" duration="14359000" />
+      <workItem from="1510145714058" duration="15595000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="67937000" />
+    <option name="totallyTimeSpent" value="69173000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1563" y="-1068" width="1558" height="1062" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2381579" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2381579" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -439,14 +360,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/public/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4556">
-          <caret line="268" column="0" lean-forward="true" selection-start-line="268" selection-start-column="0" selection-end-line="268" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/partials/extensions_dropdown.ejs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
@@ -555,6 +468,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -701,14 +615,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/hexo/lib/plugins/console/generate.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="547">
-          <caret line="112" column="54" lean-forward="false" selection-start-line="112" selection-start-column="54" selection-end-line="112" selection-end-column="54" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/z/works.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1048">
@@ -792,32 +698,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="256" column="0" lean-forward="true" selection-start-line="256" selection-start-column="0" selection-end-line="256" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/partials/extensions_dropdown.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/layout.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="96" column="24" lean-forward="false" selection-start-line="96" selection-start-column="24" selection-end-line="96" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/index.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="27" column="21" lean-forward="true" selection-start-line="27" selection-start-column="21" selection-end-line="27" selection-end-column="21" />
+        <state relative-caret-position="408">
+          <caret line="255" column="0" lean-forward="true" selection-start-line="255" selection-start-column="0" selection-end-line="255" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -844,17 +726,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/guide.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="FIRST">
-          <first_editor relative-caret-position="17">
-            <caret line="1" column="12" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="6" selection-end-column="3" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/v1/feathers-hooks-common/guide.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="FIRST">
@@ -874,6 +745,57 @@
             <folding />
           </first_editor>
           <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/layout.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1615">
+          <caret line="95" column="0" lean-forward="false" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/hexo/lib/plugins/console/generate.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="139">
+          <caret line="17" column="34" lean-forward="true" selection-start-line="17" selection-start-column="34" selection-end-line="17" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/v1/batch-loader/guide.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="17">
+            <caret line="1" column="12" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="6" selection-end-column="3" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/index.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="66" lean-forward="true" selection-start-line="5" selection-start-column="66" selection-end-line="5" selection-end-column="66" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/partials/frameworks_dropdown.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/tech-docs/layout/partials/extensions_dropdown.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="9" lean-forward="true" selection-start-line="8" selection-start-column="9" selection-end-line="8" selection-end-column="9" />
+          <folding />
         </state>
       </provider>
     </entry>
