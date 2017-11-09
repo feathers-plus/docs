@@ -6,9 +6,30 @@ dropdown: extensions
 repo: batch-loader
 ---
 
+Loading data from database is one of the major tasks for most web applications. The goal of batch-loader is to improve the performance of database queries with two techniques: batching and caching.
+
 ## Batching
 
-Batching is batch-loader's primary feature. You create a batch-loader by providing a batch loading function which accepts an array of keys and an optional context. It returns a Promise which resolves to an array of values.
+Batching is batch-loader's primary feature. The criteria of batching is to merge multiple similar database queries into one single query when possible. For example:
+
+```js
+Promise.all([
+  posts.find({ query: { id: 1 } } ),
+  posts.find({ query: { id: 2 } } ),
+  posts.find({ query: { id: { $in: [3, 4] } } } ),
+  posts.find({ query: { id: 5 } } )
+])
+```
+
+is slower than
+
+```js
+posts.find({ query: { id: { $in: [1, 2, 3, 4, 5] } } } )
+```
+
+The latter sends only one query to database and retrieves the same 5 records as the former does, and therefore is much more efficient.
+
+Batch-loader is a tool to help you batch database calls in such a way. First, create a batch-loader by providing a batch loading function which accepts an array of keys and an optional context. It returns a Promise which resolves to an array of values.
 
 ``` js
 const BatchLoader = require('@feathers-plus/batch-loader');
@@ -39,24 +60,24 @@ The above will result in one database service call, i.e. `users.find({ query: { 
 
 The batch loading function accepts an array of keys and an optional context. It returns a Promise which resolves to an array of values. Each index in the returned array of values must correspond to the same index in the array of keys.
 
-For example, if the `usersLoader` from above is called with `[1, 2, 3, 4]`, we would execute `users.find({ query: { id: { $in: [1, 2, 3, 4, 99] } } })`. The Feathers service could return the results:
+For example, if the `usersLoader` from above is called with `[1, 2, 3, 4, 99]`, we would execute `users.find({ query: { id: { $in: [1, 2, 3, 4, 99] } } })`. The Feathers service could return the results:
 
 ``` js
-[ { id: 104, name: 'Aubree' }
-  { id: 102, name: 'Marshall' },
-  { id: 101, name: 'John' },
-  { id: 103, name: 'Barbara' } ]
+[ { id: 4, name: 'Aubree' }
+  { id: 2, name: 'Marshall' },
+  { id: 1, name: 'John' },
+  { id: 3, name: 'Barbara' } ]
 ```
 
-The order of the results will usually differ from the order of the keys and here, in addition, there is no `users` with an `id` of `99`.
+Please not that the order of the results will usually differ from the order of the keys and here, in addition, there is no `users` with an `id` of `99`.
 
 The batch function has to to reorganize the above results and return:
 
 ``` js
-[ { id: 101, name: 'John' },
-  { id: 102, name: 'Marshall' },
-  { id: 103, name: 'Barbara' },
-  { id: 104, name: 'Aubree' },
+[ { id: 1, name: 'John' },
+  { id: 2, name: 'Marshall' },
+  { id: 3, name: 'Barbara' },
+  { id: 4, name: 'Aubree' },
   null ]
 ```
 
@@ -64,7 +85,7 @@ The `null` indicating there is no record for `user.id === 99`.
 
 ### Convenience Methods
 
-batch-loader provides two convenience functions that will perform this reorganization for you.
+Batch-loader provides two convenience functions that will perform this reorganization for you.
 
 ``` js
 const BatchLoader = require('@feathers-plus/batch-loader');
@@ -78,13 +99,13 @@ const usersLoader = new BatchLoader(keys =>
 
 **getUniqueKeys** eliminates any duplicate elements in the keys.
 
-> The array of keys may contain duplicates when the batch-loader's memoization cache is disabled.
+> The array of keys may contain duplicates when the batch-loader's memorization cache is disabled.
 
-**getResultsByKey** reorganizes the records from the service call into the result expected from the batch function. The `''` parameter indicates each key expects a single record or `null`. Other options are `'!'` when each key requires a record, and `'[]'` when each key requires an array or 0, 1 or more records.
+**getResultsByKey** reorganizes the records from the service call into the result expected from the batch function. The `''` parameter indicates each key expects a single record or `null`. Other options are `'!'` when each key requires a single record, and `'[]'` when each key requires an array of 0, 1 or more records.
 
 ## Caching
 
-Each batch-loader instance contains a unique memoized cache. Once `load` or `loadMany` is called, the resulting value is cached. This eliminates redundant database requests, relieving pressure on your database. It also creates fewer objects which may relieve memory pressure on your application.
+Each batch-loader instance contains a unique memorized cache. Once `load` or `loadMany` is called, the resulting value is cached. This eliminates redundant database requests, relieving pressure on your database. It also creates fewer objects which may relieve memory pressure on your application.
 
 ``` js
 Promise.all([
@@ -98,7 +119,7 @@ Promise.all([
 
 ### Caching Per Request
 
-It may be dangerous to use one cache across many users, and it is encouraged to create a new batch-loader per request. Typically batch-loader instances are requested when a request begins and are not used once the request ends.
+It may be dangerous to use one cache across many users, and it is encouraged to create a new batch-loader per request. Typically batch-loader instances are created when a request begins and are dismissed once the request ends.
 
 Since the cache exists for a limited time only, the cache contents should not normally grow large enough to cause memory pressure on the application.
 
@@ -112,7 +133,7 @@ The main advantage is having the cache already primed at the start of each reque
 
 There are two concerns though. First the cache could keep filling up with records causing memory pressure. This can be handled with a custom cache.
 
-**feathers-cache** is a least-recently-used (LRU) cache which you can inject when initializing the batch-loader. You can specify the maximum number of records to be kept in the cache, and it will retain the least recently used records.
+**@feathers-plus/cache** is a least-recently-used (LRU) cache which you can inject when initializing the batch-loader. You can specify the maximum number of records to be kept in the cache, and it will retain the least recently used records.
 
 ``` js
 const BatchLoader = require('@feathers-plus/batch-loader');
@@ -132,7 +153,7 @@ The other concern is a record mutating. You can create a hook which clears a rec
 usersLoader.clear(1);
 ```
 
-<p class="tip">A common hook to do this is in development.</p> 
+<p class="tip">A common hook to do this is in development.</p>
 
 ## Explore Performance Gains
 
@@ -198,7 +219,7 @@ const data = await Promise.all(postRecords.map(async post => {
 Both of these make the following database service calls, and both get the following result.
 
 ``` js
-... posts find 
+... posts find
 ... comments find { postId: 1 }
 ... comments find { postId: 2 }
 ... comments find { postId: 3 }
@@ -240,7 +261,7 @@ Promise.resolve(posts.find()
   )))
 )
   .then(data => { ... });
-  
+
 // Populate using async/await.
 const commentsLoaderAwait = new BatchLoader(async keys => {
     const postRecords = await comments.find({ query: { postId: { $in: getUniqueKeys(keys) } } });
@@ -253,13 +274,13 @@ const postRecords = await posts.find();
 const data = await Promise.all(postRecords.map(async post => {
   post.commentRecords = await commentsLoaderAwait.load(post.id);
   return post;
-}));  
+}));
 ```
 
 Both of these make the same database service calls as did the [plain JavaScript example](#Using-Plain-JavaScript), because batching and caching were both disabled.
 
 ``` text
-... posts find 
+... posts find
 ... comments find { postId: { '$in': [ 1 ] } }
 ... comments find { postId: { '$in': [ 2 ] } }
 ... comments find { postId: { '$in': [ 3 ] } }
@@ -273,7 +294,7 @@ Both of these make the same database service calls as did the [plain JavaScript 
 Batching and caching are enabled when we remove the 2 `{ batch: false, cache: false }` in the above example. A very different performance profile is now produced:
 
 ``` text
-... posts find 
+... posts find
 ... comments find { postId: { '$in': [ 1, 2, 3, 4 ] } }
 ```
 
@@ -325,7 +346,7 @@ async function tester (options) {
           comment.userRecord = await usersLoader.load(comment.userId);
         });
       },
-      // Join 0, 1 or many users record to posts, where posts.starIds === users.id 
+      // Join 0, 1 or many users record to posts, where posts.starIds === users.id
       async () => {
         if (!post.starIds) return null;
 
@@ -343,7 +364,7 @@ async function tester (options) {
 This example has batching and caching disabled. These 22 service calls are made when it is run. They are the same calls which a plain JavaScript implementation would have made:
 
 ``` text
-... posts find 
+... posts find
 ... users find { id: { '$in': [ 101 ] } }
 ... comments find { postId: { '$in': [ 1 ] } }
 ... users find { id: { '$in': [ 102 ] } }
@@ -370,7 +391,7 @@ This example has batching and caching disabled. These 22 service calls are made 
 Now let's enable batching and caching by changing `tester({ batch: false, cache: false })` to `tester()`. Only these **three** service calls are now made to obtain the same results:
 
 ``` text
-... posts find 
+... posts find
 ... users find { id: { '$in': [ 101, 102, 103, 104 ] } }
 ... comments find { postId: { '$in': [ 1, 2, 3, 4 ] } }
 ```
@@ -385,9 +406,9 @@ The final populated result is:
     userId: 101,
     starIds: [ 102, 103, 104 ],
     userRecord: { id: 101, name: 'John' },
-    starUserRecords: 
+    starUserRecords:
      [ { id: 102, name: 'Marshall' }, { id: 103, name: 'Barbara' }, { id: 104, name: 'Aubree' } ],
-    commentRecords: 
+    commentRecords:
      [ { id: 11,
          text: 'John post Marshall comment 11',
          postId: 1,
@@ -408,9 +429,9 @@ The final populated result is:
     userId: 102,
     starIds: [ 101, 103, 104 ],
     userRecord: { id: 102, name: 'Marshall' },
-    starUserRecords: 
+    starUserRecords:
      [ { id: 101, name: 'John' }, { id: 103, name: 'Barbara' }, { id: 104, name: 'Aubree' } ],
-    commentRecords: 
+    commentRecords:
      [ { id: 14,
          text: 'Marshall post John comment 14',
          postId: 2,
@@ -425,7 +446,7 @@ The final populated result is:
     body: 'Barbara post',
     userId: 103,
     userRecord: { id: 103, name: 'Barbara' },
-    commentRecords: 
+    commentRecords:
      [ { id: 16,
          text: 'Barbara post John comment 16',
          postId: 3,
@@ -435,7 +456,7 @@ The final populated result is:
     body: 'Aubree post',
     userId: 104,
     userRecord: { id: 104, name: 'Aubree' },
-    commentRecords: 
+    commentRecords:
      [ { id: 17,
          text: 'Aubree post Marshall comment 17',
          postId: 4,
