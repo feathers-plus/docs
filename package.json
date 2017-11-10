@@ -1,8 +1,7 @@
 {
-  "name": "hexo-site",
+  "name": "@feathers-plus/docs",
   "description": "Web site for Feathers-Plus.",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0",
   "keywords": [
     "feathers",
     "feathers-plus",
@@ -13,7 +12,7 @@
   "license": "Copyright (c)",
   "repository": {
     "type": "git",
-    "url": "git://github.com/feathers-plus/doc.feathers-plus.org.git"
+    "url": "git://github.com/feathers-plus/docs.git"
   },
   "author": {
     "name": "John J. Szwaronek",
@@ -21,7 +20,7 @@
   },
   "contributors": [],
   "bugs": {
-    "url": "https://github.com/feathers-plus/doc.feathers-plus.org/issues"
+    "url": "https://github.com/feathers-plus/docs/issues"
   },
   "engines": {
     "node": ">= 6.0.0"
