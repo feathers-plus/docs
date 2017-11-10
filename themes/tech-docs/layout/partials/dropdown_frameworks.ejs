@@ -1,0 +1,11 @@
+<li class="nav-dropdown-container support-vue">
+  <a class="nav-link">Frameworks</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="<%- url_for("/v1/vuex/") %>" class="nav-link<%- page.repo === 'vuex' ? ' current' : '' %>">vuex</a></li>
+        <li><a href="<%- url_for("/v1/redux/") %>" class="nav-link<%- page.repo === 'redux' ? ' current' : '' %>">redux</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>

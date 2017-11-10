@@ -1,6 +1,5 @@
-<!-- isIndex = true for front page source//index.html --------------------------------------------->
-<% var isIndex = page.path === 'index.html' %>
-<% console.log('...layout.ejs running', page.repo, page.title, isIndex) %>
+<% var isFrontPage = page.type === 'frontpage' %>
+<% console.log('...layout.ejs running', page.repo, page.title, isFrontPage) %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -52,7 +51,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- main page styles ------------------------------------------------------------------------->
-    <%- css(isIndex ? 'css/index' : 'css/page') %>
+    <%- css(isFrontPage ? 'css/index' : 'css/page') %>
 
     <!-- this needs to be loaded before guide's inline scripts ------------------------------------>
     <script src="<%- url_for("/js/client-bundle.js") %>"></script>
@@ -71,8 +70,8 @@
     </script>
     --->
   </head>
-  <body class="<%- isIndex ? '' : 'docs' -%>">
-    <div id="mobile-bar" <%- isIndex ? 'class="top"' : '' %>>
+  <body class="<%- isFrontPage ? '' : 'docs' -%>">
+    <div id="mobile-bar" <%- isFrontPage ? 'class="top"' : '' %>>
       <a class="menu-button"></a>
       <a class="logo" href="/"></a>
     </div>
@@ -81,7 +80,7 @@
     <%- partial('partials/header') %>
 
     <!-- body ------------------------------------------------------------------------------------->
-    <% if (!isIndex) { %>
+    <% if (!isFrontPage) { %>
       <div id="main" class="fix-sidebar">
         <% if (page.blog_index) { %>
           <%- partial('partials/blog') %>

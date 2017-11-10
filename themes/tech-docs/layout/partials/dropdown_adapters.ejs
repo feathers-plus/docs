@@ -1,0 +1,12 @@
+<li class="nav-dropdown-container ecosystem">
+  <a class="nav-link">Adapters</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="<%- url_for("/v1/mongoose-advanced/") %>" class="nav-link<%- page.repo === 'mongoose-advanced' ? ' current' : '' %>">mongoose-advanced</a></li>
+        <li><a href="<%- url_for("/v1/graphql/") %>" class="nav-link<%- page.repo === 'graphql' ? ' current' : '' %>">graphql</a></li>
+        <li><a href="<%- url_for("/v1/postmark/") %>" class="nav-link<%- page.repo === 'postmark' ? ' current' : '' %>">postmark</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
