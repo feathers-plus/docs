@@ -6,7 +6,7 @@ dropdown: extensions
 repo: batch-loader
 ---
 
-<!--- Usage ------------------------------------------------------------------------------------ -->
+<!--- Usage --------------------------------------------------------------------------------------->
 <h2 id="Usage">Usage</h2>
 
 ``` js
@@ -28,18 +28,18 @@ const user = await usersLoader.load(key);
 
 > May be used on the client.
 
-<!--- class BatchLoader ------------------------------------------------------------------------ -->
+<!--- class BatchLoader --------------------------------------------------------------------------->
 <h2 id="class-batchloader">class BatchLoader( batchLoadFunc [, options] )</h2>
 
 - **Arguments:**
   - `{Function} batchLoadFunc`
   - `{Object} [ options ]`
-    - `{Boolean} batch` Default: true
-    - `{Boolean} cache` Default: true
+    - `{Boolean} batch`
+    - `{Boolean} cache`
     - `{Function} cacheKeyFn`
     - `{Object} cacheMap`
     - `{Object} context`
-    - `{Number} maxBatchSize` Default: Infinity
+    - `{Number} maxBatchSize`
     
 - **Returns:** `{Object} batch-loader instance`
 
@@ -59,22 +59,23 @@ const user = await usersLoader.load(key);
   );
   ```
   
-- **batchLoadFunc**. See [Batch Function](guide.html#batch-function).
+- **batchLoadFunc**.
 
-- **Option: batch**. A context object to pass into batchLoadFunc as its second argument.
+  See [Batch Function](guide.html#batch-function).
   
-- **Option: cache**
+- **options:**
 
-  Set to false to disable memoization caching, creating a new Promise and new key in the batchLoadFunc for every load of the same key.
-    
-- **Option: cacheKeyFn**
+Property | Type | Default | Description
+---|---|---|---
+`batch` | Boolean | `true` | Set to false to disable batching, invoking batchLoadFunc with a single load key.
+`cache` | Boolean | `true` | Set to false to disable memoization caching, creating a new Promise and new key in the batchLoadFunc for every load of the same key.
+`cacheKeyFn` | Function | `key => key` | Produces cache key for a given load key. Useful when keys are objects and two objects should be considered equivalent.
+`cacheMap` | Object | `new Map()` | Instance of Map (or an object with a similar API) to be used as cache.
+`context` | Object | `null` | A context object to pass into batchLoadFunc as its second argument.
+`maxBatchSize` | Number | `Infinity` | Limits the number of items that get passed in to the batchLoadFunc.
 
-  Produces cache key for a given load key. Useful when keys are objects and two objects should be considered equivalent.
-    
-- **Option: cacheMap**
+- **option.cacheMap**
 
-  Instance of Map (or an object with a similar API) to be used as cache.
-  
   The default cache will grow without limit, which is reasonable for short lived batch-loaders which are rebuilt on every request. The number of records cached can be limited with a  *least-recently-used* cache:
   
   ``` js
@@ -87,30 +88,11 @@ const user = await usersLoader.load(key);
   );
   ```
     
-  > You can consider using npm's `lru` on the browser.
+  > You can consider wrapping npm's `lru` on the browser.
   
-- **Option: context**. A context object to pass into batchLoadFunc as its second argument.
-    
-- **Option: maxBatchSize**
-
-  Limits the number of items that get passed in to the batchLoadFunc.
-
-- **Details:**
-  - `batchLoadFunc` See [Batch Function](guide.html#batch-function).
-  - `options` An optional object of options:
-
-Property | Type | Default | Description
----|---|---|---
-context | Object | null | A context object to pass into batchLoadFunc as its second argument.
-batch | Boolean | true | Set to false to disable batching, invoking batchLoadFunc with a single load key.
-maxBatchSize | Number | Infinity | Limits the number of items that get passed in to the batchLoadFunc.
-cache | Boolean | true | Set to false to disable memoization caching, creating a new Promise and new key in the batchLoadFunc for every load of the same key.
-cacheKeyFn | Function | key => key | Produces cache key for a given load key. Useful when keys are objects and two objects should be considered equivalent.
-cacheMap | Object | new Map() | Instance of Map (or an object with a similar API) to be used as cache.
-
 - **See also:** [Guide](./guide.html)
 
-<!--- getUniqueKeys ---------------------------------------------------------------------------- -->
+<!--- getUniqueKeys ------------------------------------------------------------------------------->
 <h2 id="get-unique-keys">static BatchLoader.getUniqueKeys( keys )</h2>
 
 - **Arguments:**
@@ -133,7 +115,7 @@ cacheMap | Object | new Map() | Instance of Map (or an object with a similar API
   );
   ```
 
-<!--- getResultsByKey -------------------------------------------------------------------------- -->
+<!--- getResultsByKey ----------------------------------------------------------------------------->
 <h2 id="get-results-by-key">static BatchLoader.getResultsByKey( keys, records, getRecordKeyFunc, type [, options] )</h2>
 
 - **Arguments:**
@@ -142,8 +124,8 @@ cacheMap | Object | new Map() | Instance of Map (or an object with a similar API
   - `{Function} getRecordKeyFunc`
   - `{String} type`
   - `{Object} [ options ]`
-    - `{null | []} defaultElem` Default: null
-    - `{Function} onError` Default: () => {}
+    - `{null | []} defaultElem`
+    - `{Function} onError`
 
 - **Returns:** `{Array<Object>}` the reorganized results.
 
@@ -164,7 +146,9 @@ cacheMap | Object | new Map() | Instance of Map (or an object with a similar API
 
   An array of `key` elements, which the value the batch loader function will use to find the records requested.
    
-- **records** An array of records which, in total, resolve all the `keys`.
+- **records**
+
+  An array of records which, in total, resolve all the `keys`.
   
 - **getRecordKeyFunc**
 
@@ -182,43 +166,17 @@ type | Description
 `''` | An optional single record.
 `'!'` | A required single record.
 `'[]'` | A required array including 0, 1 or more records.
-  
-- **Option: defaultElem** The value to return for a `key` having no record(s).
-  
-- **Option: onError**
 
-  Handler for detected errors, e.g.
-  
-  ``` js
-  onError: (i, msg) => { throw new Error(`${msg} on element ${i}`); }
-  ```
-
-- **Details:**
-
-  - `keys` An array of `key` elements, which the value the batch loader function will use to find the records requested.
-  - `records` An array of records which, in total, resolve all the `keys`.
-  - `getRecordKeyFunc` A function which, given a record, returns the key it satisfies, e.g.
-    ``` js
-    user => user.id
-    ```
-  - `type` The type of value the batch loader must return for each key:
-
-type | Description
------| ---
-`''` | An optional single record.
-`'!'` | A required single record.
-`'[]'` | A required array including 0, 1 or more records.
-
-  - `options` An optional object of options:
+- **options**
 
 Property | Type | Default | Description
 ---|---|---|---
-defaultElem | `null`, `[]` | `null` | The value to return for a `key` having no record(s).
-onError | Function | (i, msg) => {} | Handler for detected errors.
+`defaultElem` | null, [ ] | `null` | The value to return for a `key` having no record(s).
+`onError` | Function | `(i, msg) => {}` | Handler for detected errors, e.g. `onError: (i, msg) => { throw new Error(msg, 'on element', i); }`
 
 - **See also:** [Batch-Function](./guide.html#Batch-Function)
 
-<!--- load ------------------------------------------------------------------------------------- -->
+<!--- load ---------------------------------------------------------------------------------------->
 <h2 id="load">batchLoader.load( key )</h2>
 
 - **Arguments:**
@@ -235,7 +193,7 @@ onError | Function | (i, msg) => {} | Handler for detected errors.
   const user = await batchLoader.load(key);
   ```
 
-<!--- loadMany --------------------------------------------------------------------------------- -->
+<!--- loadMany ------------------------------------------------------------------------------------>
 <h2 id="loadmany">batchLoader.loadMany( keys )</h2>
 
 - **Arguments:**
@@ -260,7 +218,7 @@ onError | Function | (i, msg) => {} | Handler for detected errors.
   const users = await usersLoader.loadMany([ key1, key2 ]);
   ```
 
-<!--- clear ------------------------------------------------------------------------------------ -->
+<!--- clear --------------------------------------------------------------------------------------->
 <h2 id="clear">batchLoader.clear( key )</h2>
 
 - **Arguments:**
@@ -270,7 +228,7 @@ onError | Function | (i, msg) => {} | Handler for detected errors.
 
 - **Usage:** Clears the value at key from the cache, if it exists. Returns itself for method chaining.
 
-<!--- clearAll --------------------------------------------------------------------------------- -->
+<!--- clearAll ------------------------------------------------------------------------------------>
 <h2 id="clearall">batchLoader.clearAll()</h2>
 
 - **Returns:** `{Object} batchLoader instance`
@@ -279,7 +237,7 @@ onError | Function | (i, msg) => {} | Handler for detected errors.
 
   Clears the entire cache. To be used when some event results in unknown invalidations across this particular batch-loader. Returns itself for method chaining.
 
-<!--- prime ------------------------------------------------------------------------------------ -->
+<!--- prime --------------------------------------------------------------------------------------->
 <h2 id="prime">batchLoader.prime( key, value )</h2>
 
 - **Arguments:**
@@ -290,4 +248,4 @@ onError | Function | (i, msg) => {} | Handler for detected errors.
 
 - **Usage:**
 
-  Primes the cache with the provided key and value. If the key already exists, no change is made. To forcefully prime the cache, clear the key first with `batchloader.clear(key).prime(key, value`). Returns itself for method chaining.
+  Primes the cache with the provided key and value. If the key already exists, no change is made. To forcefully prime the cache, clear the key first with `batchloader.clear(key).prime(key, value)`. Returns itself for method chaining.
