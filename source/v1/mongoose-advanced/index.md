@@ -10,21 +10,45 @@ repo: mongoose-advanced
 <h2 id="Usage">Usage</h2>
 
 ``` js
-npm install --save @feathers-plus/batch-loader
+npm install --save @feathers-plus/mongoose-advanced
 
 // JS
-const BatchLoader = require('@feathers-plus/batch-loader');
-const { getResultsByKey, getUniqueKeys } = BatchLoader;
+const mongoose = require('mongoose');
+const MongooseModel = require('./models/mymodel')
+const mongooseService = require('@feathers-plus/mongoose-advanced');
 
-const usersLoader = new BatchLoader(async (keys, context) =>
-    const usersRecords = await users.find({ query: { id: { $in: getUniqueKeys(keys) } } });
-    return getResultsByKey(keys, usersRecords, user => user.id, '')
-  ),
-  { context: {} }
-);
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost:27017/feathers');
 
-const user = await usersLoader.load(key);
+// Schema == { name: { type: String, required: true } }
+app.use('/todos', mongooseService({
+  Model: MongooseModel,
+  bulkErrorsKey: 'errors'
+}));
+
+app.service('todos').hooks({
+  after: {
+    create: [
+      context => {
+        // This should output any errors that occur
+        // during bulk creation
+        console.log(context.params.errors)
+      }
+    ]
+  }
+})
+
+const data = [
+  { name: 'dave' },
+  { foo: 'bar' },
+  { name: 'bob' },
+  { jane: 'doe' }
+]
+
+app.service('todos').create(data)
+  .then(response => {
+    // We should only have two data objects
+    // { name: 'dave' } & { name: 'bob' }
+    console.log(response.data)
+  })
 ```
-
-<!--- class BatchLoader ------------------------------------------------------------------------ -->
-<h2 id="class-batchloader">class BatchLoader( batchLoadFunc [, options] )</h2>
