@@ -249,3 +249,8 @@ Property | Type | Default | Description
 - **Usage:**
 
   Primes the cache with the provided key and value. If the key already exists, no change is made. To forcefully prime the cache, clear the key first with `batchloader.clear(key).prime(key, value)`. Returns itself for method chaining.
+
+<!--- What's New --------------------------------------------------------------------------->
+<h2 id="whats-new">What's New</h2>
+
+  - <a href="https://github.com/feathers-plus/batch-loader/blob/master/CHANGELOG.md">Changelog.</a>

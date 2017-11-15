@@ -3,13 +3,10 @@ title: What's New
 type: guide
 order: 4
 dropdown: extensions
-repo: batch-loader
+repo: authentication-management
 ---
 
 <!--- Usage --------------------------------------------------------------------------------------->
 ## Dec. 2017
 
-<!--- Usage --------------------------------------------------------------------------------------->
-## Nov. 2017
-
-- Released.
+- Upgraded to FeathersJS v3 (Buzzard).
