@@ -6,7 +6,7 @@ const hooksRaw = {
   // fileName: 'fast-join',
   // src: 'https://github.com/feathers-plus/feathers-hooks-common/blob/master/lib/services/fast-join.js',
 
-  combine: { tags: ['code', 'multiNa', 'cond'], desc: 'Sequentially execute multiple sync or async hooks'},
+  combine: { tags: ['code', 'multiNa', 'cond'], desc: 'Sequentially execute multiple sync or async hooks.'},
   debug: { tags: 'code', desc: 'Display the current hook <code>context</code> for debugging.' },
   'de-populate': { tags: 'relation', desc: 'Remove records and properties created by the <code>populate</code> hook.' },
   disallow: { tags: 'methods', desc: 'Disallows access to a service method completely or for specific providers.'},
@@ -15,7 +15,7 @@ const hooksRaw = {
   'discard-query': { tags: 'query', desc: 'Delete field values.' },
   'common/every': { name: 'every', tags: 'cond', desc: 'Predicate returns Boolean <code>and</code> of a series of functions.' },
   'common/iff-1': { name: 'iff.else', fileName: 'common/iff', tags: 'cond', desc: 'Execute one series of hooks or another based on a predicate.' },
-  'fast-join': { tags: ['relation'], desc: 'Join related records. It\'s very fast.' },
+  'fast-join': { guide: 'fastJoin', tags: ['relation'], desc: 'Join related records. It\'s very fast.' },
   'common/iff': { name: 'iff', tags: 'cond', desc: 'Execute a series of hooks based on a sync or async predicate.' },
   'common/iff-else': { name: 'iffElse', tags: 'cond', desc: 'Execute one array of hooks or another based on a sync or async predicate.' },
   'common/is-not': { name: 'isNot', tags: 'cond', desc: 'Negate a sync or async predicate.' },
@@ -84,7 +84,7 @@ Object.keys(hooksRaw).sort().forEach(fileName => {
   const name = info.name || toCamelCase(fileName);
   const tags = Array.isArray(info.tags) ? info.tags : [info.tags];
   const showTags = tags.filter(name => ignoreTags.indexOf(name) === -1).map(name => showTagNames[name] || name);
-  const tagsHtml = showTags.map(name => `<a href="#tag-${name}">${name}</a>`).join(', ');
+  const tagsHtml = showTags.map(name => `<a href="#tag-${encodeURIComponent(name)}">${name}</a>`).join(', ');
 
   const multi = Object.keys(multiDisplay).reduce((result, key) => {
     return tags.indexOf(key) !== -1 ? multiDisplay[key] : result;
@@ -92,7 +92,7 @@ Object.keys(hooksRaw).sort().forEach(fileName => {
 
   hooks[name] = {
     fileName,
-    label: info.label || name.toLowerCase(),
+    label: encodeURIComponent(info.label || name.toLowerCase()),
     src: `https://github.com/feathers-plus/feathers-hooks-common/blob/master/lib/${fileName.indexOf('/') === -1 ? 'services/' : ''}${fileName}.js`,
     before: setAttr(tags, 'notBefore', 'no', 'yes'),
     after: setAttr(tags, 'notAfter', 'no', 'yes'),
@@ -100,10 +100,9 @@ Object.keys(hooksRaw).sort().forEach(fileName => {
     methods: methodNames.filter(name => tags.indexOf(name) !== -1).join(', ') || 'all',
     tags: tagsHtml,
     desc: info.desc,
+    guide: info.guide ? `<a href="guide.html#${info.guide}">${info.guide}</a>`: '',
     func: tags.indexOf('func') !== -1,
   };
-
-  if (fileName.substr(0, 7) === 'common/') console.log('\n', name, hooks[name].src);
 
   showTags.forEach(tag => {
     hooksByTag[tag] = hooksByTag[tag] || [];
@@ -115,7 +114,7 @@ hexo.extend.tag.register('hooksByTags', () => {
   let html = '';
 
   Object.keys(hooksByTag).sort().forEach(tag => {
-    html += `<h3 id="tag-${tag}">${tag}</h3><ul>`;
+    html += `<h3 id="tag-${encodeURIComponent(tag)}">${tag}</h3><ul>`;
 
     hooksByTag[tag].sort().forEach(name => {
       const hook = hooks[name];
@@ -130,19 +129,22 @@ hexo.extend.tag.register('hooksByTags', () => {
 });
 
 hexo.extend.tag.register('hooksApi', name => {
-  const hook = hooks[name];
+  const hook = hooks[name[0]];
   if (!hook) return `?????????? hook ${name} not defined.`;
 
   if (hook.func) {
-    return `<table>
-  <thead>
-  <tr>
-    <th style="text-align:center">details</th>
-    <th style="text-align:center">tags</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
+    return `${hook.desc}${hook.func ? ' (Utility function.)' : ''}<br/>
+    <table>
+    <thead>
+    <tr>
+      <th style="text-align:center">guide</th>
+      <th style="text-align:center">details</th>
+      <th style="text-align:center">tags</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td style="text-align:center">${hook.guide}</td>
     <td style="text-align:center"><a href="${hook.src}" target="_blank" rel="external">source</a></td>
     <td style="text-align:center">${hook.tags}</td>
   </tr>
@@ -150,13 +152,15 @@ hexo.extend.tag.register('hooksApi', name => {
   </table>`;
   }
 
-  return `<table>
+  return `${hook.desc}<br/>
+  <table>
   <thead>
   <tr>
   <th style="text-align:center">before</th>
     <th style="text-align:center">after</th>
     <th style="text-align:center">multi recs</th>
     <th style="text-align:center">methods</th>
+    <th style="text-align:center">guide</th>
     <th style="text-align:center">details</th>
     <th style="text-align:center">tags</th>
   </tr>
@@ -167,6 +171,7 @@ hexo.extend.tag.register('hooksApi', name => {
     <td style="text-align:center">${hook.after}</td>
     <td style="text-align:center">${hook.multi}</td>
     <td style="text-align:center">${hook.methods}</td>
+    <td style="text-align:center">${hook.guide}</td>
     <td style="text-align:center"><a href="${hook.src}" target="_blank" rel="external">source</a></td>
     <td style="text-align:center">${hook.tags}</td>
   </tr>
@@ -174,8 +179,18 @@ hexo.extend.tag.register('hooksApi', name => {
   </table>`;
 });
 
-hexo.extend.tag.register('hooksApiSee', name => {
-  return hooks[name] ? hooks[name].tags : '';
+hexo.extend.tag.register('hooksApiFootnote', name => {
+  const hook = hooks[name[0]];
+  if (!hook) return `?????????? hook ${name} not defined.`;
+
+  return `
+  <ul>
+    <li><strong>See source</strong>: <a href="${hooks[name[0]].src}" target="_blank" rel="external">${name}</a></li>
+  </ul>
+  <ul>
+    <li><strong>See also</strong>: ${hook.guide ? `Guide ${hook.guide} and tags ` : ''}${hooks[name].tags}</li>
+  </ul>`;
+  //   return hooks[name] ? hooks[name].tags : '';
 });
 
 function setAttr(tags, tag, yes = 'yes', no = 'no') {

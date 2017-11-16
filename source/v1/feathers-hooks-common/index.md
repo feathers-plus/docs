@@ -42,7 +42,7 @@ module.exports = {
 > May be used on the client.
 
 <!--=============================================================================================-->
-## Search by Tags
+## Find Hooks using Tags
 
 {% hooksByTags %}
 
@@ -88,7 +88,7 @@ Argument | Type | Default | Description
   });
   ```
   
-- **See also**: {% hooksApiSee combine %}
+{% hooksApiFootnote combine %}
 
 <!--=============================================================================================-->
 <h3 id="debug">debug( label )</h3>
@@ -130,7 +130,7 @@ Argument | Type | Default | Description
   
 > `debug` is great for debugging issues with hooks. Log the hook context before and after a hook to see what the hook changed.
 
-- **See also**: {% hooksApiSee debug %}
+{% hooksApiFootnote debug %}
 
 <!--=============================================================================================-->
 <h3 id="depopulate">dePopulate( )</h3>
@@ -149,7 +149,7 @@ Argument | Type | Default | Description
   } };
   ```
   
-- **See also**: {% hooksApiSee dePopulate %}
+{% hooksApiFootnote dePopulate %}
 
 <!--=============================================================================================-->
 <h3 id="disallow">disallow( ...providers )</h3>
@@ -188,7 +188,7 @@ Argument | Type | Default / allowed value | Description
   } };
   ```
   
-- **See also**: {% hooksApiSee disallow %}
+{% hooksApiFootnote disallow %}
 
 <!--=============================================================================================-->
 <h3 id="disableMultiItemChange">disableMultiItemChange( )</h3>
@@ -208,7 +208,7 @@ Argument | Type | Default / allowed value | Description
   } };
   ```
 
-- **See also**: {% hooksApiSee disableMultiItemChange %}
+{% hooksApiFootnote disableMultiItemChange %}
 
 <!--=============================================================================================-->
 <h3 id="discard">discard( ...fieldNames )</h3>
@@ -235,7 +235,7 @@ Argument | Type | Default | Description
   } };
   ```
 
-- **See also**: {% hooksApiSee discard %}
+{% hooksApiFootnote discard %}
 
 <!--=============================================================================================-->
 <h3 id="else">else: iff(...).else(...hookFuncs)</h3>
@@ -286,7 +286,7 @@ Argument | Type | Default | Description
 
 The predicate and hook functions in the `if`, `else` and `iffElse` hooks will not be called with `this` set to the service, as is normal for hook functions. Use `hook.service` instead.
 
-- **See also**: {% hooksApiSee if.else %}
+{% hooksApiFootnote iff.else %}
 
 <!--=============================================================================================-->
 <h3 id="every">every(... hookFuncs)</h3>
@@ -313,7 +313,7 @@ Argument | Type | Default | Description
   } };
   ```
   
-- **See also**: {% hooksApiSee every %}
+{% hooksApiFootnote every %}
 
 <!--=============================================================================================-->
 <h3 id="fastjoin">fastJoin( schema [, query] )</h3>
@@ -494,7 +494,7 @@ Argument | Type | Description
   } };
   ```
 
-- **See also**: {% hooksApiSee fastJoin %}
+{% hooksApiFootnote fastJoin %}
 
 <!--=============================================================================================-->
 <h3 id="iff">iff(predicate, ...hookFuncs)</h3>
@@ -534,7 +534,7 @@ Argument | Type | Default | Description
 The predicate and hook functions in the `if`, `else` and `iffElse` hooks will not be called with `this` set to the service, as is normal for hook functions. Use `hook.service` instead.
 
 
-- **See also:** [iffElse](#iffelse), [when](#when), [unless](#unless), [isNot](isnot), [isProvider](isprovider), [every](#every), [some](#some).
+{% hooksApiFootnote iff %}
 
 <!--=============================================================================================-->
 <h3 id="iffelse">iffElse(predicate, trueHooks, falseHooks)</h3>
@@ -572,7 +572,7 @@ Argument | Type | Default | Description
 
 The predicate and hook functions in the `if`, `else` and `iffElse` hooks will not be called with `this` set to the service, as is normal for hook functions. Use `hook.service` instead.
 
-- **See also**: {% hooksApiSee iff %}
+{% hooksApiFootnote iff %}
 
 <!--=============================================================================================-->
 <h3 id="isnot">isNot(predicate)</h3>
@@ -600,14 +600,14 @@ Argument | Type | Default | Description
   } };
   ```
   
-- **See also**: {% hooksApiSee isNot %}
+{% hooksApiFootnote isNot %}
 
 <!--=============================================================================================-->
 <h3 id="isprovider">isProvider(...providers)</h3>
 
 Check which transport called the service method. All providers (REST, Socket.io and Primus) set the params.provider property which is what isProvider checks for. Used as a predicate function with conditional hooks.
   
-- **See also**: {% hooksApiSee isProvider %}
+{% hooksApi isProvider %}
 
 
 - **Arguments:**
@@ -634,7 +634,7 @@ Argument | Type | Default / allowed value | Description
   
 - **Details**
 
-- **See also**: {% hooksApiSee isProvider %}
+{% hooksApiFootnote isProvider %}
 
 <!--=============================================================================================-->
 <h3 id="keep">keep(...fieldNames)</h3>
@@ -668,7 +668,7 @@ Argument | Type | Default | Description
     } };;
   ```
 
-- **See also**: {% hooksApiSee keep %}
+{% hooksApiFootnote keep %}
 
 <!--=============================================================================================-->
 <h3 id="lowercase">lowerCase(... fieldNames)</h3>
@@ -697,7 +697,7 @@ Argument | Type | Default | Description
   
 - **Details**
 
-- **See also**: {% hooksApiSee lowerCase %}
+{% hooksApiFootnote lowerCase %}
 
 <!--=============================================================================================-->
 <h3 id="paramsFromClient">paramsFromClient(...whitelist)</h3>
@@ -742,7 +742,7 @@ By default, only the hook.params.query object is transferred to the server from 
 
 You can use the same technique for service calls made on the server.
 
-- **See also**: {% hooksApiSee paramsFromClient %}
+{% hooksApiFootnote paramsFromClient %}
 
 <!--=============================================================================================-->
 <h3 id="pluckquery">pluckQuery(...fieldNames)</h3>
@@ -774,7 +774,7 @@ Argument | Type | Default | Description
 
 This hook will only fire when params.provider has a value, i.e. when it is an external request over REST or Sockets.
 
-- **See also**: {% hooksApiSee pluckQuery %}
+{% hooksApiFootnote pluckQuery %}
 
 <!--=============================================================================================-->
 <h3 id="populate">populate(options)</h3>
@@ -805,7 +805,7 @@ Argument | Type | Default | Description
   
 - **Details**
 
-- **See also**: {% hooksApiSee populate %}
+{% hooksApiFootnote populate %}
 
 <!--=============================================================================================-->
 <h3 id="preventchanges">preventChanges(...fieldNames)</h3>
@@ -836,7 +836,7 @@ Argument | Type | Default | Description
 
 Consider using validateSchema if you would rather specify which fields are allowed to change.
 
-- **See also**: {% hooksApiSee preventChanges %}
+{% hooksApiFootnote preventChanges %}
 
 <!--=============================================================================================-->
 <h3 id="removeQuery">removeQuery(...fieldNames)</h3>
@@ -867,7 +867,7 @@ Argument | Type | Default | Description
 
 This hook will only fire when params.provider has a value, i.e. when it is an external request over REST or Sockets.
 
-- **See also**: {% hooksApiSee removeQuery %}
+{% hooksApiFootnote removeQuery %}
 
 <!--=============================================================================================-->
 <h3 id="serialize">serialize(options)</h3>
@@ -898,7 +898,7 @@ Argument | Type | Default / allowed value | Description
   
 - **Details**
 
-- **See also**: {% hooksApiSee serialize %}
+{% hooksApiFootnote serialize %}
 
 <!--=============================================================================================-->
 <h3 id="setNow">setNow(...fieldNames)</h3>
@@ -926,7 +926,7 @@ Argument | Type | Default | Description
   } };
   ```
 
-- **See also**: {% hooksApiSee setNow %}
+{% hooksApiFootnote setNow %}
 
 <!--=============================================================================================-->
 <h3 id="setSlug">setSlug(slug, fieldName</h3>
@@ -955,7 +955,7 @@ Argument | Type | Default / allowed value | Description
   
 - **Details**
 
-- **See also**: {% hooksApiSee setSlug %}
+{% hooksApiFootnote setSlug %}
 
 <!--=============================================================================================-->
 <h3 id="sifter">sifter(options)</h3>
@@ -989,7 +989,7 @@ Argument | Type | Default | Description
 
 `sifter` filters the result of a find call. Therefore more records will be physically read than needed. You can use the Feathers database adapters query to reduce this number.`
 
-- **See also**: {% hooksApiSee sifter %}
+{% hooksApiFootnote sifter %}
 
 <!--=============================================================================================-->
 <h3 id="softDelete">softDelete(fieldName)</h3>
@@ -1026,6 +1026,8 @@ Argument | Type | Default | Description
   
 - **Details**
 
+{% hooksApiFootnote softDelete %}
+
 <!--=============================================================================================-->
 <h3 id="some">some(...hookFuncs)</h3>
 
@@ -1051,7 +1053,7 @@ Argument | Type | Default | Description
   } };
   ```
   
-- **See also**: {% hooksApiSee softDelete %}
+{% hooksApiFootnote softDelete %}
 
 <!--=============================================================================================-->
 <h3 id="stashbefore">stashBefore(fieldName)</h3>
@@ -1081,6 +1083,8 @@ Argument | Type | Default | Description
 - **Details**
 
 This hook makes a `get` service call.
+
+{% hooksApiFootnote stashBefore %}
 
 <!--=============================================================================================-->
 <h3 id="traverse">traverse(transformer [, getObject])</h3>
@@ -1120,7 +1124,7 @@ Argument | Type | Default | Description
 
 [substack/js-traverse](https://github.com/substack/js-traverse) documents the extensive methods and context available to the transformer function.`
 
-- **See also**: {% hooksApiSee stashBefore %}
+{% hooksApiFootnote stashBefore %}
 
 <!--=============================================================================================-->
 <h3 id="unless">unless(predicate, ...hookFuncs)</h3>
@@ -1159,7 +1163,7 @@ Argument | Type | Default | Description
 
 The predicate and hook functions in the `if`, `else` and `iffElse` hooks will not be called with `this` set to the service, as is normal for hook functions. Use `hook.service` instead.
 
-- **See also**: {% hooksApiSee unless %}
+{% hooksApiFootnote unless %}
 
 <!--=============================================================================================-->
 <h3 id="validate">validate(validator)</h3>
@@ -1197,6 +1201,8 @@ Promise functions should throw on an error or reject with `new errors.BadRequest
 If you have a different signature for the validator then pass a wrapper as the validator e.g. (values) => myValidator(..., values, ...)
 
 Wrap your validator in callbackToPromise if it uses a callback.
+
+{% hooksApiFootnote validate %}
 
 <!--=============================================================================================-->
 
@@ -1249,14 +1255,14 @@ You may customize the error message format with a custom formatting function. Yo
 
 If you need to customize `Ajv` with new keywords, formats or schemas, then instead of passing the `Ajv` constructor, you may pass in an instance of `Ajv` as the second parameter. In this case you need to pass `Ajv` options to the `Ajv` instance when `new`ing, rather than passing them in the third parameter of `validateSchema`. See the second example below.
 
-- **See also**: {% hooksApiSee validate %}
+{% hooksApiFootnote validateSchema %}
 
 <!--=============================================================================================-->
 <h3 id="when">when(predicate, ...hookFuncs)</h3>
 
 An alias for [iff](#iff).
 
-- **See also**: {% hooksApiSee when %}
+{% hooksApiFootnote when %}
 
 <!--=============================================================================================-->
 ## Utilities
@@ -1310,7 +1316,7 @@ Variable | Type | Default | Description
 
   `context.params._populate: 'skip'` is automatically added to skip any `fastJoin` or `populate` hooks registered on the called service. Set it to `false`, like in the example above, to make those hooks run.
 
-- **See also**: {% hooksApiSee makeCallingParams %}
+{% hooksApiFootnote makeCallingParams %}
 
 <!--=============================================================================================-->
 
@@ -1345,9 +1351,7 @@ Argument | Type | Default / allowed value | Description
   
 - **Details**
 
-- **See also:** 
-- **See also:** [iff](#iff), [iffElse](#iffelse), [when](#when), [unless](#unless), [isNot](isnot), [isProvider](isprovider), [every](#every), [some](#some).
-
+{% hooksApiFootnote ??? %
 <!--=============================================================================================-->
 
 <!--=============================================================================================-->
