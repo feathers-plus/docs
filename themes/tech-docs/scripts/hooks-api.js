@@ -10,7 +10,7 @@ const hooksRaw = {
   debug: { tags: 'code', desc: 'Display the current hook <code>context</code> for debugging.' },
   'de-populate': { tags: 'relation', desc: 'Remove records and properties created by the <code>populate</code> hook.' },
   disallow: { tags: 'methods', desc: 'Disallows access to a service method completely or for specific providers.'},
-  'disable-multi-item-change': { tags: 'methods', desc: 'Disables update, patch and remove methods from using <code>null</code> as an id.' },
+  'disable-multi-item-change': { tags: ['methods', 'notAfter', 'update', 'patch', 'remove'], desc: 'Disables update, patch and remove methods from using <code>null</code> as an id.' },
   discard: { tags: 'data', desc: 'Delete field values.' },
   'discard-query': { tags: 'query', desc: 'Delete field values.' },
   'common/every': { name: 'every', tags: 'cond', desc: 'Predicate returns Boolean <code>and</code> of a series of functions.' },
@@ -51,6 +51,7 @@ const hooksRaw = {
   'params-for-server': { tags: ['code', 'client', 'trans', 'func'], desc: 'Pass <code>context.params</code> from client to server. Client-side.' },
   'replace-items': { tags: ['code', 'data', 'data', 'func'], desc: 'Replace the records in <code>context.data</code> or <code>context.result</code>.' },
   'common/set-by-dot': { name: 'setByDot', tags: ['code', 'dot', 'func'], desc: 'Set a value using dot notation, e.g. <code>address.city</code>.' },
+  'thenify-hook': { tags: ['code', 'services', 'func'], desc: 'Let\'s you call a hook right after the service call.' },
 };
 
 const showTagNames = {
@@ -111,6 +112,7 @@ Object.keys(hooksRaw).sort().forEach(fileName => {
 });
 
 hexo.extend.tag.register('hooksByTags', () => {
+  // console.log('hooksByTags');
   let html = '';
 
   Object.keys(hooksByTag).sort().forEach(tag => {
@@ -129,6 +131,7 @@ hexo.extend.tag.register('hooksByTags', () => {
 });
 
 hexo.extend.tag.register('hooksApi', name => {
+  // console.log('hooksApi', name);
   const hook = hooks[name[0]];
   if (!hook) return `?????????? hook ${name} not defined.`;
 
@@ -180,6 +183,7 @@ hexo.extend.tag.register('hooksApi', name => {
 });
 
 hexo.extend.tag.register('hooksApiFootnote', name => {
+  // console.log('hooksApiFootnote', name);
   const hook = hooks[name[0]];
   if (!hook) return `?????????? hook ${name} not defined.`;
 

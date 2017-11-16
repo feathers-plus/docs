@@ -42,6 +42,36 @@ module.exports = {
 > May be used on the client.
 
 <!--=============================================================================================-->
+## Migrating from Auk to Buzzard
+
+These changes may affect your projects when you switch from this repo's last Feathers *Auk* version (v3.10.0) to its first Feathers *Buzzard* version (v4.0.0).
+
+  - Docs have been rewritten and now reside on the [Feathers-Plus web site.](https://feathers-plus.github.io/v1/feathers-hooks-common)
+  - Added new hooks and utility functions.
+    - `cache` - Persistent, least-recently-used record cache for services.
+    - `fastJoin` - A much faster, more flexible alternative to `populate`.
+    - `keep`, `keepQuery` and `discardQuery`.
+    - `op` - Flexibly mutate data and results.
+    - `opQuery` - Flexibly mutate the query object.
+    - `makeCallingParams` utility - Help construct `context.params` when calling services within hooks.
+    - `thenifyHook` utility - Let's you call a hook right after the service call.
+    
+  - These hooks are deprecated and will be removed in the next FeathersJS version *Crow*.
+    - Deprecated `pluck` in favor of `keep`, e.g. `iff(isProvider('external'),` ` keep(...fieldNames))`. This deprecates the last hook with unexpected internal "magic". **Be careful!**
+    - Deprecated `pluckQuery` in favor of `keepQuery` for naming consistency.
+    - Deprecated `removeQuery` in favor of `discardQuery` for naming consistency.
+    - Deprecated `client` in favor of `paramsFromClient` for naming consistency.
+    - Deprecated `createdAt` and `updatedAt` in favor of `setNow`.
+    - Deprecated `callbackToPromise` in favor of Node's `require('util').promisify`.
+    - Deprecated `promiseToCallback` as there's probably no need for it anymore.
+    
+  - Removed hooks previously deprecated in *Auk*.:
+    - Removed support for the deprecated legacy syntax in `populate`.
+    - Removed `remove`.
+          
+
+
+<!--=============================================================================================-->
 ## Find Hooks using Tags
 
 {% hooksByTags %}
@@ -50,50 +80,8 @@ module.exports = {
 ## Hooks
 
 <!--=============================================================================================-->
-<h3 id="combine">combine( ...hookFuncs )</h3>
-
-  Sequentially execute multiple hooks within a custom hook function. The hooks may be sync or async.
-  
-{% hooksApi combine %}
-
-- **Arguments:**
-  - `{Array< Function >} hookFuncs`
-
-Argument | Type | Default | Description
----|:---:|---|---
-`hookFuncs` | `Array<Function >` | | Hooks, used the same way as when you register them.
-
-- **Example**
-
-  ``` js
-  const { combine, createdAt, updatedAt } = require('feathers-hooks-common');
-  
-  async function myCustomHook(context) {
-    const newContext = await combine(createdAt(), updatedAt()).call(this, context);
-    return newContext;
-  }
-  ```
-  
-- **Details**
-
-  `combine` is primarily intended to be used within your custom hooks, not when registering hooks. Its more convenient to use the following when registering hooks:
-  ``` js
-  const workflow = [createdAt(), updatedAt(), ...];
-  
-  app.service('users').hooks({
-    before: {
-      update: [...workflow],
-      patch: [...workflow],
-    },
-  });
-  ```
-  
-{% hooksApiFootnote combine %}
-
-<!--=============================================================================================-->
 <h3 id="debug">debug( label )</h3>
 
-  Display current info about the hook context to the console.
   
 {% hooksApi debug %}
 
@@ -103,7 +91,7 @@ Argument | Type | Default | Description
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`label` | `String` | `''` | Label to identify the logged information.
+`label` | `String` | none | Label to identify the logged information.
 
 - **Example**
 
@@ -111,32 +99,32 @@ Argument | Type | Default | Description
   const { debug } = require('feathers-hooks-common');
   
   module.exports = { before: {
-      all: [ debug('step 1'), updatedAt(), debug(' step 2') ],
+      all: [ debug('step 1'), setNow('updatedAt'), debug(' step 2') ],
   } };
   
-  debug('step 1')
   // Result
   * step 1
   type: before, method: create
   data: { name: 'Joe Doe' }
   query: { sex: 'm' }
   result: { assigned: true }
-  * step 1
+  * step 2
   type: before, method: create
   data: { name: 'Joe Doe', createdAt: 1510518511547 }
   query: { sex: 'm' }
   result: { assigned: true }
+  error: ...
   ```
-  
-> `debug` is great for debugging issues with hooks. Log the hook context before and after a hook to see what the hook changed.
+
+- **Details**
+
+`debug` is great for debugging issues with hooks. Log the hook context before and after a hook to see what the hook started with, and what it changed.
 
 {% hooksApiFootnote debug %}
 
 <!--=============================================================================================-->
 <h3 id="depopulate">dePopulate( )</h3>
 
-  Removes joined records, computed properties, and profile information created by [`populate`](#populate). Populated and serialized items may, after dePopulate, be used in `service.patch(id, items)` calls.
-  
 {% hooksApi dePopulate %}
 
 - **Example**
@@ -149,27 +137,57 @@ Argument | Type | Default | Description
   } };
   ```
   
+- **Details**
+
+Removes joined records, computed properties, and profile information created by [`populate`](#populate). Populated and serialized items may, after dePopulate, be used in service calls.
+
+  
 {% hooksApiFootnote dePopulate %}
+
+<!--=============================================================================================-->
+<h3 id="disableMultiItemChange">disableMultiItemChange()</h3>
+
+{% hooksApi disableMultiItemChange %}
+
+- **Example**
+
+  ``` js
+  const { disableMultiItemChange } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+      patch: disableMultiItemChange(),
+      remove: disableMultiItemChange() 
+  } };
+  ```
+
+- **Details**
+
+Disables update, patch and remove methods from using `null` as an `id`, e.g. `remove(null)`. Using `null` would affect all the records in the database, so accidentally using it may have undesirable results.
+
+{% hooksApiFootnote disableMultiItemChange %}
 
 <!--=============================================================================================-->
 <h3 id="disallow">disallow( ...providers )</h3>
 
-  Disallows access to a service method completely or for specific providers. All providers (REST, Socket.io and Primus) set the `context.params.provider` property, and `disallow` checks this.
-  
-{% hooksApi disallow %}s)
-
+{% hooksApi disallow %}
 
 - **Arguments:**
+
   - `{Array< String >} providers`
 
-Argument | Type | Default / allowed value | Description
+Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` | `Array<` `String >` | all transports | The transports that you want to disallow this service method for.
- | | `socketio` | will disallow the method for the Socket.IO provider
- | | `primus` | will disallow the method for the Primus provider
- | | `rest` | will disallow the method for the REST provider
- | | `external` | will disallow access from all providers other than the server.
- | | `server` | will disallow access for the server
+`providers` | `Array< String >` | disallow all transports | The transports that you want to disallow this service method for.
+
+`providers`:
+  
+Type | Value | Description
+---|---|---
+ | `socketio` | allow calls by Socket.IO transport
+ | `primus` | allow calls by Primus transport
+ | `rest` | allow calls by REST transport
+ | `external` | allow calls other than from server
+ | `server` | allow calls from server
  
 - **Example**
 
@@ -188,27 +206,11 @@ Argument | Type | Default / allowed value | Description
   } };
   ```
   
+- **Details**
+
+Disallows access to a service method completely or for specific providers. All providers (REST, Socket.io and Primus) set the `context.params.provider` property, and `disallow` checks this.
+  
 {% hooksApiFootnote disallow %}
-
-<!--=============================================================================================-->
-<h3 id="disableMultiItemChange">disableMultiItemChange( )</h3>
-
-  Disables update, patch and remove methods from using null as an id, e.g. `remove(null)`. A `null` id affects all the items in the DB, so accidentally using it may have undesirable results.
-  
-{% hooksApi disableMultiItemChange %}
-
-- **Example**
-
-  ``` js
-  const { disableMultiItemChange } = require('feathers-hooks-common');
-  
-  module.exports = { before: {
-      patch: disableMultiItemChange(),
-      remove: disableMultiItemChange() 
-  } };
-  ```
-
-{% hooksApiFootnote disableMultiItemChange %}
 
 <!--=============================================================================================-->
 <h3 id="discard">discard( ...fieldNames )</h3>
@@ -603,7 +605,7 @@ Argument | Type | Default | Description
 {% hooksApiFootnote isNot %}
 
 <!--=============================================================================================-->
-<h3 id="isprovider">isProvider(...providers)</h3>
+<h3 id="isprovider">isProvider([ ...providers ])</h3>
 
 Check which transport called the service method. All providers (REST, Socket.io and Primus) set the params.provider property which is what isProvider checks for. Used as a predicate function with conditional hooks.
   
@@ -611,16 +613,21 @@ Check which transport called the service method. All providers (REST, Socket.io 
 
 
 - **Arguments:**
-  - `{Array< String >} providers`
+  - `{Array< String >} [ providers ]`
 
-Argument | Type | Default / allowed value | Description
+Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` | `Array<` `String >` | all transports | The transports that you want this hook to run for. 
- | | `socketio` | will disallow the method for the Socket.IO provider
- | | `primus` | will disallow the method for the Primus provider
- | | `rest` | will disallow the method for the REST provider
- | | `external` | will disallow access from all providers other than the server.
- | | `server` | will disallow access for the server
+`providers` | `Array< String >` | allow all transports | The transports that you want to allow. 
+
+`providers`:
+  
+Type | Value | Description
+---|---|---
+ | `socketio` | allow calls by Socket.IO transport
+ | `primus` | allow calls by Primus transport
+ | `rest` | allow calls by REST transport
+ | `external` | allow calls other than from server
+ | `server` | allow calls from server
 
 - **Example**
 
@@ -882,7 +889,7 @@ Remove selected information from populated items. Add new computed information. 
 - **Arguments:**
   - `???`
 
-Argument | Type | Default / allowed value | Description
+Argument | Type | Default | Description
 ---|:---:|---|---
 `providers` |  |  | 
 
@@ -939,7 +946,7 @@ Argument | Type | Default | Description
 - **Arguments:**
   - `???`
 
-Argument | Type | Default / allowed value | Description
+Argument | Type | Default | Description
 ---|:---:|---|---
 `providers` |  |  | 
 
@@ -1172,10 +1179,11 @@ The predicate and hook functions in the `if`, `else` and `iffElse` hooks will no
 
 Call a validation function from a before hook. The function may be sync or return a Promise.
   
-{% hooksApi validate %})
+{% hooksApi validate %}
 
 
 - **Arguments:**
+
   - `{Function} validator`
 
 Argument | Type | Default | Description
@@ -1218,7 +1226,7 @@ Validate an object using [JSON-Schema](http://json-schema.org/) through [Ajv](ht
   
   > Work in progress.
 
-Argument | Type | Default / allowed value | Description
+Argument | Type | Default | Description
 ---|:---:|---|---
 `providers` |  |  | 
 
@@ -1266,6 +1274,258 @@ An alias for [iff](#iff).
 
 <!--=============================================================================================-->
 ## Utilities
+
+<!--=============================================================================================-->
+<h3 id="checkcontext">checkContext(context [, type ] [, methods ] [, label ])</h3>
+
+{% hooksApi checkContext %}
+
+
+- **Arguments:**
+  - `{Object} context`
+  - `{String} [ type ]`
+  - `{Array< String >} [ methods ]`
+  - `{String} [ label ]`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`context` | `Object` |  | The hook context.
+`type` | `String` | all types | The service type allowed.
+`methods` | `Array< String >` | all methods | The service methods allowed.
+`label` | `String` | `'anonymous'` | Name of hook to use with `throw`.
+
+`type` - before, after.
+`methods` - find, get, update, patch, remove.
+
+
+- **Example**
+
+  ``` js
+  const { checkContext } = require('feathers-hooks-common');
+  
+  function myHook(context) {
+    checkContext(context, 'after', ['create', 'remove']);
+    ...
+  }
+  
+  module.exports = { before: {
+      create: [ myHook ] // throws
+  } };
+  
+  // checkContext(hook, 'before', ['update', 'patch'], 'hookName');
+  // checkContext(hook, null, ['update', 'patch']);
+  // checkContext(hook, 'before', null, 'hookName');
+  // checkContext(hook, 'before');
+  ```
+  
+- **Details**
+
+Its important to ensure the hook is being used as intended. `checkContext` let's you restrict the hook to a hook type and a set of service methods.
+
+{% hooksApiFootnote checkContext %}
+
+<!--=============================================================================================-->
+<h3 id="combine">combine( ...hookFuncs )</h3>
+ 
+{% hooksApi combine %}
+
+- **Arguments:**
+  - `{Array< Function >} hookFuncs`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`hookFuncs` | `Array<Function >` | | Hooks, used the same way as when you register them.
+
+- **Example**
+
+  ``` js
+  const { combine, createdAt, updatedAt } = require('feathers-hooks-common');
+  
+  async function myCustomHook(context) {
+    const newContext = await combine(setNow('createdAt'), setNow('updatedAt')).call(this, context);
+    return newContext;
+  }
+  ```
+  
+- **Details**
+
+  `combine` has the signature of a hook, but is primarily intended to be used within your custom hooks, not when registering hooks.
+  
+ The following is a better technique to use when registering hooks.
+  
+  ``` js
+  const workflow = [createdAt(), updatedAt(), ...];
+  
+  module.exports = { before: {
+      update: [...workflow],
+      patch: [...workflow],
+  } };
+  ```
+  
+{% hooksApiFootnote combine %}
+
+<!--=============================================================================================-->
+
+<h3 id="deletebyDot">deleteByDot(obj, path)</h3>
+
+{% hooksApi deleteByDot %}
+
+
+- **Arguments:**
+  - `???`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`providers` |  |  | 
+
+- **Example**
+
+  ``` js
+  const { deleteByDot } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+      
+  } };
+  ```
+  
+- **Details**
+
+{% hooksApiFootnote deleteByDot %}
+
+<!--=============================================================================================-->
+<h3 id="existsbydot">existsByDot(obj, path)</h3>
+
+{% hooksApi existsByDot %}
+
+
+- **Arguments:**
+  - `???`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`providers` |  |  | 
+
+- **Example**
+
+  ``` js
+  const { existsByDot } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+      
+  } };
+  ```
+  
+- **Details**
+
+{% hooksApiFootnote existsByDot %}
+
+<!--=============================================================================================-->
+<h3 id="getbydot">getByDot(obj, path)</h3>
+
+{% hooksApi getByDot %}
+
+
+- **Arguments:**
+  - `???`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`providers` |  |  | 
+
+- **Example**
+
+  ``` js
+  const { getByDot } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+      
+  } };
+  ```
+  
+- **Details**
+
+{% hooksApiFootnote getByDot %}
+
+<!--=============================================================================================-->
+<h3 id="setbyDot">setByDot(obj, path, value, ifDelete)</h3>
+
+{% hooksApi setByDot %}
+
+
+- **Arguments:**
+  - `???`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`providers` |  |  | 
+
+- **Example**
+
+  ``` js
+  const { setByDot } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+      
+  } };
+  ```
+  
+- **Details**
+
+{% hooksApiFootnote setByDot %}
+
+<!--=============================================================================================-->
+<h3 id="getitems">getItems(context)</h3>
+
+{% hooksApi getItems %}
+
+
+- **Arguments:**
+  - `???`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`providers` |  |  | 
+
+- **Example**
+
+  ``` js
+  const { getItems } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+      
+  } };
+  ```
+  
+- **Details**
+
+{% hooksApiFootnote getItems %}
+
+<!--=============================================================================================-->
+<h3 id="replaceitems">replaceItems(context, items)</h3>
+
+{% hooksApi replaceItems %}
+
+
+- **Arguments:**
+  - `???`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`providers` |  |  | 
+
+- **Example**
+
+  ``` js
+  const { replaceItems } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+      
+  } };
+  ```
+  
+- **Details**
+
+{% hooksApiFootnote replaceItems %}
 
 <!--=============================================================================================-->
 <h3 id="makecalliningparams">makeCallingParams(context, query, include, inject)</h3>
@@ -1319,23 +1579,42 @@ Variable | Type | Default | Description
 {% hooksApiFootnote makeCallingParams %}
 
 <!--=============================================================================================-->
+<h3 id="paramsforserver">paramsForServer(params, ... whitelist)</h3>
 
-<!--=============================================================================================-->
-
-<!--=============================================================================================-->
-<h3 id="???">???</h3>
-
-  ???
-  
-before | after | multi recs | methods | details
-:---:|:---:|:---:|:---:|:---:
-yes | yes | | all | [source](https://github.com/feathersjs/feathers-hooks-common/blob/master/lib/services/???.js)
+{% hooksApi paramsForServer %}
 
 
 - **Arguments:**
   - `???`
 
-Argument | Type | Default / allowed value | Description
+Argument | Type | Default | Description
+---|:---:|---|---
+`providers` |  |  | 
+
+- **Example**
+
+  ``` js
+  const { paramsForServer } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+      
+  } };
+  ```
+  
+- **Details**
+
+{% hooksApiFootnote paramsForServer %}
+
+<!--=============================================================================================-->
+<h3 id="thenifyhook">service.get(...).then(thenifyHook(options)(hookFunc))</h3>
+
+{% hooksApi thenifyHook %}
+
+
+- **Arguments:**
+  - `???`
+
+Argument | Type | Default | Description
 ---|:---:|---|---
 `providers` |  |  | 
 
@@ -1351,7 +1630,39 @@ Argument | Type | Default / allowed value | Description
   
 - **Details**
 
-{% hooksApiFootnote ??? %
+{% hooksApiFootnote thenifyHook %}
+
+<!--=============================================================================================-->
+
+<!--=============================================================================================-->
+
+<!--=============================================================================================-->
+<h3 id="???">???</h3>
+
+{% hooksApi ??? %}
+
+
+- **Arguments:**
+  - `???`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`providers` |  |  | 
+
+- **Example**
+
+  ``` js
+  const { ??? } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+      
+  } };
+  ```
+  
+- **Details**
+
+{% hooksApiFootnote ??? %}
+
 <!--=============================================================================================-->
 
 <!--=============================================================================================-->
