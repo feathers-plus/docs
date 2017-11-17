@@ -9,48 +9,44 @@ const hooksRaw = {
   combine: { tags: ['code', 'multiNa', 'cond'], desc: 'Sequentially execute multiple sync or async hooks.'},
   debug: { tags: 'code', desc: 'Display the current hook <code>context</code> for debugging.' },
   'de-populate': { tags: 'relation', desc: 'Remove records and properties created by the <code>populate</code> hook.' },
-  disallow: { tags: 'methods', desc: 'Disallows access to a service method completely or for specific providers.'},
-  'disable-multi-item-change': { tags: ['methods', 'notAfter', 'update', 'patch', 'remove'], desc: 'Disables update, patch and remove methods from using <code>null</code> as an id.' },
-  discard: { tags: 'data', desc: 'Delete field values.' },
-  'discard-query': { tags: 'query', desc: 'Delete field values.' },
-  'common/every': { name: 'every', tags: 'cond', desc: 'Predicate returns Boolean <code>and</code> of a series of functions.' },
-  'common/iff-1': { name: 'iff.else', fileName: 'common/iff', tags: 'cond', desc: 'Execute one series of hooks or another based on a predicate.' },
+  disallow: { tags: 'methods', desc: 'Prevents access to a service method completely or for specific transports.'},
+  'disable-multi-item-change': { tags: ['methods', 'notAfter', 'update', 'patch', 'remove'], desc: 'Prevents <code>null</code> from being used as an id in patch and remove service methods.' },
+  discard: { tags: 'data', desc: 'Delete certain fields from the record(s).' },
+  'discard-query': { tags: ['query', 'notAfter'], desc: 'Delete certain fields from the query object.' },
+  'common/every': { name: 'every', tags: ['cond', 'pred'], desc: 'Return the <code>and</code> of a series of sync or async predicate functions.' },
   'fast-join': { guide: 'fastJoin', tags: ['relation'], desc: 'Join related records. It\'s very fast.' },
-  'common/iff': { name: 'iff', tags: 'cond', desc: 'Execute a series of hooks based on a sync or async predicate.' },
+  'common/iff': { name: 'iff', tags: 'cond', desc: 'Execute one or another series of hooks depending on a sync or async predicate.' },
   'common/iff-else': { name: 'iffElse', tags: 'cond', desc: 'Execute one array of hooks or another based on a sync or async predicate.' },
-  'common/is-not': { name: 'isNot', tags: 'cond', desc: 'Negate a sync or async predicate.' },
-  'is-provider': { tags: ['cond', 'services', 'trans'], desc: 'Check which transport called the service method.' },
-  keep: { tags: 'data', desc: 'Retain certain field values, deleting the rest.' },
-  'keep-query' : { tags: 'query', desc: 'Retain certain field values, deleting the rest.' },
-  'lower-case': { tags: 'data', desc: 'Convert field values to lower case.' },
-  'params-from-client': { tags: ['code', 'client', 'trans'], desc: 'Pass <code>context.params</code> from client to server. Server hook.' },
-  'pluck-query' : { tags: 'query', desc: 'Retain certain field values, deleting the rest. {Deprecated)' },
-  populate: { tags: 'relation', desc: 'Join related records. (<code>fastJoin</code> is preferred.) ' },
-  'prevent-changes': { tags: ['data', 'methods'], desc: 'Prevent <code>patch</code> from changing certain fields.' },
-  'remove-query': { tags: 'query', desc: 'Delete field values. (Deprecated)' },
+  'common/is-not': { name: 'isNot', tags: ['cond', 'pred'], desc: 'Negate a sync or async predicate function.' },
+  'is-provider': { tags: ['cond', 'pred', 'services', 'trans'], desc: 'Check which transport provided the service call.' },
+  keep: { tags: 'data', desc: 'Keep certain fields in the record(s), deleting the rest.' },
+  'keep-query' : { tags: ['query', 'notAfter'], desc: 'Keep certain fields in the query object, deleting the rest.' },
+  'lower-case': { tags: 'data', desc: 'Convert certain field values to lower case.' },
+  'params-from-client': { tags: ['code', 'client', 'trans', 'notAfter'], desc: 'Pass <code>context.params</code> from client to server. Server hook.' },
+  populate: { guide: 'populate', tags: 'relation', desc: 'Join related records.' },
+  'prevent-changes': { tags: ['data', 'methods', 'notAfter'], desc: 'Prevent <code>patch</code> service calls from changing certain fields.' },
   serialize: { tags: 'relation', desc: 'Prune values from related records. Calculate new values.' },
-  'set-now': { tags: 'data', desc: 'Create fields initialized to the current date-time.' },
+  'set-now': { tags: 'data', desc: 'Create/update certain fields to the current date-time.' },
   'set-slug': { tags: 'trans', desc: 'Fix slugs in URL, e.g. <code>/stores/:storeId</code>.' },
-  sifter: { tags: ['data', 'methods', 'relation'], desc: 'Filter results using MongoDB-like selection syntax.' },
+  sifter: { tags: ['data', 'methods', 'relation', 'services', 'find'], desc: 'Filter data or result records using a MongoDB-like selection syntax.' },
   'soft-delete': { tags: 'services', desc: 'Flag records as logically deleted instead of physically removing them.' },
-  'common/some': { name: 'some', tags: 'cond', desc: 'Predicate returns Boolean <code>or</code> of a series of functions.' },
-  'stash-before': { tags: ['data', 'services'], desc: 'Stash current value of record, usually before mutating it.' },
-  traverse: { tags: ['data', 'query'], desc: 'Transform fields & objects in place using a recursive walk. Powerful.' },
+  'common/some': { name: 'some', tags: ['cond', 'pred'], desc: 'Return the <code>or</code> of a series of sync or async predicate functions.' },
+  'stash-before': { tags: ['data', 'services', 'notAfter'], desc: 'Stash current value of record, usually before mutating it. Performs a <code>get</code> call.' },
+  traverse: { tags: ['data', 'query'], desc: 'Transform fields & objects in place in the record(s) using a recursive walk. Powerful.' },
   'common/unless': { name: 'unless', tags: 'cond', desc: 'Execute a series of hooks if a sync or async predicate is falsey.' },
   validate: { tags: ['notAfter', 'data', 'services'], desc: 'Validate data using a validation function.' },
   'validate-schema': { tags: ['notAfter', 'data', 'services'], desc: 'Validate data using JSON-Schema.' },
-  when: { name: 'when', fileName: 'common/iff', tags: 'cond', desc: 'Aliad for <code>iff</code>.' },
+  when: { name: 'when', fileName: 'common/iff', tags: 'cond', desc: 'An alias for <code>iff</code>.' },
 
-  'callback-to-promise': { tags: ['code', 'func'], desc: 'Wrap a function calling a callback into one that returns a Promise.' },
   'check-context': { tags: ['code', 'services', 'func'], desc: 'Restrict a hook to run for certain methods and method types.' },
-  'common/delete-by-dot': { name: 'deleteByDot', tags: ['code', 'dot', 'func'], desc: 'Deletes a property using dot notation, e.g. <code>address.city</code>.' },
-  'common/exists-by-dot': { name: 'existsByDot', tags: ['code', 'dot', 'func'], desc: 'Check if a property using dot notation, e.g. <code>address.city</code>.' },
-  'common/get-by-dot': { name: 'getByDot', tags: ['code', 'dot', 'func'], desc: 'Return a value using dot notation, e.g. <code>address.city</code>.' },
-  'get-items': { tags: ['code', 'data', 'data', 'func'], desc: 'Get the records in <code>context.data</code> or <code>context.result</code>.' },
+  'common/delete-by-dot': { name: 'deleteByDot', tags: ['code', 'dot', 'func'], desc: 'Deletes a property from an object using dot notation, e.g. <code>address.city</code>.' },
+  'common/exists-by-dot': { name: 'existsByDot', tags: ['code', 'dot', 'func'], desc: 'Check if a property exists in an object by using dot notation, e.g. <code>address.city</code>.' },
+  'common/get-by-dot': { name: 'getByDot', tags: ['code', 'dot', 'func'], desc: 'Return a property value from an object using dot notation, e.g. <code>address.city</code>.' },
+  'get-items': { tags: ['code', 'data', 'func'], desc: 'Get the records in <code>context.data</code> or <code>context.result[.data]</code>.' },
   'make-calling-params': { tags: ['code', 'services', 'func'], desc: 'Build <code>context.params</code> for service calls.' },
-  'params-for-server': { tags: ['code', 'client', 'trans', 'func'], desc: 'Pass <code>context.params</code> from client to server. Client-side.' },
-  'replace-items': { tags: ['code', 'data', 'data', 'func'], desc: 'Replace the records in <code>context.data</code> or <code>context.result</code>.' },
-  'common/set-by-dot': { name: 'setByDot', tags: ['code', 'dot', 'func'], desc: 'Set a value using dot notation, e.g. <code>address.city</code>.' },
+  'params-for-server': { tags: ['code', 'client', 'trans', 'func'], desc: 'Pass an explicit <code>context.params</code> from client to server. Client-side.' },
+  'replace-items': { tags: ['code', 'data', 'func'], desc: 'Replace the records in <code>context.data</code> or <code>context.result[.data]</code>.' },
+  'common/set-by-dot': { name: 'setByDot', tags: ['code', 'dot', 'func'], desc: 'Set a property value in an object using dot notation, e.g. <code>address.city</code>.' },
   'thenify-hook': { tags: ['code', 'services', 'func'], desc: 'Let\'s you call a hook right after the service call.' },
 };
 
@@ -65,6 +61,7 @@ const showTagNames = {
   client: 'Client/server',
   dot: 'Dot notation',
   code: 'Coding',
+  pred: 'Predicates',
 };
 
 const methodNames = ['find', 'create', 'get', 'update', 'patch', 'remove'];
@@ -177,6 +174,74 @@ hexo.extend.tag.register('hooksApi', name => {
     <td style="text-align:center">${hook.guide}</td>
     <td style="text-align:center"><a href="${hook.src}" target="_blank" rel="external">source</a></td>
     <td style="text-align:center">${hook.tags}</td>
+  </tr>
+  </tbody>
+  </table>`;
+});
+
+hexo.extend.tag.register('hooksApiFieldNames', ([name, desc, fieldNames = 'fieldNames', type = 'dot notation']) => {
+  // console.log('hooksApiFieldNames', name, desc, fieldNames, type);
+  const hook = hooks[name];
+  if (!hook) return `?????????? hook ${name} not defined.`;
+
+  return `
+  <ul><li>
+    <strong>Arguments</strong>
+    <ul><li>
+      <code>{Array < String >} ${fieldNames}</code>
+    </li></ul>
+  </li></ul>
+  
+  <table>
+  <thead>
+  <tr>
+    <th style="text-align:left">Name</th>
+    <th style="text-align:center">Type</th>
+    <th style="text-align:left">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td style="text-align:left"><code>${fieldNames}</code></td>
+    <td style="text-align:center">${type}</td>
+    <td style="text-align:left">${desc}</td>
+  </tr>
+  </tbody>
+  </table>`;
+})
+
+hexo.extend.tag.register('hooksApiReturns', ([name, desc, result = 'result', type = 'Boolean']) => {
+  //console.log('hooksApiReturns', name, desc, result, type);
+
+  // handle a bug
+  if (desc.substr(-1) === ',') desc = desc.substr(0, desc.length - 1);
+  if (result.substr(-1) === ',') result = result.substr(0, result.length - 1);
+  if (type.substr(-1) === ',') type = type.substr(0, type.length - 1);
+
+  const hook = hooks[name];
+  if (!hook) return `?????????? hook ${name} not defined.`;
+
+  return `
+  <ul><li>
+    <strong>Returns</strong>
+    <ul><li>
+      <code>{${type}} ${result}</code>
+    </li></ul>
+  </li></ul>
+  
+  <table>
+  <thead>
+  <tr>
+    <th style="text-align:left">Name</th>
+    <th style="text-align:center">Type</th>
+    <th style="text-align:left">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td style="text-align:left"><code>${result}</code></td>
+    <td style="text-align:center"><code>${type}</code></td>
+    <td style="text-align:left">${desc}</td>
   </tr>
   </tbody>
   </table>`;

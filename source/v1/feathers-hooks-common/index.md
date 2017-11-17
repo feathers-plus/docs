@@ -50,7 +50,7 @@ These changes may affect your projects when you switch from this repo's last Fea
   - Added new hooks and utility functions.
     - `cache` - Persistent, least-recently-used record cache for services.
     - `fastJoin` - A much faster, more flexible alternative to `populate`.
-    - `keep`, `keepQuery` and `discardQuery`.
+    - `keep`, `keepQuery` and `keepQueryuery`.
     - `op` - Flexibly mutate data and results.
     - `opQuery` - Flexibly mutate the query object.
     - `makeCallingParams` utility - Help construct `context.params` when calling services within hooks.
@@ -59,7 +59,7 @@ These changes may affect your projects when you switch from this repo's last Fea
   - These hooks are deprecated and will be removed in the next FeathersJS version *Crow*.
     - Deprecated `pluck` in favor of `keep`, e.g. `iff(isProvider('external'),` ` keep(...fieldNames))`. This deprecates the last hook with unexpected internal "magic". **Be careful!**
     - Deprecated `pluckQuery` in favor of `keepQuery` for naming consistency.
-    - Deprecated `removeQuery` in favor of `discardQuery` for naming consistency.
+    - Deprecated `removeQuery` in favor of `keepQueryuery` for naming consistency.
     - Deprecated `client` in favor of `paramsFromClient` for naming consistency.
     - Deprecated `createdAt` and `updatedAt` in favor of `setNow`.
     - Deprecated `callbackToPromise` in favor of Node's `require('util').promisify`.
@@ -86,7 +86,7 @@ These changes may affect your projects when you switch from this repo's last Fea
 {% hooksApi debug %}
 
 
-- **Arguments:** 
+- **Arguments** 
   - `{String} label`
 
 Argument | Type | Default | Description
@@ -118,7 +118,7 @@ Argument | Type | Default | Description
 
 - **Details**
 
-`debug` is great for debugging issues with hooks. Log the hook context before and after a hook to see what the hook started with, and what it changed.
+  `debug` is great for debugging issues with hooks. Log the hook context before and after a hook to see what the hook started with, and what it changed.
 
 {% hooksApiFootnote debug %}
 
@@ -139,13 +139,13 @@ Argument | Type | Default | Description
   
 - **Details**
 
-Removes joined records, computed properties, and profile information created by [`populate`](#populate). Populated and serialized items may, after dePopulate, be used in service calls.
+  Removes joined records, computed properties, and profile information created by [`populate`](#populate). Populated and serialized items may, after dePopulate, be used in service calls.
 
   
 {% hooksApiFootnote dePopulate %}
 
 <!--=============================================================================================-->
-<h3 id="disableMultiItemChange">disableMultiItemChange()</h3>
+<h3 id="disableMultiItemChange">disableMultiItemChange( )</h3>
 
 {% hooksApi disableMultiItemChange %}
 
@@ -155,33 +155,31 @@ Removes joined records, computed properties, and profile information created by 
   const { disableMultiItemChange } = require('feathers-hooks-common');
   
   module.exports = { before: {
-      patch: disableMultiItemChange(),
-      remove: disableMultiItemChange() 
+    patch: disableMultiItemChange(),
+    remove: disableMultiItemChange() 
   } };
   ```
 
 - **Details**
 
-Disables update, patch and remove methods from using `null` as an `id`, e.g. `remove(null)`. Using `null` would affect all the records in the database, so accidentally using it may have undesirable results.
+  When using the `patch` or `remove` methods, a `null` id could mutate many, even all the records in the database, so accidentally using it may cause undesirable results.
 
 {% hooksApiFootnote disableMultiItemChange %}
 
 <!--=============================================================================================-->
-<h3 id="disallow">disallow( ...providers )</h3>
+<h3 id="disallow">disallow( ...transports )</h3>
 
 {% hooksApi disallow %}
 
-- **Arguments:**
+- **Arguments**
 
-  - `{Array< String >} providers`
+  - `{Array< String >} transports`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` | `Array< String >` | disallow all transports | The transports that you want to disallow this service method for.
+`transports` | `Array< String >` | disallow all transports | The transports that you want to disallow.
 
-`providers`:
-  
-Type | Value | Description
+`transports` | Value | Description
 ---|---|---
  | `socketio` | allow calls by Socket.IO transport
  | `primus` | allow calls by Primus transport
@@ -192,7 +190,7 @@ Type | Value | Description
 - **Example**
 
   ``` js
-  const { disallow, when } = require('feathers-hooks-common');
+  const { disallow, iff } = require('feathers-hooks-common');
   
   module.exports = { before: {
       // Users can not be created by external access
@@ -202,30 +200,24 @@ Type | Value | Description
       // disallow calling `update` completely (e.g. to allow only `patch`)
       update: disallow(),
       // disallow the remove hook if the user is not an admin
-      remove: when(context => !context.params.user.isAdmin, disallow())
+      remove: iff(context => !context.params.user.isAdmin, disallow())
   } };
   ```
   
 - **Details**
 
-Disallows access to a service method completely or for specific providers. All providers (REST, Socket.io and Primus) set the `context.params.provider` property, and `disallow` checks this.
+  Prevents access to a service method completely or just for specific transports. All transports set the `context.params.provider` property, and `disallow` checks this.
   
 {% hooksApiFootnote disallow %}
 
 <!--=============================================================================================-->
 <h3 id="discard">discard( ...fieldNames )</h3>
 
-  Delete the given fields either from the data submitted or from the result. If the data is an array or a paginated find result the hook will `delete` the field(s) for every item.
-  
 {% hooksApi discard %}
 
+<p class="tip">The discard hook will remove fields even if the service is being called from the server. You may want to condition the hook to run only for external transports, e.g. `iff(isProvider('external'), discard(...))`.</p>
 
-- **Arguments:**
-  - `{Array < String >} fieldNames`
-
-Argument | Type | Default | Description
----|:---:|---|---
-`fieldNames` | dot notation | | One or more fields you want to remove from the record(s).
+{% hooksApiFieldNames discard "One or more fields you want to remove from the record(s)." %}
 
 - **Example**
 
@@ -237,96 +229,75 @@ Argument | Type | Default | Description
   } };
   ```
 
+- **Details**
+
+  Delete the fields either from `context.data` (before hook) or `context.result[.data]` (after hook).
+  
 {% hooksApiFootnote discard %}
 
 <!--=============================================================================================-->
-<h3 id="else">else: iff(...).else(...hookFuncs)</h3>
+<h3 id="discardquery">discardQuery( ...fieldNames )</h3>
 
-`iff().else()` is similar to `iff` and `iffElse`. Its syntax is more suitable for writing nested conditional hooks. If the predicate in the `iff()` is falsey, run the hooks in `else()` sequentially.
-  
-{% hooksApi iff.else %}
+{% hooksApi discardQuery %}
 
+<p class="tip">The keep hook will remove any fields not specified even if the service is being called from the server. You may want to condition the hook to run only for external transports, e.g. `iff(isProvider('external'), discardQuery(...))`.</p>
 
-- **Arguments:**
-  - `{Array< Function >} hookFuncs`
-
-Argument | Type | Default | Description
----|:---:|---|---
-`hookFuncs` | `Array<Function >` | | Zero or more hook functions. They may include other conditional hooks. Or you can use an array of hook functions as the second parameter. 
+{% hooksApiFieldNames discardQuery "One or more fields you want to remove from the query." %}
 
 - **Example**
 
   ``` js
-  const { iff, isProvider } = require('feathers-hooks-common');
+  const { discardQuery , iff, isProvider } = require('feathers-hooks-common');
   
-  module.exports = { before: {
-    create:
-      iff(isProvider('server'),
-        hookA,
-        iff(isProvider('rest'), hook1, hook2, hook3)
-          .else(hook4, hook5),
-        hookB
-      )
-        .else(
-          iff(hook => hook.path === 'users', hook6, hook7)
-        )    
-    },
-    update:
-      iff(isServer, [
-        hookA,
-        iff(isProvider('rest'), [hook1, hook2, hook3])
-          .else([hook4, hook5]),
-        hookB
-      ])
-        .else([
-          iff(hook => hook.path === 'users', [hook6, hook7])
-        ])
-  };
+  module.exports = { after: {
+      all: iff(isProvider('external'), discardQuery('secret'))
+  } };
   ```
-  
+
 - **Details**
 
-The predicate and hook functions in the `if`, `else` and `iffElse` hooks will not be called with `this` set to the service, as is normal for hook functions. Use `hook.service` instead.
-
-{% hooksApiFootnote iff.else %}
+  Delete the fields from `context.params.query`.
+  
+{% hooksApiFootnote discardQuery %}
 
 <!--=============================================================================================-->
-<h3 id="every">every(... hookFuncs)</h3>
+<h3 id="every">every( ...predicates )</h3>
 
-Run hook functions in parallel. Return `true` if every hook function returned a truthy value.
-  
 {% hooksApi every %}
 
-
-- **Arguments:**
-  - `{Array< Function >} hookFuncs`
+- **Arguments**
+  - `{Array< Function >} predicates`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`hookFuncs` | `Array<Function >` | | Functions which take the current hook as a param and return a boolean result.
+`predicates` | `Array< Function >` | | Functions which take the current hook as a param and return a boolean result.
+
+{% hooksApiReturns every "The logical and of <code>predicates</code>" %}
 
 - **Example**
 
   ``` js
-  const { every, iff } = require('feathers-hooks-common');
+  const { iff, every } = require('feathers-hooks-common');
   
   module.exports = { before: {
       create: iff(every(hook1, hook2, ...), hookA, hookB, ...)
   } };
   ```
+
+- **Details**
+
+  `every` is a predicate function for use in conditional hooks. The predicate functions are run in parallel, and `true` is returned if every predicate returns a truthy value.
   
 {% hooksApiFootnote every %}
 
 <!--=============================================================================================-->
 <h3 id="fastjoin">fastJoin( schema [, query] )</h3>
 
-We often want to combine rows from two or more tables based on a relationship between them. The fastJoin hook will select records that have matching values in both tables. It can batch service calls and cache records, thereby needing roughly an order of magnitude fewer database calls than the `populate` hook, e.g. *2* calls instead of *20*. It uses a GraphQL-like imperative API.
-  
-`fastJoin` is not restricted to using data from Feathers services. Resources for which there are no Feathers adapters can [also be used.](../batch-loader/common-patterns.html#Using-non-Feathers-services)
-
 {% hooksApi fastJoin %}
 
-- **Arguments:**
+  > `fastJoin` is preferred over using `populate`.
+  
+- **Arguments**
   - `{Object | Function} resolvers`
     - `{Function} [ before ]`
     - `{Function} [ after ]`
@@ -334,13 +305,16 @@ We often want to combine rows from two or more tables based on a relationship be
     
   - `{Object | Function} [ query ]`
 
-Argument | Type | Description
+Argument | Type | Default | Description
 ---|---|---
-`resolvers` | `Object` or `context => Object` |  The group of operations to perform on the data.
-`before` | `context => { }` | Processing performed before the operations are started. Batch-loaders are usually created here.
-`after` | `context => { }` | Processing performed after all other operations are completed.
-`joins` | `Object` | Resolver functions provide a mapping between a portion of a operation and actual backend code responsible for handling it.
-`query` | `Object` | You can customise the current operations with the optional query.
+`resolvers` | `Object` or `context` `=> Object` |  | The group of operations to perform on the data.
+`query` | `Object` | run all resolvers with `undefined` params | You can customise the current operations with the optional query.
+
+`resolvers` | Argument | Type | Default | Description
+---|---|---|---
+ | `before` | `context` `=> { }` |  | Processing performed before the operations are started. Batch-loaders are usually created here.
+ | `after` | `context` `=> { }` |  | Processing performed after all other operations are completed.
+ | `joins` | `Object` |  | Resolver functions provide a mapping between a portion of a operation and actual backend code responsible for handling it.
 
 > Read the [guide](guide.md/fastjoin) for more information on the arguments.
 
@@ -496,66 +470,82 @@ Argument | Type | Description
   } };
   ```
 
+- **Details**
+  
+  We often want to combine rows from two or more tables based on a relationship between them. The `fastJoin` hook will select records that have matching values in both tables. It can batch service calls and cache records, thereby needing roughly an order of magnitude fewer database calls than the `populate` hook, e.g. *2* calls instead of *20*.
+  
+  Relationships such as `1:1`, `1:m`, `n:1`, and `n:m` relationships can be related.
+  
+  `fastJoin` uses a GraphQL-like imperative API, and it is not restricted to using data from Feathers services. Resources for which there are no Feathers adapters can [be used.](../batch-loader/common-patterns.html#Using-non-Feathers-services)
+
 {% hooksApiFootnote fastJoin %}
 
 <!--=============================================================================================-->
-<h3 id="iff">iff(predicate, ...hookFuncs)</h3>
+<h3 id="iff">iff( predicate, ...hookFuncsTrue ).else( …hookFuncsFalse )</h3>
 
-Resolve the predicate to a boolean. Run the hooks sequentially if the result is truthy.
-  
 {% hooksApi iff %}
 
-
-- **Arguments:**
+- **Arguments**
   - `{Boolean | Promise | Function} predicate`
-  - `{Array< Function >} hookFuncs`
+  - `{Array< Function >} hookFuncsTrue`
+  - `{Array< Function >} hookFuncsTrue`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`predicate` | `Boolean`, `Promise` or `Function` | | Determines if hookFuncs should be run or not. If a function, `predicate` is called with the `context` as its param. It returns either a boolean or a Promise that evaluates to a boolean.
-`hookFuncs` | `Array<` `Function >` | | Zero or more hook functions. They may include other conditional hooks. Or you can use an array of hook functions as the second parameter.
-
+`predicate` | `Boolean`, `Promise` or `Function` | | Determine if `hookFuncsTrue` or `hookFuncsFalse` should be run. If a function, `predicate` is called with the `context` as its param. It returns either a boolean or a Promise that evaluates to a boolean.
+`hookFuncsTrue` | `Array<` `Function >` | | Sync or async hook functions to run if `true`. They may include other conditional hooks.
+`hookFuncsTrue` | `Array<` `Function >` | | Sync or async hook functions to run if `false`. They may include other conditional hooks.
 
 - **Example**
 
   ``` js
-  const { iff, populate, remove } = require('feathers-hooks-common');
+  const { discard, iff, isProvider, populate } = require('feathers-hooks-common');
   const isNotAdmin = adminRole => context => context.params.user.roles.indexOf(adminRole || 'admin') === -1;
   
   module.exports = { before: {
-      create: iff(
-        () => new Promise((resolve, reject) => { ... }),
-        populate('user', { field: 'authorisedByUserId', service: 'users' })
-      ),
-      find: [ iff(isNotAdmin(), remove('budget')) ]
+    create: iff(
+      () => new Promise((resolve, reject) => { ... }),
+      populate('user', { field: 'authorisedByUserId', service: 'users' })
+    ),
+    
+    get: [ iff(isNotAdmin(), discard('budget')) ]
+    
+    update:
+      iff(isProvider('server'),
+        hookA,
+        iff(isProvider('rest'), hook1, hook2, hook3)
+        .else(hook4, hook5),
+        hookB
+      )
+      .else(
+        iff(hook => hook.path === 'users', hook6, hook7)
+      )
   } };
   ```
 
 - **Details**
 
-The predicate and hook functions in the `if`, `else` and `iffElse` hooks will not be called with `this` set to the service, as is normal for hook functions. Use `hook.service` instead.
+  Resolve the predicate, then run one set of hooks sequentially.
 
+  The predicate and hook functions will not be called with `this` set to the service, as is normal for hook functions. Use `hook.service` instead.
 
 {% hooksApiFootnote iff %}
 
 <!--=============================================================================================-->
-<h3 id="iffelse">iffElse(predicate, trueHooks, falseHooks)</h3>
+<h3 id="iffelse">iffElse( predicate, hookFuncsTrue, hookFuncsFalse )</h3>
 
-Resolve the predicate to a boolean. Run the first set of hooks sequentially if the result is truthy, the second set otherwise.
-  
 {% hooksApi iffElse %}
 
-
-- **Arguments:**
+- **Arguments**
   - `{Function} predicate`
-  - `{Array< Functions >} trueHooks`
-  - `{Array< Functions >} falseHooks` 
+  - `{Array< Functions >} hookFuncsTrue`
+  - `{Array< Functions >} hookFuncsFalse` 
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`predicate` | Function |  | Determines if hookFuncs should be run or not. If a function, predicate is called with the hook as its param. It returns either a boolean or a Promise that evaluates to a boolean.
-`trueHooks` | `Array<` `Functions >` |  | Zero or more hook functions run when predicate is truthy.
-`falseHooks` | `Array<` `Functions >` |  | Zero or more hook functions run when predicate is false.
+`predicate` | `Boolean`, `Promise` or `Function` | | Determine if `hookFuncsTrue` or `hookFuncsFalse` should be run. If a function, `predicate` is called with the `context` as its param. It returns either a boolean or a Promise that evaluates to a boolean.
+`hookFuncsTrue` | `Array<` `Function >` | | Sync or async hook functions to run if `true`. They may include other conditional hooks.
+`hookFuncsTrue` | `Array<` `Function >` | | Sync or async hook functions to run if `false`. They may include other conditional hooks.
 
 - **Example**
 
@@ -563,76 +553,79 @@ Argument | Type | Default | Description
   const { iffElse, populate, serialize } = require('feathers-hooks-common');
   
   module.exports = { after: {
-      create: iffElse(() => { ... },
-        [populate(poAccting), serialize( ... )],
-        [populate(poReceiving), serialize( ... )]
-      )
+    create: iffElse(() => { ... },
+      [populate(poAccting), serialize( ... )],
+      [populate(poReceiving), serialize( ... )]
+    )
   } };
   ```
   
 - **Details**
 
-The predicate and hook functions in the `if`, `else` and `iffElse` hooks will not be called with `this` set to the service, as is normal for hook functions. Use `hook.service` instead.
+  Resolve the predicate, then run one set of hooks sequentially.
 
-{% hooksApiFootnote iff %}
+  The predicate and hook functions will not be called with `this` set to the service, as is normal for hook functions. Use `hook.service` instead.
+
+{% hooksApiFootnote iffElse %}
 
 <!--=============================================================================================-->
-<h3 id="isnot">isNot(predicate)</h3>
+<h3 id="isnot">isNot( predicate )</h3>
 
-Negate the predicate.
-  
 {% hooksApi isNot %}
 
+- **Arguments**
 
-- **Arguments:**
-  - `{Function} predicate`
+  - `{Function | Boolean} predicate`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | A function which returns either a boolean or a Promise that resolves to a boolean.
+`predicate` | `Function` `Boolean` |  | A sync or async function which take the current hook as a param and returns a boolean result.
+
+{% hooksApiReturns isNot "The not of <code>predicate</code>" %}
 
 - **Example**
 
   ``` js
-  const { iff, isNot, isProvider, remove } = require('feathers-hooks-common');
-  const isRequestor = () => hook => new Promise(resolve, reject) => ... );
+  const { iff, isNot, isProvider, discard } = require('feathers-hooks-common');
+  const isRequestor = () => context => new Promise(resolve, reject) => ... );
   
   module.exports = { after: {
       create: iff(isNot(isRequestor()), discard('password'))
   } };
   ```
   
+- **Details**
+
+  `isNot` is a predicate function for use in conditional hooks.
+
 {% hooksApiFootnote isNot %}
 
 <!--=============================================================================================-->
-<h3 id="isprovider">isProvider([ ...providers ])</h3>
+<h3 id="isprovider">isProvider( ...transports </h3>
 
-Check which transport called the service method. All providers (REST, Socket.io and Primus) set the params.provider property which is what isProvider checks for. Used as a predicate function with conditional hooks.
-  
 {% hooksApi isProvider %}
 
+- **Arguments**
+  - `{Array< String >} transports`
 
-- **Arguments:**
-  - `{Array< String >} [ providers ]`
-
-Argument | Type | Default | Description
+Name | Type | Default | Description
 ---|:---:|---|---
-`providers` | `Array< String >` | allow all transports | The transports that you want to allow. 
+`transports` | `Array< String >` | | The transports you want to allow. 
 
-`providers`:
-  
-Type | Value | Description
----|---|---
- | `socketio` | allow calls by Socket.IO transport
- | `primus` | allow calls by Primus transport
- | `rest` | allow calls by REST transport
- | `external` | allow calls other than from server
- | `server` | allow calls from server
+`transports` | Value | Description
+---|:---:|---
+ | `socketio` | Allow calls by Socket.IO transport.
+ | `primus` | Allow calls by Primus transport.
+ | `rest` | Allow calls by REST transport.
+ | `external` | Allow calls other than from server.
+ | `server` | Allow calls from server.
+ 
+{% hooksApiReturns isProvider "If the call was made by one of the <code>transports</code>." %}
 
 - **Example**
 
   ``` js
-  const { iff, isProvider, remove } = require('feathers-hooks-common');
+  const { iff, isProvider, discard } = require('feathers-hooks-common');
   
   module.exports = { after: {
       create: iff(isProvider('external'), discard('password'))
@@ -641,56 +634,66 @@ Type | Value | Description
   
 - **Details**
 
+  `isProvider` is a predicate function for use in conditional hooks. Its determines which transport provided the service call by checking `context.params.provider`.
+
 {% hooksApiFootnote isProvider %}
 
 <!--=============================================================================================-->
-<h3 id="keep">keep(...fieldNames)</h3>
+<h3 id="keep">keep( ...fieldNames )</h3>
 
-Keeps the given fields either in the data submitted or in the result.
-  
 {% hooksApi keep %}
 
-<p class="tip">The keep hook will remove any fields not specified even if the service is called from the server.</p>
+<p class="tip">The keep hook will remove any fields not specified even if the service is being called from the server. You may want to condition the hook to run only for external transports, e.g. `iff(isProvider('external'), keep(...))`.</p>
 
-- **Arguments:**
-  - `{Array< String > | String} fieldNames`
-
-Argument | Type | Default | Description
----|:---:|---|---
-`fieldNames` | dot notation | | One or more fields you want from the record(s).
+{% hooksApiFieldNames keep "The only fields you want to keep in the record(s)." %}
 
 - **Example**
 
   ``` js
-    const { keep } = require('feathers-hooks-common');
+  const { keep } = require('feathers-hooks-common');
     
-    
-    module.exports = { before: {
-        // Only retain the hashed `password` and `salt` field after all method calls
-        all: keep('password', 'salt'),
-        // Only keep the _id for `create`, `update` and `patch`
-        create: keep('_id'),
-        update: keep('_id'),
-        patch: keep('_id')
-    } };;
+  module.exports = { after: {
+    create: keep('name', 'dept', 'address.city'),
+  } };
   ```
+
+- **Details**
+
+  Update either `context.data` (before hook) or `context.result[.data]` (after hook).
 
 {% hooksApiFootnote keep %}
 
 <!--=============================================================================================-->
-<h3 id="lowercase">lowerCase(... fieldNames)</h3>
+<h3 id="keepquery">keepQuery( ...fieldNames )</h3>
 
-Convert the given fields to lower case.
+{% hooksApi keepQuery %}
+
+<p class="tip">The keepQuery hook will remove any fields not specified even if the service is being called from the server. You may want to condition the hook to run only for external transports, e.g. `iff(isProvider('external'), keepQuery(...))`.</p>
+
+{% hooksApiFieldNames keepQuery "The only fields you want to keep in the query object." %}
+
+- **Example**
+
+  ``` js
+  const { keepQuery } = require('feathers-hooks-common');
+    
+  module.exports = { after: {
+    create: keepQuery('name', 'address.city'),
+  } };
+  ```
+
+- **Details**
+
+  Updates `context.params.query`.
+
+{% hooksApiFootnote keepQuery %}
+
+<!--=============================================================================================-->
+<h3 id="lowercase">lowerCase( ... fieldNames )</h3>
   
 {% hooksApi lowerCase %}
 
-
-- **Arguments:**
-  - `{Array< String > | String} fieldNames`
-
-Argument | Type | Default | Description
----|:---:|---|---
-`fieldNames` | dot notation | | One or more fields you want to convert to lower case.
+{% hooksApiFieldNames keep "The fields in the record(s) whose values are converted to lower case." %}
 
 - **Example**
 
@@ -698,136 +701,138 @@ Argument | Type | Default | Description
   const { lowerCase } = require('feathers-hooks-common');
   
   module.exports = { before: {
-      create: lowerCase('email', 'username')
+    create: lowerCase('email', 'username', 'div.dept')
   } };
   ```
-  
+
 - **Details**
+
+  Update either `context.data` (before hook) or `context.result[.data]` (after hook).
 
 {% hooksApiFootnote lowerCase %}
 
 <!--=============================================================================================-->
-<h3 id="paramsFromClient">paramsFromClient(...whitelist)</h3>
+<h3 id="paramsFromClient">paramsFromClient( ...whitelist )</h3>
 
-A hook, on the server, for passing params from the client to the server.
-  
 {% hooksApi paramsFromClient %}
 
-> Companion to the utility function `paramsForServer`.
+- **Arguments**
 
-- **Arguments:**
   - `{Array< String > | String} whitelist`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`whitelist` | dot notation | | Names of the permitted props; other props are ignored. This is a security feature.
+`whitelist` | dot notation | | Names of the props permitted to be in `context.params`. Other props are ignored. This is a security feature.
 
 - **Example**
 
   ``` js
   // client
-  import { paramsForServer } from 'feathers-hooks-common';
+  const { paramsForServer } = require('feathers-hooks-common');
   
-  service.patch(null, data, paramsForServer({
+  service.update(id, data, paramsForServer({
     query: { dept: 'a' }, populate: 'po-1', serialize: 'po-mgr'
   }));
   
   // server
   const { paramsFromClient } = require('feathers-hooks-common');
   
-  service.before({ all: [
-    paramsFromClient('populate', 'serialize', 'otherProp'), myHook
-  ]});
+  module.exports = { before: {
+      all: [
+        paramsFromClient('populate', 'serialize', 'otherProp'),
+        myHook
+      ]
+  } };
   
-  // context.params will now be
+  // myHook's `context.params` will now be
   // { query: { dept: 'a' }, populate: 'po-1', serialize: 'po-mgr' } }
   ```
   
 - **Details**
 
-By default, only the hook.params.query object is transferred to the server from a Feathers client, for security among other reasons. However you can explicitly transfer other params props with the client utility function paramsForServer in conjunction with the hook function paramsFromClient on the server.
+  By default, only the `context.params.query` object is transferred from a Feathers client to the server, for security among other reasons. However you can explicitly transfer other `context.params` props with the client utility function `paramsForServer` in conjunction with the `paramsFromClient` hook on the server.
 
-You can use the same technique for service calls made on the server.
+  This technique also works for service calls made on the server.
 
 {% hooksApiFootnote paramsFromClient %}
 
 <!--=============================================================================================-->
-<h3 id="pluckquery">pluckQuery(...fieldNames)</h3>
+<h3 id="populate">populate( options )</h3>
 
-Discard all other fields except for the given fields from the query params.
-  
-{% hooksApi pluckQuery %}
-
-
-- **Arguments:**
-  - `{Array< String > | String} fieldNames`
-
-Argument | Type | Default | Description
----|:---:|---|---
-`whitelist` | dot notation | | The fields that you want to retain from the query object. All other fields will be discarded.
-
-- **Example**
-
-  ``` js
-  const { ??? } = require('feathers-hooks-common');
-  
-  module.exports = { before: {
-      // Discard all other fields except for _id from the query
-      all: pluckQuery('_id')
-  } };
-  ```
-  
-- **Details**
-
-This hook will only fire when params.provider has a value, i.e. when it is an external request over REST or Sockets.
-
-{% hooksApiFootnote pluckQuery %}
-
-<!--=============================================================================================-->
-<h3 id="populate">populate(options)</h3>
-
-> Work in progress.
-
-Populates items recursively to any depth. Supports 1:1, 1:n and n:1 relationships.
-  
 {% hooksApi populate %}
 
-
-- **Arguments:**
-  - `???`
+  > `fastJoin` is preferred over using `populate`.
+  
+- **Arguments**
+  - `{Object} options`
+    - `{Object | Function} schema`
+      - `{String} service`
+      - `{any} [ permissions ]`
+      - `{Array< Object > | Object} include`
+        - `{String} service`
+        - `{String} [ nameAs ]`
+        - `{String} [ parentField ]`
+        - `{String} [ childField]`
+        - `{String} [ permissions ]`
+        - `{Object} [ query ]`
+        - `{Function} [ select ]`
+        - `{Boolean} [ asArray ]`
+        - `{Boolean | Number} [ paginate ]`
+        - `{Boolean} [ useInnerPopulate ]`
+        - `{undefined}} [ provider ]`
+        - `{Array< Object > | Object} include`
+          - ...
+          
+    - `{Function} [ checkPermissions ]`
+    - `{Boolean} [ profile ]`
 
 Argument | Type | Default | Description
----|:---:|---|---
-`providers` |  |  | 
+---|---|---
+`options` | `Object` | | Options.
+`schema` | `Object` `Function` | `(context, options)` `=> {}`| Info on how to join records.
+`checkPermissions` | `Function` | no permission check | Check if call allowed joins.
+`profile` | `Boolean` | `false` | If profile info is to be gathered.
 
-- **Example**
+`schema` | Argument | Type | Default | Description
+---|---|---
+ | `service` | `String` | | The name of the service providing the items, actually its path.
+ | `nameAs` | dot notation | `service` | Where to place the items from the join
+ | `parentField` | dot notation | | The name of the field in the parent item for the relation.
+ | `childField` | dot notation if database supports it | | The name of the field in the child item for the relation. Dot notation is allowed and will result in a query like `{ 'name.first':` `'John' }` which is not suitable for all DBs. You may use query or select to create a query suitable for your DB.
+ | `permissions` | `any` | no permission check | Who is allowed to perform this join. See `checkPermissions` above.
+ | `query` | `Object` | | An object to inject into `context.params.query`.
+ | `select` | `Function` | `(context,` `parentItem,` `depth)` `=> {}` | A function whose result is injected into the query.
+ | `asArray` | `Boolean` | `false` | Force a single joined item to be stored as an array.
+ | `paginate` | `Boolean` `Number` | `false` | Controls pagination for this service.
+ | `useInnerPopulate` | `Boolean` | `false` | Perform any `populate` or `fastJoin` registered on this service.
+ | `provider` | `undefined` | | Call the service as the server, not with the client's transport.
+ | `include` | `Array<` `Object >` or `Object` | | Continue recursively join records to these records.
 
-  ``` js
-  const { ??? } = require('feathers-hooks-common');
-  
-  module.exports = { before: {
-      
-  } };
+> Read the [guide](guide.md/populate) for more information on the arguments.
+
+- **Example using Feathers services**
+
+  ```js
   ```
-  
+
 - **Details**
+  
+  Supports 1:1, 1:n and n:1 relationships.
+  
+  Provides performance profile information.
+  
+  We often want to combine rows from two or more tables based on a relationship between them. The `populate` hook will select records that have matching values in both tables. It can batch service calls and cache records, thereby needing roughly an order of magnitude fewer database calls than the `populate` hook, e.g. *2* calls instead of *20*.
+  
+  `populate` uses a GraphQL-like imperative API, and it is not restricted to using data from Feathers services. Resources for which there are no Feathers adapters can [be used.](../batch-loader/common-patterns.html#Using-non-Feathers-services)
 
 {% hooksApiFootnote populate %}
 
 <!--=============================================================================================-->
-<h3 id="preventchanges">preventChanges(...fieldNames)</h3>
+<h3 id="preventchanges">preventChanges( ...fieldNames )</h3>
 
-Prevents the specified fields from being patched.
-  
 {% hooksApi preventChanges %}
 
-
-- **Arguments:**
-  - `{Array< String > | String} fieldNames`
-
-Argument | Type | Default | Description
----|:---:|---|---
-`fieldNames` | dot notation |  | One or more fields which may not be patched.
+{% hooksApiFieldNames preventChanges "The fields which may not be patched." %}
 
 - **Example**
 
@@ -835,49 +840,18 @@ Argument | Type | Default | Description
   const { preventChanges } = require('feathers-hooks-common');
   
   module.exports = { before: {
-      patch: preventChanges('security.badge')
+    patch: preventChanges('security.badge')
   } };
   ```
   
 - **Details**
 
-Consider using validateSchema if you would rather specify which fields are allowed to change.
+  Consider using validateSchema if you would rather specify which fields are allowed to change.
 
 {% hooksApiFootnote preventChanges %}
 
 <!--=============================================================================================-->
-<h3 id="removeQuery">removeQuery(...fieldNames)</h3>
-
-Remove the given fields from the query params.
-  
-{% hooksApi removeQuery %}
-
-
-- **Arguments:**
-  - `{Array< String > | String} fieldNames`
-
-Argument | Type | Default | Description
----|:---:|---|---
-`fieldNames` | dot notation |  | The fields that you want to remove from the query object.
-
-- **Example**
-
-  ``` js
-  const { removeQuery } = require('feathers-hooks-common');
-  
-  module.exports = { before: {
-      all: removeQuery('_id')
-  } };
-  ```
-  
-- **Details**
-
-This hook will only fire when params.provider has a value, i.e. when it is an external request over REST or Sockets.
-
-{% hooksApiFootnote removeQuery %}
-
-<!--=============================================================================================-->
-<h3 id="serialize">serialize(options)</h3>
+<h3 id="serialize">serialize( options )</h3>
 
 > Work in progress.
 
@@ -886,12 +860,12 @@ Remove selected information from populated items. Add new computed information. 
 {% hooksApi serialize %}
 
 
-- **Arguments:**
+- **Arguments**
   - `???`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | 
+`transports` |  |  | 
 
 - **Example**
 
@@ -902,26 +876,15 @@ Argument | Type | Default | Description
       
   } };
   ```
-  
-- **Details**
 
 {% hooksApiFootnote serialize %}
 
 <!--=============================================================================================-->
-<h3 id="setNow">setNow(...fieldNames)</h3>
-
-Add the fields with the current date-time.
+<h3 id="setNow">setNow( ...fieldNames )</h3>
   
 {% hooksApi setNow %}
 
-> Change code to not allow in after
-
-- **Arguments:**
-  - `{Array< String > | String} fieldNames`
-
-Argument | Type | Default | Description
----|:---:|---|---
-`fieldNames` | dot notation |  | The fields that you want to add with the current date-time to the retrieved object(s). At least one name is required.
+{% hooksApiFieldNames keep "The fields that you want to add or set to the current date-time." %}
 
 - **Example**
 
@@ -929,26 +892,30 @@ Argument | Type | Default | Description
   const { setNow } = require('feathers-hooks-common');
   
   module.exports = { before: {
-      create: setNow('createdAt', 'updatedAt')
+    create: setNow('createdAt', 'updatedAt')
   } };
   ```
 
+- **Details**
+
+  Update either `context.data` (before hook) or `context.result[.data]` (after hook).
+  
 {% hooksApiFootnote setNow %}
 
 <!--=============================================================================================-->
-<h3 id="setSlug">setSlug(slug, fieldName</h3>
+<h3 id="setSlug">setSlug( slug, fieldName )</h3>
 
 > Work in Progress
   
 {% hooksApi setSlug %}
 
 
-- **Arguments:**
+- **Arguments**
   - `???`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | 
+`transports` |  |  | 
 
 - **Example**
 
@@ -959,47 +926,58 @@ Argument | Type | Default | Description
       
   } };
   ```
-  
-- **Details**
 
 {% hooksApiFootnote setSlug %}
 
 <!--=============================================================================================-->
-<h3 id="sifter">sifter(options)</h3>
+<h3 id="sifter">sifter( siftFunc )</h3>
 
-All official Feathers database adapters support a common way for querying, sorting, limiting and selecting find method calls. These are limited to what is commonly supported by all the databases.
- 
-The sifter hook provides an extensive MongoDB-like selection capabilities, and it may be used to more extensively select records.
-  
 {% hooksApi sifter %}
 
+- **Arguments**
 
-- **Arguments:**
-  - `{Object} options`
-    - `{Function} mongoQueryFunc`
+  - `{Function} siftFunc`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`mongoQueryFunc` | Function |  | Information about the mongoQueryObj syntax is available at [sift](https://github.com/crcn/sift.js).
+`siftFunc` | `Function` |  | Function similar to `context => sift(mongoQueryObj)`. Information about the mongoQueryObj syntax is available at [crcn/sift](https://github.com/crcn/sift.js).
 
 - **Example**
 
   ``` js
-  const { ??? } = require('feathers-hooks-common');
+  const sift = require('sift');
+  const { sifter } = require('feathers-hooks-common');
   
+  const selectCountry = hook => sift({ 'address.country': hook.params.country });
+
   module.exports = { before: {
-      
+    find: sifter(selectCountry),
   } };
+  ```
+  
+  ```js
+  const sift = require('sift');
+  const { sifter } = require('feathers-hooks-common');
+  
+  const selectCountry = country => () => sift({ address : { country: country } });
+
+  module.exports = { before: {
+    find: sifter(selectCountry('Canada')),
+  } };  
   ```
   
 - **Details**
 
-`sifter` filters the result of a find call. Therefore more records will be physically read than needed. You can use the Feathers database adapters query to reduce this number.`
+  All official Feathers database adapters support a common way for querying, sorting, limiting and selecting find method calls. These are limited to what is commonly supported by all the databases.
+ 
+  The `sifter` hook provides an extensive MongoDB-like selection capabilities, and it may be used to more extensively select records.
+
+  `sifter` filters the result of a find call. Therefore more records will be physically read than needed. You can use the Feathers database adapters query to reduce this number.`
 
 {% hooksApiFootnote sifter %}
 
 <!--=============================================================================================-->
-<h3 id="softDelete">softDelete(fieldName)</h3>
+<h3 id="softDelete">softDelete( fieldName )</h3>
 
 Marks items as { deleted: true } instead of physically removing them. This is useful when you want to discontinue use of, say, a department, but you have historical information which continues to refer to the discontinued department.
   
@@ -1007,7 +985,7 @@ Marks items as { deleted: true } instead of physically removing them. This is us
 
 > Must be used on `all` service call types, i.e. `create`, get`, `update`, `patch`, `remove` and `find`.
 
-- **Arguments:**
+- **Arguments**
   - `{String} fieldName`
 
 Argument | Type | Default | Description
@@ -1030,25 +1008,22 @@ Argument | Type | Default | Description
   // methods can be run avoiding softDelete handling
   dept.get(0, { query: { $disableSoftDelete: true }}).then()
   ```
-  
-- **Details**
 
 {% hooksApiFootnote softDelete %}
 
 <!--=============================================================================================-->
-<h3 id="some">some(...hookFuncs)</h3>
+<h3 id="some">some( ...predicates )</h3>
 
-Run hook functions in parallel. Return `true` if any hook function returned a truthy value.
-  
 {% hooksApi some %}
 
-
-- **Arguments:**
-  - `{Array< Function >} hookFuncs`
+- **Arguments**
+  - `{Array< Function >} predicates`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`hookFuncs` | `Array<Function >` | | Functions which take the current hook as a param and return a boolean result.
+`predicates` | `Array< Function >` | | Functions which take the current hook as a param and return a boolean result.
+
+{% hooksApiReturns some "The logical or of <code>predicates</code>" %}
 
 - **Example**
 
@@ -1059,23 +1034,24 @@ Argument | Type | Default | Description
       create: iff(some(hook1, hook2, ...), hookA, hookB, ...)
   } };
   ```
+
+- **Details**
+
+  `some` is a predicate function for use in conditional hooks. The predicate functions are run in parallel, and `true` is returned if any predicate returns a truthy value.
   
-{% hooksApiFootnote softDelete %}
+{% hooksApiFootnote some %}
 
 <!--=============================================================================================-->
-<h3 id="stashbefore">stashBefore(fieldName)</h3>
+<h3 id="stashbefore">stashBefore( fieldName )</h3>
 
-Stash current value of record before mutating it.
-  
 {% hooksApi stashBefore %}
 
-
-- **Arguments:**
-  - `???`
+- **Arguments**
+  - `{String} fieldName`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`fieldName` |  | `'before'` | The name of the params property to contain the current record value.
+`fieldName` |  | `'before'` | The name of the `context.params` property to contain the current record value.
 
 - **Example**
 
@@ -1083,40 +1059,46 @@ Argument | Type | Default | Description
   const { patch } = require('feathers-hooks-common');
   
   module.exports = { before: {
-      patch: stashBefore()
+    patch: stashBefore()
   } };
   ```
   
 - **Details**
 
-This hook makes a `get` service call.
+  The hook always performs its own preliminary `get` call. If the original service call is also a `get`, its `context.params` is used for the preliminary `get`.
+  
+  For any other method the the calling params are formed from the calling context:
+  ``` js
+  { provider: context.params.provider,
+    authenticated: context.params.authenticated,
+    user: context.params.user }
+  ```
 
 {% hooksApiFootnote stashBefore %}
 
 <!--=============================================================================================-->
-<h3 id="traverse">traverse(transformer [, getObject])</h3>
+<h3 id="traverse">traverse( transformer [, getObject] )</h3>
 
-Traverse and transform objects in place by visiting every node on a recursive walk. Any object in the hook may be traversed, including the query object.
-  
 {% hooksApi traverse %}
 
-
-- **Arguments:**
-  - `???`
+- **Arguments**
+  - `{Function} transformer`
+  - `{Function} [ getObject ]`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`transformer` | `Function` |  | Called for every node. May change the node in place.
-`getObject` | `Function` | `hook.data` or `hook.result` | Function with signature `context => {}` which returns the object to traverse.
+`transformer` | `Function` |  | Called for every node in every record(s). May change the node in place.
+`getObject` | `Function` | `context.data` or `context.result[.data]` | Function with signature `context => {}` which returns the object to traverse.
 
 - **Example**
 
   ``` js
+  const { traverse } = require('feathers-hooks-common');
+  
   // Trim strings
   const trimmer = function (node) {
     if (typeof node === 'string') { this.update(node.trim()); }
   };
-  service.before({ create: traverse(trimmer) });
   
   // REST HTTP request may use the string 'null' in its query string.
   // Replace these strings with the value null.
@@ -1124,32 +1106,33 @@ Argument | Type | Default | Description
     if (node === 'null') { this.update(null); }
   };
   
-  service.before({ find: traverse(nuller, hook => hook.params.query) });
+  module.exports = { before: {
+    create: traverse(trimmer),
+    find: traverse(nuller, context => context.params.query)
+  } };
   ```
   
 - **Details**
 
-[substack/js-traverse](https://github.com/substack/js-traverse) documents the extensive methods and context available to the transformer function.`
+  Traverse and transform objects in place by visiting every node on a recursive walk. Any object in the hook may be traversed, including the query object.
+    
+  > [substack/js-traverse](https://github.com/substack/js-traverse) documents the extensive methods and context available to the transformer function.
 
-{% hooksApiFootnote stashBefore %}
+{% hooksApiFootnote traverse %}
 
 <!--=============================================================================================-->
-<h3 id="unless">unless(predicate, ...hookFuncs)</h3>
+<h3 id="unless">unless( predicate, ...hookFuncs )</h3>
 
-Resolve the predicate to a boolean. Run the hooks sequentially if the result is falsey.
-  
 {% hooksApi unless %}
 
-
-- **Arguments:**
+- **Arguments**
   - `{Boolean | Promise | Function} predicate`
   - `{Array< Function >} hookFuncs`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`predicate` | `Boolean`, `Promise` or `Function` | | Determines if hookFuncs should be run or not. If a function, `predicate` is called with the `context` as its param. It returns either a boolean or a Promise that evaluates to a boolean.
-`hookFuncs` | `Array<` `Function >` | | Zero or more hook functions. They may include other conditional hooks. Or you can use an array of hook functions as the second parameter.
-
+`predicate` | `Boolean`, `Promise` or `Function` | | Run `hookFunc` if the `predicate` is false. If a function, `predicate` is called with the `context` as its param. It returns either a boolean or a Promise that evaluates to a boolean.
+`hookFuncs` | `Array<` `Function >` | | Sync or async hook functions to run if `true`. They may include other conditional hooks.
 
 - **Example**
 
@@ -1157,23 +1140,25 @@ Argument | Type | Default | Description
   const { isProvider, unless } = require('feathers-hooks-common');
   
   module.exports = { before: {
-      create:
-          unless(isProvider('server'),
-            hookA,
-            unless(isProvider('rest'), hook1, hook2, hook3),
-            hookB
-          )
+    create:
+      unless(isProvider('server'),
+        hookA,
+        unless(isProvider('rest'), hook1, hook2, hook3),
+        hookB
+      )
   } };
   ```
 
 - **Details**
 
-The predicate and hook functions in the `if`, `else` and `iffElse` hooks will not be called with `this` set to the service, as is normal for hook functions. Use `hook.service` instead.
+  Resolve the predicate to a boolean. Run the hooks sequentially if the result is falsey.
+
+  The predicate and hook functions will not be called with `this` set to the service, as is normal for hook functions. Use `hook.service` instead.
 
 {% hooksApiFootnote unless %}
 
 <!--=============================================================================================-->
-<h3 id="validate">validate(validator)</h3>
+<h3 id="validate">validate( validator )</h3>
 
 > Work in progress.
 
@@ -1182,7 +1167,7 @@ Call a validation function from a before hook. The function may be sync or retur
 {% hooksApi validate %}
 
 
-- **Arguments:**
+- **Arguments**
 
   - `{Function} validator`
 
@@ -1202,33 +1187,33 @@ Argument | Type | Default | Description
   
 - **Details**
 
-Sync functions return either an error object like `{ fieldName1: 'message', ... }` or `null`. Validate will throw on an error object with `throw new errors.BadRequest({ errors: errorObject });`.
+  Sync functions return either an error object like `{ fieldName1: 'message', ... }` or `null`. Validate will throw on an error object with `throw new errors.BadRequest({ errors: errorObject });`.
 
-Promise functions should throw on an error or reject with `new errors.BadRequest('Error message', { errors: { fieldName1: 'message', ... } });`. Their `.then` returns either sanitized values to replace `context.data`, or `null`.
+  Promise functions should throw on an error or reject with `new errors.BadRequest('Error message', { errors: { fieldName1: 'message', ... } });`. Their `.then` returns either sanitized values to replace `context.data`, or `null`.
 
-If you have a different signature for the validator then pass a wrapper as the validator e.g. (values) => myValidator(..., values, ...)
+  If you have a different signature for the validator then pass a wrapper as the validator e.g. (values) => myValidator(..., values, ...)
 
-Wrap your validator in callbackToPromise if it uses a callback.
+  Wrap your validator in callbackToPromise if it uses a callback.
 
 {% hooksApiFootnote validate %}
 
 <!--=============================================================================================-->
 
-<h3 id="validateSchema">validateSchema(schema, ajv, options)</h3>
+<h3 id="validateSchema">validateSchema( schema, ajv, options )</h3>
 
 Validate an object using [JSON-Schema](http://json-schema.org/) through [Ajv](https://github.com/epoberezkin/ajv).
   
 {% hooksApi validateSchema %}
 
 
-- **Arguments:**
+- **Arguments**
   - `???`
   
   > Work in progress.
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | 
+`transports` |  |  | 
 
 - **Example**
 
@@ -1255,18 +1240,18 @@ Argument | Type | Default | Description
   
 - **Details**
 
-There are some good [tutorials](https://code.tutsplus.com/tutorials/validating-data-with-json-schema-part-1--cms-25343) on using JSON-Schema with [Ajv](https://github.com/epoberezkin/ajv).
+  There are some good [tutorials](https://code.tutsplus.com/tutorials/validating-data-with-json-schema-part-1--cms-25343) on using JSON-Schema with [Ajv](https://github.com/epoberezkin/ajv).
 
-The hook will throw if the data does not match the JSON-Schema. `error.errors` will, by default, contain an array of error messages.
+  The hook will throw if the data does not match the JSON-Schema. `error.errors` will, by default, contain an array of error messages.
 
-You may customize the error message format with a custom formatting function. You could, for example, return `{ name1: message, name2: message }` which could be more suitable for a UI.
+  You may customize the error message format with a custom formatting function. You could, for example, return `{ name1: message, name2: message }` which could be more suitable for a UI.
 
-If you need to customize `Ajv` with new keywords, formats or schemas, then instead of passing the `Ajv` constructor, you may pass in an instance of `Ajv` as the second parameter. In this case you need to pass `Ajv` options to the `Ajv` instance when `new`ing, rather than passing them in the third parameter of `validateSchema`. See the second example below.
+  If you need to customize `Ajv` with new keywords, formats or schemas, then instead of passing the `Ajv` constructor, you may pass in an instance of `Ajv` as the second parameter. In this case you need to pass `Ajv` options to the `Ajv` instance when `new`ing, rather than passing them in the third parameter of `validateSchema`. See the second example below.
 
 {% hooksApiFootnote validateSchema %}
 
 <!--=============================================================================================-->
-<h3 id="when">when(predicate, ...hookFuncs)</h3>
+<h3 id="when">when( predicate, ...hookFuncs )</h3>
 
 An alias for [iff](#iff).
 
@@ -1276,12 +1261,12 @@ An alias for [iff](#iff).
 ## Utilities
 
 <!--=============================================================================================-->
-<h3 id="checkcontext">checkContext(context [, type ] [, methods ] [, label ])</h3>
+<h3 id="checkcontext">checkContext( context [, type ] [, methods ] [, label ] )</h3>
 
 {% hooksApi checkContext %}
 
 
-- **Arguments:**
+- **Arguments**
   - `{Object} context`
   - `{String} [ type ]`
   - `{Array< String >} [ methods ]`
@@ -1320,7 +1305,7 @@ Argument | Type | Default | Description
   
 - **Details**
 
-Its important to ensure the hook is being used as intended. `checkContext` let's you restrict the hook to a hook type and a set of service methods.
+  Its important to ensure the hook is being used as intended. `checkContext` let's you restrict the hook to a hook type and a set of service methods.
 
 {% hooksApiFootnote checkContext %}
 
@@ -1329,7 +1314,7 @@ Its important to ensure the hook is being used as intended. `checkContext` let's
  
 {% hooksApi combine %}
 
-- **Arguments:**
+- **Arguments**
   - `{Array< Function >} hookFuncs`
 
 Argument | Type | Default | Description
@@ -1357,185 +1342,232 @@ Argument | Type | Default | Description
   const workflow = [createdAt(), updatedAt(), ...];
   
   module.exports = { before: {
-      update: [...workflow],
-      patch: [...workflow],
+    update: [...workflow],
+    patch: [...workflow],
   } };
   ```
   
 {% hooksApiFootnote combine %}
 
 <!--=============================================================================================-->
-
-<h3 id="deletebyDot">deleteByDot(obj, path)</h3>
+<h3 id="deletebyDot">deleteByDot( obj, path )</h3>
 
 {% hooksApi deleteByDot %}
 
-
-- **Arguments:**
-  - `???`
+- **Arguments**
+  - `{Object} obj`
+  - `{String} path`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | 
+`obj` | `Object` |  | The object.
+`path` | `String` | | The path to the property, e.g. `address.city`. 
 
 - **Example**
 
   ``` js
-  const { deleteByDot } = require('feathers-hooks-common');
+  import { deleteByDot } from 'feathers-hooks-common';
   
-  module.exports = { before: {
-      
-  } };
+  const discardPasscode = () => context => {
+    deleteByDot(context.data, 'security.passcode');
+  }
+  
+   module.exports = { before: {
+     find: discardPasscode()
+   } };
   ```
   
 - **Details**
+
+  You can use `phones.home.0.main` to handle arrays.
 
 {% hooksApiFootnote deleteByDot %}
 
 <!--=============================================================================================-->
-<h3 id="existsbydot">existsByDot(obj, path)</h3>
+<h3 id="existsbydot">existsByDot( obj, path )</h3>
 
 {% hooksApi existsByDot %}
 
-
-- **Arguments:**
-  - `???`
+- **Arguments**
+  - `{Object} obj`
+  - `{String} path`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | 
+`obj` | `Object` |  | The object.
+`path` | `String` | | The path to the property, e.g. `address.city`.
+
+{% hooksApiReturns getItems "If a property exists at <code>path</code>." %}
 
 - **Example**
 
   ``` js
-  const { existsByDot } = require('feathers-hooks-common');
+  const { discard, existsByDot, iff } = require('feathers-hooks-common');
   
+  const discardBadge = () => iff(!existsByDot('security.passcode'), discard('security.badge'));
+
   module.exports = { before: {
-      
+    find: discardBadge()
   } };
   ```
   
 - **Details**
+
+  You can use `phones.home.0.main` to handle arrays. Properties with a value of `undefined` are considered to exist.
 
 {% hooksApiFootnote existsByDot %}
 
 <!--=============================================================================================-->
-<h3 id="getbydot">getByDot(obj, path)</h3>
+<h3 id="getbydot">getByDot( obj, path )</h3>
 
 {% hooksApi getByDot %}
 
-
-- **Arguments:**
-  - `???`
+- **Arguments**
+  - `{Object} obj`
+  - `{String} path`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | 
+`obj` | `Object` |  | The object.
+`path` | `String` | | The path to the property, e.g. `address.city`.
+
+{% hooksApiReturns getItems "The property value." "result" "any" %}
 
 - **Example**
 
   ``` js
-  const { getByDot } = require('feathers-hooks-common');
+  const { getByDot, setByDot } = require('feathers-hooks-common');
   
+  const setHomeCity = () => context => {
+    const city = getByDot(context.data, 'person.address.city');
+    setByDot(context, 'data.person.home.city', city);
+  }
+
   module.exports = { before: {
-      
+    create: setHomeCity()
   } };
   ```
   
 - **Details**
 
+  `getByDot` does not differentiate between non-existent paths and a value of `undefined`.
+  
 {% hooksApiFootnote getByDot %}
 
 <!--=============================================================================================-->
-<h3 id="setbyDot">setByDot(obj, path, value, ifDelete)</h3>
+<h3 id="setbyDot">setByDot( obj, path, value )</h3>
 
 {% hooksApi setByDot %}
 
-
-- **Arguments:**
-  - `???`
+- **Arguments**
+  - `{Object} obj`
+  - `{String} path`
+  - `{any} value` 
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | 
+`obj` | `Object` |  | The object.
+`path` | `String` | | The path to the property, e.g. `address.city`.
+`value` | `any` | | The value to set the property to.
 
 - **Example**
 
   ``` js
-  const { setByDot } = require('feathers-hooks-common');
+  const { getByDot, setByDot } = require('feathers-hooks-common');
   
+  const setHomeCity = () => context => {
+    const city = getByDot(context.data, 'person.address.city');
+    setByDot(context, 'data.person.home.city', city);
+  }
+
   module.exports = { before: {
-      
+    create: setHomeCity()
   } };
   ```
   
-- **Details**
-
 {% hooksApiFootnote setByDot %}
 
 <!--=============================================================================================-->
-<h3 id="getitems">getItems(context)</h3>
+<h3 id="getitems">getItems( context )</h3>
 
 {% hooksApi getItems %}
 
-
-- **Arguments:**
-  - `???`
+- **Arguments**
+  - `{Object} context`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | 
+`context` | `Object` |  | The hook context.
+
+{% hooksApiReturns getItems "The records.", 'records', 'Array< Object > | Object | undefined' %}
 
 - **Example**
 
   ``` js
-  const { getItems } = require('feathers-hooks-common');
+  const { getItems, replaceItems } = require(('feathers-hooks-common');
+  
+  const insertCode = code => context {
+    const items = getItems(context);
+    !Array.isArray(items) ? items.code = code : (items.forEach(item => { item.code = code; }));
+    replaceItems(context, items);
+  };
   
   module.exports = { before: {
-      
+    create: insertCode('a')
   } };
   ```
   
 - **Details**
 
+  `getItems` gets the records from the hook context: `context.data` (before hook) or `context.result[.data]` (after hook).
+  
 {% hooksApiFootnote getItems %}
 
 <!--=============================================================================================-->
-<h3 id="replaceitems">replaceItems(context, items)</h3>
+<h3 id="replaceitems">replaceItems( context, records )</h3>
 
 {% hooksApi replaceItems %}
 
+- **Arguments**
 
-- **Arguments:**
-  - `???`
+  - `{Object} context`
+  - `{Array< Object > | Object} records`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | 
+`context` | `Object` |  | The hook context.
+`records` | `Array< Object >` `Object` | | The new records.
 
 - **Example**
 
   ``` js
-  const { replaceItems } = require('feathers-hooks-common');
-  
+  const { getItems, replaceItems } = require(('feathers-hooks-common');
+    
+  const insertCode = code => context {
+    const items = getItems(context);
+    !Array.isArray(items) ? items.code = code : (items.forEach(item => { item.code = code; }));
+    replaceItems(context, items);
+  };
+    
   module.exports = { before: {
-      
+    create: insertCode('a')
   } };
   ```
   
 - **Details**
 
+  `replaceItems` replaces the records in the hook context: `context.data` (before hook) or `context.result[.data]` (after hook).
+ 
 {% hooksApiFootnote replaceItems %}
 
 <!--=============================================================================================-->
-<h3 id="makecalliningparams">makeCallingParams(context, query, include, inject)</h3>
+<h3 id="makecallingparams">makeCallingParams( context, query, include, inject )</h3>
 
-When calling another service within a hook, [consideration must be given](https://docs.feathersjs.com/guides/step-by-step/basic-feathers/writing-hooks.html#calling-a-service) to what the `context.params` should be for the called service. For example, should the called service see that a client is making the call, or the server? What authentication and authorization information should be provided? You can use this convenience **utility function** to help create that `context.params`.
-  
+
 {% hooksApi makeCallingParams %}
 
 
-- **Arguments:**
+- **Arguments**
   - `{Object} context`
   - `{Object} [ query ]`
   - `{Array< String > | String} [ include ]`
@@ -1574,49 +1606,70 @@ Variable | Type | Default | Description
   
 - **Details**
 
-  `context.params._populate: 'skip'` is automatically added to skip any `fastJoin` or `populate` hooks registered on the called service. Set it to `false`, like in the example above, to make those hooks run.
+  When calling another service within a hook, [consideration must be given](https://docs.feathersjs.com/guides/step-by-step/basic-feathers/writing-hooks.html#calling-a-service) to what the `context.params` should be for the called service. For example, should the called service see that a client is making the call, or the server? What authentication and authorization information should be provided? You can use this convenience function to help create that `context.params`.
+   
+  The value `context.params._populate: 'skip'` is automatically added to skip any `fastJoin` or `populate` hooks registered on the called service. Set it to `false`, like in the example above, to make those hooks run.
 
 {% hooksApiFootnote makeCallingParams %}
 
 <!--=============================================================================================-->
-<h3 id="paramsforserver">paramsForServer(params, ... whitelist)</h3>
+<h3 id="paramsforserver">paramsForServer( params [, ... whitelist] )</h3>
 
 {% hooksApi paramsForServer %}
 
-
-- **Arguments:**
-  - `???`
+- **Arguments**
+  - `{Object} params`
+  - `{Array< String >} [ whitelist ]`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | 
+`params` | `Object` |  | The `context.params` to use for the service call, including any query object.
+`whitelist` | dot notation | all props in `context.params` | Names of the props in `context.params` to transfer to the server. This is a security feature. All props are transferred if no `whitelist` is provided.
 
 - **Example**
 
   ``` js
+  // client
   const { paramsForServer } = require('feathers-hooks-common');
   
+  service.update(id, data, paramsForServer({
+    query: { dept: 'a' }, populate: 'po-1', serialize: 'po-mgr'
+  }));
+  
+  // server
+  const { paramsFromClient } = require('feathers-hooks-common');
+  
   module.exports = { before: {
-      
+      all: [
+        paramsFromClient('populate', 'serialize', 'otherProp'),
+        myHook
+      ]
   } };
+  
+  // myHook's `context.params` will now be
+  // { query: { dept: 'a' }, populate: 'po-1', serialize: 'po-mgr' } }
   ```
   
 - **Details**
 
+  By default, only the `context.params.query` object is transferred from a Feathers client to the server, for security among other reasons. However you can explicitly transfer other `context.params` props with the client utility function `paramsForServer` in conjunction with the `paramsFromClient` hook on the server.
+
+  This technique also works for service calls made on the server.
+
 {% hooksApiFootnote paramsForServer %}
 
 <!--=============================================================================================-->
-<h3 id="thenifyhook">service.get(...).then(thenifyHook(options)(hookFunc))</h3>
+<h3 id="thenifyhook">service.get( ... ).then(thenifyHook( options )( hookFunc ))</h3>
 
 {% hooksApi thenifyHook %}
 
 
-- **Arguments:**
+- **Arguments**
   - `???`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | 
+`transports` |  |  | 
 
 - **Example**
 
@@ -1627,8 +1680,6 @@ Argument | Type | Default | Description
       
   } };
   ```
-  
-- **Details**
 
 {% hooksApiFootnote thenifyHook %}
 
@@ -1642,12 +1693,12 @@ Argument | Type | Default | Description
 {% hooksApi ??? %}
 
 
-- **Arguments:**
+- **Arguments**
   - `???`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`providers` |  |  | 
+`transports` |  |  | 
 
 - **Example**
 

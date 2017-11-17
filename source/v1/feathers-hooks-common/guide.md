@@ -579,3 +579,385 @@ By now you have an understanding of the foundations of Facebook's [GraphQL](http
 
 You may want to read about the Feathers service adapter [@feathers-plus/graphql](../graphql). **It supports SQL and non-SQL databases,** and automatically generates the resolver functions.
 
+<!--=============================================================================================-->
+<!--=============================================================================================-->
+<!--=============================================================================================-->
+## Populate
+
+### `populate(options: Object): HookFunc` [source](https://github.com/feathersjs/feathers-hooks-common/blob/master/src/services/populate.js)
+
+Populates items *recursively* to any depth. Supports 1:1, 1:n and n:1 relationships.
+
+- Used as a **before** or **after** hook on any service method.
+- Supports multiple result items, including paginated `find`.
+- Permissions control what a user may see.
+- Provides performance profile information.
+- Backward compatible with the old FeathersJS `populate` hook.
+
+### Examples
+
+- 1:1 relationship
+
+```javascript
+// users like { _id: '111', name: 'John', roleId: '555' }
+// roles like { _id: '555', permissions: ['foo', bar'] }
+import { populate } from 'feathers-hooks-common';
+
+const userRoleSchema = {
+  include: {
+    service: 'roles',
+    nameAs: 'role',
+    parentField: 'roleId',
+    childField: '_id'
+  }
+};
+
+app.service('users').hooks({
+  after: {
+    all: populate({ schema: userRoleSchema })
+  }
+});
+
+// result like
+// { _id: '111', name: 'John', roleId: '555',
+//   role: { _id: '555', permissions: ['foo', bar'] } }
+```
+
+- 1:n relationship
+
+```javascript
+// users like { _id: '111', name: 'John', roleIds: ['555', '666'] }
+// roles like { _id: '555', permissions: ['foo', 'bar'] }
+const userRolesSchema = {
+  include: {
+    service: 'roles',
+    nameAs: 'roles',
+    parentField: 'roleIds',
+    childField: '_id'
+  }
+};
+
+usersService.hooks({
+  after: {
+    all: populate({ schema: userRolesSchema })
+  }
+});
+
+// result like
+// { _id: '111', name: 'John', roleIds: ['555', '666'], roles: [
+//   { _id: '555', permissions: ['foo', 'bar'] }
+//   { _id: '666', permissions: ['fiz', 'buz'] }
+// ]}
+```
+
+- n:1 relationship
+
+```javascript
+// posts like { _id: '111', body: '...' }
+// comments like { _id: '555', text: '...', postId: '111' }
+const postCommentsSchema = {
+  include: {
+    service: 'comments',
+    nameAs: 'comments',
+    parentField: '_id',
+    childField: 'postId'
+  }
+};
+
+postService.hooks({
+  after: {
+    all: populate({ schema: postCommentsSchema })
+  }
+});
+
+// result like
+// { _id: '111', body: '...' }, comments: [
+//   { _id: '555', text: '...', postId: '111' }
+//   { _id: '666', text: '...', postId: '111' }
+// ]}
+```
+
+- Multiple and recursive includes
+
+```javascript
+const schema = {
+  service: '...',
+  permissions: '...',
+  include: [
+    {
+      service: 'users',
+      nameAs: 'authorItem',
+      parentField: 'author',
+      childField: 'id',
+      include: [ ... ],
+    },
+    {
+      service: 'comments',
+      parentField: 'id',
+      childField: 'postId',
+      query: {
+        $limit: 5,
+        $select: ['title', 'content', 'postId'],
+        $sort: {createdAt: -1}
+      },
+      select: (hook, parent, depth) => ({ $limit: 6 }),
+      asArray: true,
+      provider: undefined,
+    },
+    {
+      service: 'users',
+      permissions: '...',
+      nameAs: 'readers',
+      parentField: 'readers',
+      childField: 'id'
+    }
+  ],
+};
+
+module.exports.after = {
+  all: populate({ schema, checkPermissions, profile: true })
+};
+```
+
+- Flexible relationship, similar to the n:1 relationship example above
+
+```javascript
+// posts like { _id: '111', body: '...' }
+// comments like { _id: '555', text: '...', postId: '111' }
+const postCommentsSchema = {
+  include: {
+    service: 'comments',
+    nameAs: 'comments',
+    select: (hook, parentItem) => ({ postId: parentItem._id }),
+  }
+};
+
+postService.hooks({
+  after: {
+    all: populate({ schema: postCommentsSchema })
+  }
+});
+
+// result like
+// { _id: '111', body: '...' }, comments: [
+//   { _id: '555', text: '...', postId: '111' }
+//   { _id: '666', text: '...', postId: '111' }
+// ]}
+```
+
+### Options
+
+- `schema` (*required*, object or function) How to populate the items. [Details are below.](#schema)
+    - Function signature `(hook: Hook, options: Object): Object`
+    - `hook` The hook.
+    - `options` The `options` passed to the populate hook.
+- `checkPermissions` [optional, default () => true] Function to check if the user is allowed to perform this populate,
+or include this type of item. Called whenever a `permissions` property is found.
+    - Function signature `(hook: Hook, service: string, permissions: any, depth: number): boolean`
+    - `hook` The hook.
+    - `service` The name of the service being included, e.g. users, messages.
+    - `permissions` The value of the permissions property.
+    - `depth` How deep the include is in the schema. Top of schema is 0.
+    - Return truesy to allow the include.
+- `profile` [optional, default false] If `true`, the populated result is to contain a performance profile.
+Must be `true`, truesy is insufficient.
+
+### Schema
+
+The data currently in the hook will be populated according to the schema. The schema starts with:
+
+```javascript
+const schema = {
+  service: '...',
+  permissions: '...',
+  include: [ ... ]
+};
+```
+
+- `service` (*optional*) The name of the service this schema is to be used with.
+This can be used to prevent a schema designed to populate 'blog' items
+from being incorrectly used with `comment` items.
+- `permissions` (*optional*, any type of value) Who is allowed to perform this populate. See `checkPermissions` above.
+- `include` (*optional*) Which services to join to the data.
+
+#### Include
+
+The `include` array has an element for each service to join. They each may have:
+
+```javascript
+{ service: 'comments',
+  nameAs: 'commentItems',
+  permissions: '...',
+  parentField: 'id',
+  childField: 'postId',
+  query: {
+    $limit: 5,
+    $select: ['title', 'content', 'postId'],
+    $sort: {createdAt: -1}
+  },
+  select: (hook, parent, depth) => ({ $limit: 6 }),
+  asArray: true,
+  paginate: false,
+  provider: undefined,
+  useInnerPopulate: false,
+  include: [ ... ]
+}
+```
+
+> **ProTip** Instead of setting `include` to a 1-element array,
+you can set it to the include object itself,
+e.g. `include: { service: ..., nameAs: ..., ... }`.
+
+- `service` [required, string] The name of the service providing the items.
+- `nameAs` [optional, string, default is service] Where to place the items from the join.
+Dot notation is allowed.
+- `permissions` [optional, any type of value] Who is allowed to perform this join. See `checkPermissions` above.
+- `parentField` [required if neither query nor select, string] The name of the field in the parent item for the [relation](#relation).
+Dot notation is allowed.
+- `childField` [required if neither query nor select, string] The name of the field in the child item for the [relation](#relation).
+Dot notation is allowed and will result in a query like `{ 'name.first': 'John' }`
+which is not suitable for all DBs.
+You may use `query` or `select` to create a query suitable for your DB.
+- `query` [optional, object] An object to inject into the query in `service.find({ query: { ... } })`.
+- `select` [optional, function] A function whose result is injected into the query.
+    - Function signature `(hook: Hook, parentItem: Object, depth: number): Object`
+    - `hook` The hook.
+    - `parentItem` The parent item to which we are joining.
+    - `depth` How deep the include is in the schema. Top of schema is 0.
+- `asArray` [optional, boolean, default false] Force a single joined item to be stored as an array.
+- `paginate` {optional, boolean or number, default false]
+Controls pagination for this service.
+    - `false` No pagination. The default.
+    - `true` Use the configuration provided when the service was configured/
+    - A number. The maximum number of items to include.
+- `provider` [optional] `find` calls are made to obtain the items to be joined.
+These, by default, are initialized to look like they were made
+by the same provider as that getting the base record.
+So when populating the result of a call made via `socketio`,
+all the join calls will look like they were made via `socketio`.
+Alternative you can set `provider: undefined` and the calls for that join will
+look like they were made by the server.
+The hooks on the service may behave differently in different situations.
+- `useInnerPopulate` [optional] Populate, when including records from a child service,
+ignores any populate hooks defined for that child service.
+The useInnerPopulate option will run those populate hooks.
+This allows the populate for a base record to include child records
+containing their own immediate child records,
+without the populate for the base record knowing what those grandchildren populates are.
+- `include` [optional] The new items may themselves include other items. The includes are recursive.
+
+Populate forms the query `[childField]: parentItem[parentField]` when the parent value is not an array.
+This will include all child items having that value.
+
+Populate forms the query `[childField]: { $in: parentItem[parentField] }` when the parent value is an array.
+This will include all child items having any of those values.
+
+A populate hook for, say, `posts` may include items from `users`.
+Should the `users` hooks also include a populate,
+that `users` populate hook will not be run for includes arising from `posts`.
+
+> **ProTip** The populate interface only allows you to directly manipulate `hook.params.query`.
+You can manipulate the rest of `hook.params` by using the
+[`client`](https://docs.feathersjs.com/v/auk/hooks/common/utils.html#client) hook,
+along with something like `query: { ..., $client: { paramsProp1: ..., paramsProp2: ... } }`.
+
+### Added properties
+
+Some additional properties are added to populated items. The result may look like:
+
+```javascript
+{ ...
+  _include: [ 'post' ],
+  _elapsed: { post: 487947, total: 527118 },
+  post:
+    { ...
+      _include: [ 'authorItem', 'commentsInfo', 'readersInfo' ],
+      _elapsed: { authorItem: 321973, commentsInfo: 469375, readersInfo: 479874, total: 487947 },
+      _computed: [ 'averageStars', 'views' ],
+      authorItem: { ... },
+      commentsInfo: [ { ... }, { ... } ],
+      readersInfo: [ { ... }, { ... } ]
+} }
+```
+
+- `_include` The property names containing joined items.
+- `_elapsed` The elapsed time in nano-seconds (where 1,000,000 ns === 1 ms) taken to perform each include,
+as well as the total taken for them all.
+This delay is mostly attributed to your DB.
+- `_computed` The property names containing values computed by the `serialize` hook.
+
+The [depopulate](#depopulate) hook uses these fields to remove all joined and computed values.
+This allows you to then `service.patch()` the item in the hook.
+
+### Joining without using related fields
+
+Populate can join child records to a parent record using the related columns
+`parentField` and `childField`.
+However populate's `query` and `select` options may be used to related the
+records without needing to use the related columns.
+This is a more flexible, non-SQL-like way of relating records.
+It easily supports dynamic, run-time schemas since the `select` option may be
+a function.
+
+### Populate examples
+
+#### Selecting schema based on UI needs
+
+Consider a Purchase Order item.
+An Accounting oriented UI will likely want to populate the PO with Invoice items.
+A Receiving oriented UI will likely want to populate with Receiving Slips.
+
+Using a function for `schema` allows you to select an appropriate schema based on the need.
+The following example shows how the client can ask for the type of schema it needs.
+
+```javascript
+// on client
+import { paramsForServer } from 'feathers-hooks-common';
+purchaseOrders.get(id, paramsForServer({ schema: 'po-acct' })); // pass schema name to server
+// or
+purchaseOrders.get(id, paramsForServer({ schema: 'po-rec' }));
+```
+
+```javascript
+// on server
+import { paramsFromClient } from 'feathers-hooks-common';
+const poSchemas = {
+  'po-acct': /* populate schema for Accounting oriented PO e.g. { include: ... } */,
+  'po-rec': /* populate schema for Receiving oriented PO */
+};
+
+purchaseOrders.before({
+  all: paramsfromClient('schema')
+});
+
+purchaseOrders.after({
+  all: populate({ schema: hook => poSchemas[hook.params.schema] }),
+});
+```
+
+#### Using permissions
+
+For a simplistic example,
+assume `hook.params.users.permissions` is an array of the service names the user may use,
+e.g. `['invoices', 'billings']`.
+These can be used to control which types of items the user can see.
+
+The following populate will only be performed for users whose `user.permissions` contains `'invoices'`.
+
+```javascript
+const schema = {
+  include: [
+    {
+      service: 'invoices',
+      permissions: 'invoices',
+      ...
+    }
+  ]
+};
+
+purchaseOrders.after({
+  all: populate(schema, (hook, service, permissions) => hook.params.user.permissions.includes(service))
+});
+```
+
+See also dePopulate, serialize.
