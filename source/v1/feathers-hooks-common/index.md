@@ -50,16 +50,16 @@ These changes may affect your projects when you switch from this repo's last Fea
   - Added new hooks and utility functions.
     - `cache` - Persistent, least-recently-used record cache for services.
     - `fastJoin` - A much faster, more flexible alternative to `populate`.
-    - `keep`, `keepQuery` and `keepQueryuery`.
+    - `keep`, `keepQuery`.
     - `op` - Flexibly mutate data and results.
     - `opQuery` - Flexibly mutate the query object.
     - `makeCallingParams` utility - Help construct `context.params` when calling services within hooks.
-    - `thenifyHook` utility - Let's you call a hook right after the service call.
+    - `thenifyHook` utility - Let's you call a hook inside a `.then()` right after the service call.
     
   - These hooks are deprecated and will be removed in the next FeathersJS version *Crow*.
     - Deprecated `pluck` in favor of `keep`, e.g. `iff(isProvider('external'),` ` keep(...fieldNames))`. This deprecates the last hook with unexpected internal "magic". **Be careful!**
     - Deprecated `pluckQuery` in favor of `keepQuery` for naming consistency.
-    - Deprecated `removeQuery` in favor of `keepQueryuery` for naming consistency.
+    - Deprecated `removeQuery` in favor of `discardQuery` for naming consistency.
     - Deprecated `client` in favor of `paramsFromClient` for naming consistency.
     - Deprecated `createdAt` and `updatedAt` in favor of `setNow`.
     - Deprecated `callbackToPromise` in favor of Node's `require('util').promisify`.
@@ -73,6 +73,9 @@ These changes may affect your projects when you switch from this repo's last Fea
 
 <!--=============================================================================================-->
 ## Find Hooks using Tags
+
+  Each Feathers hook and utility function is listed under all the tags relevant to it.
+
 
 {% hooksByTags %}
 
@@ -91,7 +94,7 @@ These changes may affect your projects when you switch from this repo's last Fea
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`label` | `String` | none | Label to identify the logged information.
+`label` | `String` | | Label to identify the logged information.
 
 - **Example**
 
@@ -601,7 +604,7 @@ Argument | Type | Default | Description
 {% hooksApiFootnote isNot %}
 
 <!--=============================================================================================-->
-<h3 id="isprovider">isProvider( ...transports </h3>
+<h3 id="isprovider">isProvider( ...transports )</h3>
 
 {% hooksApi isProvider %}
 
@@ -810,21 +813,163 @@ Argument | Type | Default | Description
 
 > Read the [guide](guide.md/populate) for more information on the arguments.
 
-- **Example using Feathers services**
+- **Examples**
 
-  ```js
+  - 1:1 relationship
+
+  ```javascript
+  // users like { _id: '111', name: 'John', roleId: '555' }
+  // roles like { _id: '555', permissions: ['foo', bar'] }
+  import { populate } from 'feathers-hooks-common';
+    
+  const userRoleSchema = {
+    include: {
+      service: 'roles',
+      nameAs: 'role',
+      parentField: 'roleId',
+      childField: '_id'
+    }
+  };
+    
+  app.service('users').hooks({
+    after: {
+      all: populate({ schema: userRoleSchema })
+    }
+  });
+    
+  // result like
+  // { _id: '111', name: 'John', roleId: '555',
+  //   role: { _id: '555', permissions: ['foo', bar'] } }
+  ```
+
+  - 1:n relationship
+
+  ```javascript
+  // users like { _id: '111', name: 'John', roleIds: ['555', '666'] }
+  // roles like { _id: '555', permissions: ['foo', 'bar'] }
+  const userRolesSchema = {
+    include: {
+      service: 'roles',
+      nameAs: 'roles',
+      parentField: 'roleIds',
+      childField: '_id'
+    }
+  };
+  
+  usersService.hooks({
+    after: {
+      all: populate({ schema: userRolesSchema })
+    }
+  });
+    
+  // result like
+  // { _id: '111', name: 'John', roleIds: ['555', '666'], roles: [
+  //   { _id: '555', permissions: ['foo', 'bar'] }
+  //   { _id: '666', permissions: ['fiz', 'buz'] }
+  // ]}
+  ```
+
+  - n:1 relationship
+
+  ```javascript
+  // posts like { _id: '111', body: '...' }
+  // comments like { _id: '555', text: '...', postId: '111' }
+  const postCommentsSchema = {
+    include: {
+      service: 'comments',
+      nameAs: 'comments',
+      parentField: '_id',
+      childField: 'postId'
+    }
+  };
+    
+  postService.hooks({
+    after: {
+      all: populate({ schema: postCommentsSchema })
+    }
+  });
+    
+  // result like
+  // { _id: '111', body: '...' }, comments: [
+  //   { _id: '555', text: '...', postId: '111' }
+  //   { _id: '666', text: '...', postId: '111' }
+  // ]}
+  ```
+
+  - Multiple and recursive includes
+
+  ```javascript
+  const schema = {
+    service: '...',
+    permissions: '...',
+    include: [
+      {
+        service: 'users',
+        nameAs: 'authorItem',
+        parentField: 'author',
+        childField: 'id',
+        include: [ ... ],
+      },
+      {
+        service: 'comments',
+        parentField: 'id',
+        childField: 'postId',
+        query: {
+          $limit: 5,
+          $select: ['title', 'content', 'postId'],
+          $sort: {createdAt: -1}
+        },
+        select: (hook, parent, depth) => ({ $limit: 6 }),
+        asArray: true,
+        provider: undefined,
+      },
+      {
+        service: 'users',
+        permissions: '...',
+        nameAs: 'readers',
+        parentField: 'readers',
+        childField: 'id'
+      }
+    ],
+  };
+    
+  module.exports.after = {
+    all: populate({ schema, checkPermissions, profile: true })
+  };
+  ```
+
+  - Flexible relationship, similar to the n:1 relationship example above
+
+  ```javascript
+  // posts like { _id: '111', body: '...' }
+  // comments like { _id: '555', text: '...', postId: '111' }
+  const postCommentsSchema = {
+    include: {
+      service: 'comments',
+      nameAs: 'comments',
+      select: (hook, parentItem) => ({ postId: parentItem._id }),
+    }
+  };
+  
+  postService.hooks({
+    after: {
+      all: populate({ schema: postCommentsSchema })
+    }
+  });
+    
+  // result like
+  // { _id: '111', body: '...' }, comments: [
+  //   { _id: '555', text: '...', postId: '111' }
+  //   { _id: '666', text: '...', postId: '111' }
+  // ]}
   ```
 
 - **Details**
   
-  Supports 1:1, 1:n and n:1 relationships.
-  
-  Provides performance profile information.
-  
-  We often want to combine rows from two or more tables based on a relationship between them. The `populate` hook will select records that have matching values in both tables. It can batch service calls and cache records, thereby needing roughly an order of magnitude fewer database calls than the `populate` hook, e.g. *2* calls instead of *20*.
-  
-  `populate` uses a GraphQL-like imperative API, and it is not restricted to using data from Feathers services. Resources for which there are no Feathers adapters can [be used.](../batch-loader/common-patterns.html#Using-non-Feathers-services)
+  We often want to combine rows from two or more tables based on a relationship between them. The `populate` hook will select records that have matching values in both tables.
 
+  `populate` supports 1:1, 1:n and n:1 relationships. It can provide performance profile information.
+  
 {% hooksApiFootnote populate %}
 
 <!--=============================================================================================-->
@@ -851,31 +996,76 @@ Argument | Type | Default | Description
 {% hooksApiFootnote preventChanges %}
 
 <!--=============================================================================================-->
-<h3 id="serialize">serialize( options )</h3>
+<h3 id="serialize">serialize( schema )</h3>
 
-> Work in progress.
-
-Remove selected information from populated items. Add new computed information. Intended for use with the populate hook.
   
 {% hooksApi serialize %}
 
 
 - **Arguments**
-  - `???`
+  - `{Object | Function} schema`
+    - `{Array< String> | String} only`
+    - `{Array< String> | String} exclude`
+    - `[fieldName]: {Object} schema`
+    - `{Object} computed`
+      - `[fieldName]: {Function} computeFunc`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`transports` |  |  | 
+`schema` | `Object` `Function` | `context` `=> schema` | How to serialize the items.
+
+
+`schema` | Argument | Type | Default | Description
+---|---|:---:|---|---
+ | `only` | `Array<` `String>` or `String` | | The names of the fields to keep in each item. The names for included sets of items plus `_include` and `_elapsed` are not removed by `only`.
+ | `exclude` | `Array<` `String>` or `String` | | The names of fields to drop in each item. You may drop, at your own risk, names of included sets of items, `_include` and `_elapsed`.
+ | `computed` | `Object` | | The new names you want added and how to compute their values.
+ 
+`schema` `.computed` | Argument | Type | Default | Description
+---|---|:---:|---|---
+ | `fieldName` | `String` | | The name of the field to add to the records.
+ | `computeFunnc` | `Function` | `(record,` `context)` `=> value` | Function to calculate the computed value. `item`: The item with all its initial values, plus all of its included items. The function can still reference values which will be later removed by only and exclude. `context`: The context passed to `serialize`.
 
 - **Example**
 
+  The schema reflects the structure of the populated records. The base records for this example have included `post` records, which themselves have included `authorItem`, `readersInfo` and `commentsInfo` records.
+
   ``` js
-  const { ??? } = require('feathers-hooks-common');
+  const schema = {
+    only: 'updatedAt',
+    computed: {
+      commentsCount: (recommendation, hook) => recommendation.post.commentsInfo.length,
+    },
+    post: {
+      exclude: ['id', 'createdAt', 'author', 'readers'],
+      authorItem: {
+        exclude: ['id', 'password', 'age'],
+        computed: {
+          isUnder18: (authorItem, hook) => authorItem.age < 18,
+        },
+      },
+      readersInfo: {
+        exclude: 'id',
+      },
+      commentsInfo: {
+        only: ['title', 'content'],
+        exclude: 'content',
+      },
+    },
+  };
+  purchaseOrders.after({
+    all: [ populate( ... ), serialize(schema) ]
+  });
   
-  module.exports = { before: {
-      
+  module.exports = { after: {
+    get: [ populate( ... ), serialize(schema) ],
+    find: [ fastJoin( ... ), serialize(schema) ]
   } };
   ```
+  
+- **Details**
+
+  Works with <code>fastJoin</code> and <code>populate</code>.
 
 {% hooksApiFootnote serialize %}
 

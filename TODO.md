@@ -75,19 +75,14 @@ Variable | Type | Description
  
 - misc
  stash-before.js
+ 
+- relations
+ populate.js
+ de-populate.js
+ serialize.js
   
 ====================================
  
-
-
-
-
- de-populate.js
-
- populate.js
-
- serialize.js
-
  set-slug.js
 
  soft-delete.js
