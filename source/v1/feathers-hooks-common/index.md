@@ -9,21 +9,30 @@ repo: feathers-hooks-common
 <!--=============================================================================================-->
 ## Usage
 
-<p class="tip">Use feathers-hooks-common v3.10.0 with FeathersJS v3 (Auk).
-Use feathers-hooks-common v4.x.x with FeathersJS v4 (Buzzard).</p>
+Use feathers-hooks-common v3.10.0 with FeathersJS Auk.
+Use feathers-hooks-common v4.x.x with FeathersJS Buzzard.
+
+<p class="tip">Until its published on npm, you can get install v4.0.0 with `"feathers-hooks-common":` `"git://github.com/feathers-plus/feathers-hooks-common.git#master"` in package.json.
+
+v4.x.x. should work with Feathers Auk if you don't use callbacks in your hooks.</p>
+
+> Hook may be used on the client as well as the server.
 
 ``` js
 npm install --save feathers-hooks-common
 
-// project/src/services/user/user.hooks.js
-const { disableMultiItemChange, populate } = require('feathers-hooks-common');
-
-const schema = {
-  include: {
-    service: 'roles',
-    nameAs: 'role',
-    parentField: 'roleId',
-    childField: '_id'
+// project/src/services/posts/posts.hooks.js
+const { disableMultiItemChange, fastJoin } = require('feathers-hooks-common');
+  
+const postResolvers = {
+  joins: {
+    author: () => async post => post.author = (await users.find({ query: {
+      id: post.userId
+    } }))[0],
+      
+    starers: $select => async post => post.starers = await users.find({ query: {
+      id: { $in: post.starIds }, $select: $select || ['name']
+    } }),
   }
 };
 
@@ -34,27 +43,31 @@ module.exports = {
   },
 
   after: {
-    all: [ populate({ schema }) ],
+    all: [ fastJoin(postResolvers) ],
   },
 };
 ```
-
-> May be used on the client.
 
 <!--=============================================================================================-->
 ## Migrating from Auk to Buzzard
 
 These changes may affect your projects when you switch from this repo's last Feathers *Auk* version (v3.10.0) to its first Feathers *Buzzard* version (v4.0.0).
 
-  - Docs have been rewritten and now reside on the [Feathers-Plus web site.](https://feathers-plus.github.io/v1/feathers-hooks-common)
-  - Added new hooks and utility functions.
+  - The docs [have been rewritten.](https://feathers-plus.github.io/v1/feathers-hooks-common)
+  
+  - The new `fastJoin` hook is a much faster, more flexible alternative to `populate`.
+    - It makes only about 10% of the service calls, i.e. it makes *2* calls when `populate` might make *20*.
+    - It provides any Feathers service with GraphQL-light capabilities.
+    - The new `@feathers-plus/graphql` service adapter provides similar performance with full GraphQL compatibility. 
+    
+  - The new `thenifyHook` utility may help simplify your registered hooks. It let's you call a hook in the `.then()` following a service call.
+  
+  - Other new hooks and utility functions.
     - `cache` - Persistent, least-recently-used record cache for services.
-    - `fastJoin` - A much faster, more flexible alternative to `populate`.
     - `keep`, `keepQuery`.
-    - `op` - Flexibly mutate data and results.
-    - `opQuery` - Flexibly mutate the query object.
+    - `oper` - Flexibly mutate data and results.
+    - `operQuery` - Flexibly mutate the query object.
     - `makeCallingParams` utility - Help construct `context.params` when calling services within hooks.
-    - `thenifyHook` utility - Let's you call a hook inside a `.then()` right after the service call.
     
   - These hooks are deprecated and will be removed in the next FeathersJS version *Crow*.
     - Deprecated `pluck` in favor of `keep`, e.g. `iff(isProvider('external'),` ` keep(...fieldNames))`. This deprecates the last hook with unexpected internal "magic". **Be careful!**
@@ -68,6 +81,8 @@ These changes may affect your projects when you switch from this repo's last Fea
   - Removed hooks previously deprecated in *Auk*.:
     - Removed support for the deprecated legacy syntax in `populate`.
     - Removed `remove`.
+    
+  - The license now includes a clause which prevents the repo from being published on npm under another name. That is its only purpose; you can otherwise continue using the repo just as you have in the past.
           
 
 
@@ -347,6 +362,18 @@ Argument | Type | Default | Description
   module.exports = { after: {
       all: [ fastJoin(postResolvers, query) ],
   } };
+  
+  // Original record
+  [ { id: 1, body: 'John post', userId: 101, starIds: [102, 103, 104] } ]
+  
+  // Result
+  [ { id: 1,
+      body: 'John post',
+      userId: 101,
+      starIds: [ 102, 103, 104 ],
+      author: { id: 101, name: 'John' },
+      starers: [ { name: 'Marshall' }, { name: 'Barbara' }, { name: 'Aubree' } ]
+  }]
   ```
   
 - **Example with recursive operations**
@@ -381,9 +408,35 @@ Argument | Type | Default | Description
   module.exports = { after: {
       all: [ fastJoin(postResolvers, query) ],
   } };
+  
+  // Original record
+  [ { id: 1, body: 'John post', userId: 101, starIds: [102, 103, 104] } ]
+    
+  // Result
+  [ { id: 1,
+      body: 'John post',
+      userId: 101,
+      starIds: [ 102, 103, 104 ],
+      comments: 
+       [ { id: 11,
+           text: 'John post Marshall comment 11',
+           postId: 1,
+           userId: 102,
+           author: { id: 102, name: 'Marshall' } },
+         { id: 12,
+           text: 'John post Marshall comment 12',
+           postId: 1,
+           userId: 102,
+           author: { id: 102, name: 'Marshall' } },
+         { id: 13,
+           text: 'John post Marshall comment 13',
+           postId: 1,
+           userId: 102,
+           author: { id: 102, name: 'Marshall' } } ]
+  } ]
   ```
   
-- **Example with simple batch-loaders**
+- **Example with a simple batch-loader**
 
   ``` js
   // project/src/services/posts/posts.hooks.js
@@ -408,6 +461,21 @@ Argument | Type | Default | Description
   module.exports = { after: {
       all: [ fastJoin(postResolvers) ],
   } };
+  
+  // Original record
+  [ { id: 1, body: 'John post', userId: 101, starIds: [102, 103, 104] } ]
+    
+  // Result
+  [ { id: 1,
+      body: 'John post',
+      userId: 101,
+      starIds: [ 102, 103, 104 ],
+      author: { id: 101, name: 'John' },
+      starers: 
+       [ { id: 102, name: 'Marshall' },
+         { id: 103, name: 'Barbara' },
+         { id: 104, name: 'Aubree' } ]
+  } ]
   ```
   
 - **Comprehensive example**
@@ -471,6 +539,50 @@ Argument | Type | Default | Description
   module.exports = { after: {
       all: [ fastJoin(postResolvers, context => query) ],
   } };
+  
+  // Original record
+  [ { id: 1,
+      body: 'John post',
+      userId: 101,
+      starIds: [102, 103, 104],
+      reputation: [ // The `populate` hook cannot handle this structure.
+        { userId: 102, points: 1 },
+        { userId: 103, points: 1 },
+        { userId: 104, points: 1 }
+      ]},
+  ]
+    
+  // Results
+  [ { id: 1,
+      body: 'John post',
+      userId: 101,
+      starIds: [ 102, 103, 104 ],
+      reputation: 
+       [ { userId: 102, points: 1, author: 'Marshall' },
+         { userId: 103, points: 1, author: 'Barbara' },
+         { userId: 104, points: 1, author: 'Aubree' } ],
+      author: { id: 101, name: 'John' },
+      comments: 
+       [ { id: 11,
+           text: 'John post Marshall comment 11',
+           postId: 1,
+           userId: 102,
+           author: { id: 102, name: 'Marshall' } },
+         { id: 12,
+           text: 'John post Marshall comment 12',
+           postId: 1,
+           userId: 102,
+           author: { id: 102, name: 'Marshall' } },
+         { id: 13,
+           text: 'John post Marshall comment 13',
+           postId: 1,
+           userId: 102,
+           author: { id: 102, name: 'Marshall' } } ],
+      starers: 
+       [ { id: 102, name: 'Marshall' },
+         { id: 103, name: 'Barbara' },
+         { id: 104, name: 'Aubree' } ] },
+  ]
   ```
 
 - **Details**
@@ -997,10 +1109,8 @@ Argument | Type | Default | Description
 
 <!--=============================================================================================-->
 <h3 id="serialize">serialize( schema )</h3>
-
   
 {% hooksApi serialize %}
-
 
 - **Arguments**
   - `{Object | Function} schema`
@@ -1013,7 +1123,6 @@ Argument | Type | Default | Description
 Argument | Type | Default | Description
 ---|:---:|---|---
 `schema` | `Object` `Function` | `context` `=> schema` | How to serialize the items.
-
 
 `schema` | Argument | Type | Default | Description
 ---|---|:---:|---|---
@@ -1093,30 +1202,44 @@ Argument | Type | Default | Description
 {% hooksApiFootnote setNow %}
 
 <!--=============================================================================================-->
-<h3 id="setSlug">setSlug( slug, fieldName )</h3>
+<h3 id="setSlug">setSlug( slug [, fieldName] )</h3>
 
-> Work in Progress
-  
 {% hooksApi setSlug %}
 
-
 - **Arguments**
-  - `???`
+  - `{String} slug`
+  - `{String} [ fieldName ]`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`transports` |  |  | 
+`slug` | `String` |  | The slug as it appears in the route, e.g. `storeId` for` /stores/:storeId/candies`.
+`fieldName` | `String` | `query[slug]` | The field to contain the slug value.
 
 - **Example**
 
   ``` js
-  const { ??? } = require('feathers-hooks-common');
+  const { setSlug } = require('feathers-hooks-common');
   
   module.exports = { before: {
-      
+    all: [ hooks.setSlug('storeId') ]
   } };
+  
+  // `context.params.query` will always be normalized,
+  // e.g. `{ size: 'large', storeId: '123' }`
   ```
 
+- **Details**
+  
+  A service may have a slug in its URL, e.g. `storeId` in `app.use(` `'/stores/:storeId/candies',` `new Service());`. The service gets slightly different values depending on the transport used by the client.
+  
+| transport | `hook.data` `.storeId` | `hook.params` `.query` | code run on client |
+| -- | -- | -- | -- |
+| socketio | `undefined` | `{ size: 'large',` `storeId: '123' }` | `candies.create({ name: 'Gummi',qty: 100 },` `{ query: { size: 'large', storeId: '123' } })` |
+| rest | `:storeId` | same as above | same as above |
+| raw HTTP | `123` | `{ size: 'large' }` | `fetch('/stores/123/candies?size=large', ..` |
+
+This hook normalizes the difference between the transports.
+  
 {% hooksApiFootnote setSlug %}
 
 <!--=============================================================================================-->
@@ -1169,18 +1292,16 @@ Argument | Type | Default | Description
 <!--=============================================================================================-->
 <h3 id="softDelete">softDelete( fieldName )</h3>
 
-Marks items as { deleted: true } instead of physically removing them. This is useful when you want to discontinue use of, say, a department, but you have historical information which continues to refer to the discontinued department.
-  
 {% hooksApi softDelete %}
 
-> Must be used on `all` service call types, i.e. `create`, get`, `update`, `patch`, `remove` and `find`.
+  <p class="tip">Must be registered  on *all* the call types: create, get, update, patch, remove and find.</p>
 
 - **Arguments**
   - `{String} fieldName`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`fieldName` | `String` | `'deleted'` | The name of the field holding the deleted flag.
+`fieldName` | `String` | `'deleted'` | The name of the field for the logically deleted flag.
 
 - **Example**
 
@@ -1188,17 +1309,32 @@ Argument | Type | Default | Description
   const { softDelete } = require('feathers-hooks-common');
   const dept = app.service('departments');
   
-  dept.before({
+  module.exports = { before: {
     all: softDelete(),
-  });
+  } };
   
   // will throw if item is marked deleted.
-  dept.get(0).then()
+  dept.get(0).then(...)
   
   // methods can be run avoiding softDelete handling
-  dept.get(0, { query: { $disableSoftDelete: true }}).then()
+  dept.get(0, { query: { $disableSoftDelete: true }}).then(...)
   ```
 
+- **Detail**
+  
+  Marks items as `{ deleted: true }` instead of physically removing them. This is useful when you want to discontinue use of, say, a department, but you have historical information which continues to refer to the discontinued department.
+  
+  The hook performs its own preliminary `get` call if the original service call was not itself a `get`. The calling params for this prelinary `get` are formed from the original calling context:
+  ``` js
+  { query: {},
+    provider: context.params.provider, // Keep the same transport.
+    _populate: 'skip', // Skip any `fastJoin` or `populate` hooks.
+    authenticated: context.params.authenticated, // Keep authentication status.
+    user: context.params.user // Keep authenticated user information
+  }
+  ```
+  
+  <p class="tip">The `user` record is read by feathers-authentication` with a `get`. The `softDelete` hook will be run for this call unless it is conditioned to ignore it. This situation raises the most issues for this hook.</p>
 {% hooksApiFootnote softDelete %}
 
 <!--=============================================================================================-->
@@ -1257,7 +1393,7 @@ Argument | Type | Default | Description
 
   The hook always performs its own preliminary `get` call. If the original service call is also a `get`, its `context.params` is used for the preliminary `get`.
   
-  For any other method the the calling params are formed from the calling context:
+  For any other method the calling params are formed from the original calling context:
   ``` js
   { provider: context.params.provider,
     authenticated: context.params.authenticated,
@@ -1349,11 +1485,7 @@ Argument | Type | Default | Description
 
 <!--=============================================================================================-->
 <h3 id="validate">validate( validator )</h3>
-
-> Work in progress.
-
-Call a validation function from a before hook. The function may be sync or return a Promise.
-  
+ 
 {% hooksApi validate %}
 
 
@@ -1363,47 +1495,74 @@ Call a validation function from a before hook. The function may be sync or retur
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`validator` | `Function` |  | Validation function with signature `(formValues, context) => {}`.
+`validator` | `Function` |  | Validation function. See Details below..
 
 - **Example**
 
   ``` js
   const { callbackToPromise, validate } = require('feathers-hooks-common');
+  const { promisify } = require('util');
   
   // function myCallbackValidator(values, cb) { ... }
-  const myValidator = callbackToPromise(myCallbackValidator, 1); // function requires 1 param
-  app.service('users').before({ create: validate(myValidator) });
+  const myValidator = promisify(myCallbackValidator);
+  
+  module.exports = { before: {
+    create: validate(myValidator)
+  } };
   ```
   
 - **Details**
 
-  Sync functions return either an error object like `{ fieldName1: 'message', ... }` or `null`. Validate will throw on an error object with `throw new errors.BadRequest({ errors: errorObject });`.
+  The validation function may be sync or return a Promise. Sync functions return either an error object like `{ fieldName1: 'message', ... }` or `null`. They may also throw with `throw new errors.BadRequest({ errors: errors });`.
 
   Promise functions should throw on an error or reject with `new errors.BadRequest('Error message', { errors: { fieldName1: 'message', ... } });`. Their `.then` returns either sanitized values to replace `context.data`, or `null`.
-
-  If you have a different signature for the validator then pass a wrapper as the validator e.g. (values) => myValidator(..., values, ...)
-
-  Wrap your validator in callbackToPromise if it uses a callback.
-
-{% hooksApiFootnote validate %}
-
-<!--=============================================================================================-->
-
-<h3 id="validateSchema">validateSchema( schema, ajv, options )</h3>
-
-Validate an object using [JSON-Schema](http://json-schema.org/) through [Ajv](https://github.com/epoberezkin/ajv).
   
-{% hooksApi validateSchema %}
-
-
-- **Arguments**
-  - `???`
+  The validator's parameters are
   
-  > Work in progress.
+  - `{Object} formValues`
+  - `{Object} context`
+  
+  Sync functions return either an error object like `{ fieldName1: 'message', ... }` or `null`. `Validate` will throw on an error object with `throw new errors.BadRequest({ errors: errorObject });`.
+  
+  - `{Object | null} errors`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`transports` |  |  | 
+`formValues` | `Object` | | The data, e.g. `{ name: 'John', ... }`
+`context` | `Object` | | The hook context.
+`errors` | `Object` `null` | | An error object like `{ fieldName1: 'message', ... }`
+
+  Promise functions should throw on an error or reject with `new errors.BadRequest('Error message', { errors: { fieldName1: 'message', ... } });`. Their `.then` returns either sanitized values to replace the data in the `context`, or `null`.
+
+  
+  > If you have a different signature for the validator then pass a wrapper as the validator e.g. `values => myValidator(..., values, ...)`.
+
+  > Wrap your validator in Node's `util.promisify` if it uses a callback.
+  
+{% hooksApiFootnote validate %}
+
+<!--=============================================================================================-->
+<h3 id="validateSchema">validateSchema( schema, ajv [, options] )</h3>
+  
+{% hooksApi validateSchema %}
+
+- **Arguments**
+  - `{Object} schema`
+  - `{Function | Object} ajv`
+  - `{Object} options`
+    - `{Function} [ addNewError ]`
+    - `...`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`schema` | `Object` |  | The [JSON-schema.](https://code.tutsplus.com/tutorials/validating-data-with-json-schema-part-1--cms-25343)
+`ajv` | `Function` `Object` | | The ajv validator. Could be either the Ajv constructor or an instance of it.
+`options` | `Object` | | Options for `validateSchema` and `ajv`.
+
+`options` | Argument | Type | Default | Description
+---|---|:---:|---|---
+ | `addNewError` | `Function` | see below | Custom error message formatter.
+ | other | `any` | | Any `ajv` options. Only effective when the second parameter is the `Ajv` constructor.
 
 - **Example**
 
@@ -1432,11 +1591,40 @@ Argument | Type | Default | Description
 
   There are some good [tutorials](https://code.tutsplus.com/tutorials/validating-data-with-json-schema-part-1--cms-25343) on using JSON-Schema with [Ajv](https://github.com/epoberezkin/ajv).
 
-  The hook will throw if the data does not match the JSON-Schema. `error.errors` will, by default, contain an array of error messages.
+  If you need to customize `Ajv` with new keywords, formats or schemas, then instead of passing the `Ajv` constructor, you may pass in an instance of `Ajv` as the second parameter. In this case you need to pass `Ajv` options to the `Ajv` instance when `new`ing, rather than passing them in the third parameter of `validateSchema`. See the examples.
+  
+- **options.addNewError**
 
-  You may customize the error message format with a custom formatting function. You could, for example, return `{ name1: message, name2: message }` which could be more suitable for a UI.
+  The hook will throw if the data does not match the JSON-Schema. `error.errors` will, by default, contain an array of error messages. You may change this with a custom formatting function. Its a reducing function which works similarly to `Array.reduce()`. Its parameters are
+  
+  - `{any} currentFormattedMessages `
+  - `{Object} ajvErrorObject`
+  - `{Number} itemsLen`
+  - `{Number} index`
+  
+  It returns
+  
+  - `{any} newFormattedMessages`
 
-  If you need to customize `Ajv` with new keywords, formats or schemas, then instead of passing the `Ajv` constructor, you may pass in an instance of `Ajv` as the second parameter. In this case you need to pass `Ajv` options to the `Ajv` instance when `new`ing, rather than passing them in the third parameter of `validateSchema`. See the second example below.
+Argument | Type | Default | Description
+---|:---:|---|---
+`currentFormattedMessages` | `any` | initially `null` | Formatted messages so far. Initially null.
+`ajvErrorObject` | `Object` | | [ajv error object](https://github.com/epoberezkin/ajv#error-objects)
+`itemsLen` | `Number` | | How many data items there are. 1-based.
+`item` | `Number` | | Which item this is. 0-based.
+`newFormattedMessages` | `any` | | The function returns the updated formatted messages.
+
+  `error.errors` will, by default, contain an array of error messages. By default the message will look like
+  ``` js
+  [ "'in row 1 of 3, first' should match format \"startWithJo\"",
+    "in row 1 of 3, should have required property 'last'",
+    "'in row 2 of 3, first' should match format \"startWithJo\"",
+    "in row 3 of 3, should have required property 'last'" ]
+  ```
+  
+  > You could, for example, return `{ name1: message, name2: message }` which might be more suitable for a UI.
+  
+  > You can consider using ajv-i18n, together with the messages option, to internationalize your error messages.
 
 {% hooksApiFootnote validateSchema %}
 
@@ -1849,27 +2037,81 @@ Argument | Type | Default | Description
 {% hooksApiFootnote paramsForServer %}
 
 <!--=============================================================================================-->
-<h3 id="thenifyhook">service.get( ... ).then(thenifyHook( options )( hookFunc ))</h3>
+<h3 id="thenifyhook">thenifyHook( [ hookContext ] )( hookFunc )</h3>
 
 {% hooksApi thenifyHook %}
 
-
 - **Arguments**
-  - `???`
+  - `{Object} [ hookContext ]`
+  - `{Function} hookFunc`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`transports` |  |  | 
+`hookContext` | `Object` | `{}` | The `context` for `hookFunc`.
+`hookFunc` | `Function` | | The hook to run.
 
 - **Example**
 
   ``` js
-  const { ??? } = require('feathers-hooks-common');
+  const { keep, thenifyHook } = require('feathers-hooks-common');
   
-  module.exports = { before: {
-      
-  } };
+  user.get(...)
+    .then( thenifyHook()(keep('name', 'address.city')) )
+    .then(data => ...); // [{ name: 'John', address: { city: 'Montreal' }}]
   ```
+  ``` js
+  const { fastJoin, thenifyHook } = require('feathers-hooks-common');
+  const thenified = thenifyHook({ app: app });
+  
+  const paymentsRecords= [
+    { _id: 101, amount: 100, patientId: 1 },
+    { _id: 102, amount: 105, patientId: 1 },
+    { _id: 103, amount: 110, patientId: 1 },
+    { _id: 104, amount: 115, patientId: 2 },
+    { _id: 105, amount: 120, patientId: 3 },
+    { _id: 106, amount: 125, patientId: 3 },
+  ];
+  await payments.create(paymentsRecords);
+  
+  const patientsRecords = [
+    { _id: 1, name: 'John' },
+    { _id: 2, name: 'Marshall' },
+    { _id: 3, name: 'David' },
+  ];
+  await patients.create(patientsRecords);
+  
+  const paymentResolvers = {
+    joins: {
+      patient: () => async payment => {
+        payment.patient = (await patients.find({ query: {
+          id: payment.patientId
+        } }))[0]
+      },
+    }
+  };
+    
+  await payments.find()
+    .then( thenified(fastJoin(paymentResolvers)) )
+    .then(data => console.log(data));
+    
+  // log
+  [ { _id: 101, amount: 100, patientId: 1, patient: { _id: 1, name: 'John' } },
+    { _id: 102, amount: 105, patientId: 1, patient: { _id: 1, name: 'John' } },
+    { _id: 103, amount: 110, patientId: 1, patient: { _id: 1, name: 'John' } },
+    { _id: 104, amount: 115, patientId: 2, patient: { _id: 2, name: 'Marshall' } },
+    { _id: 105, amount: 120, patientId: 3, patient: { _id: 3, name: 'David' } },
+    { _id: 106, amount: 125, patientId: 3, patient: { _id: 3, name: 'David' } } ]
+  ```
+
+- ** Details**
+
+  Hooks are normally registered for a service, e.g. in `project/src/services` `/posts/posts.hooks.js`. This is nice and simple when, for example,  all the `find` hooks have to run for every `find` call.
+  
+  The [conditional hooks](#tag-Conditionals) can be used when hooks have to be conditionally run based on the current environment. For example, we can discard the `password` field when the call is made by a client.
+  
+  However things are not always so straightforward. There can be that one call for which we want to join specific records. We could add a conditional hook that runs just for that one call, however we may soon find ourselves with a second and a third special case.
+  
+  `thenifyHook` is designed for such cases. Instead of having to register a conditioned hook, it allows us to run the hook in a `.then()` right after the service call.
 
 {% hooksApiFootnote thenifyHook %}
 
@@ -1905,6 +2147,15 @@ Argument | Type | Default | Description
 {% hooksApiFootnote ??? %}
 
 <!--=============================================================================================-->
+<!--=============================================================================================-->
+## F.A.Q.
+
+<!--=============================================================================================-->
+<h3 id="coerce">Coerce data types</h3>
+
+ A common need is converting fields coming in from query params.  These fields are provided as string values by default and you may need them as numbers, booleans, etc.
+   
+ The [`validateSchema`](#validateSchema) does a wide selection of [type coercions](https://github.com/epoberezkin/ajv/blob/master/COERCION.md), as well as checking for missing and unexpected fields.
 
 <!--=============================================================================================-->
 <h2 id="whats-new">What's New</h2>

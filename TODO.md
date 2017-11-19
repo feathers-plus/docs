@@ -80,14 +80,16 @@ Variable | Type | Description
  populate.js
  de-populate.js
  serialize.js
+ 
+- validate
+ validate.js
+ validate-schema.js
+
+- rest
+ - set-slug
+ - thenify-hook.js
   
 ====================================
  
- set-slug.js
-
  soft-delete.js
-
- thenify-hook.js
  
- validate.js
- validate-schema.js
