@@ -60,7 +60,7 @@ These changes may affect your projects when you switch from this repo's last Fea
     - It provides any Feathers service with GraphQL-light capabilities.
     - The new `@feathers-plus/graphql` service adapter provides similar performance with full GraphQL compatibility. 
     
-  - The new `thenifyHook` utility may help simplify your registered hooks. It let's you call a hook in the `.then()` following a service call.
+  - The new `runHook` utility may help simplify your registered hooks. It let's you call a hook with `service.get(...).then(runHook()(populate(...)));`.
   
   - Other new hooks and utility functions.
     - `cache` - Persistent, least-recently-used record cache for services.
@@ -589,7 +589,7 @@ Argument | Type | Default | Description
   
   We often want to combine rows from two or more tables based on a relationship between them. The `fastJoin` hook will select records that have matching values in both tables. It can batch service calls and cache records, thereby needing roughly an order of magnitude fewer database calls than the `populate` hook, e.g. *2* calls instead of *20*.
   
-  Relationships such as `1:1`, `1:m`, `n:1`, and `n:m` relationships can be related.
+  Relationships such as `1:1`, `1:m`, `n:1`, and `n:m` relationships can be handled.
   
   `fastJoin` uses a GraphQL-like imperative API, and it is not restricted to using data from Feathers services. Resources for which there are no Feathers adapters can [be used.](../batch-loader/common-patterns.html#Using-non-Feathers-services)
 
@@ -1183,7 +1183,7 @@ Argument | Type | Default | Description
   
 {% hooksApi setNow %}
 
-{% hooksApiFieldNames keep "The fields that you want to add or set to the current date-time." %}
+{% hooksApiFieldNames setNow "The fields that you want to add or set to the current date-time." %}
 
 - **Example**
 
@@ -1653,13 +1653,9 @@ An alias for [iff](#iff).
 Argument | Type | Default | Description
 ---|:---:|---|---
 `context` | `Object` |  | The hook context.
-`type` | `String` | all types | The service type allowed.
-`methods` | `Array< String >` | all methods | The service methods allowed.
+`type` | `String` | all types | The service type allowed - before, after.
+`methods` | `Array< String >` | all methods | The service methods allowed - find, get, update, patch, remove.
 `label` | `String` | `'anonymous'` | Name of hook to use with `throw`.
-
-`type` - before, after.
-`methods` - find, get, update, patch, remove.
-
 
 - **Example**
 
@@ -2037,9 +2033,9 @@ Argument | Type | Default | Description
 {% hooksApiFootnote paramsForServer %}
 
 <!--=============================================================================================-->
-<h3 id="thenifyhook">thenifyHook( [ hookContext ] )( hookFunc )</h3>
+<h3 id="runhook">runHook( [ hookContext ] )( hookFunc )</h3>
 
-{% hooksApi thenifyHook %}
+{% hooksApi runHook %}
 
 - **Arguments**
   - `{Object} [ hookContext ]`
@@ -2053,15 +2049,18 @@ Argument | Type | Default | Description
 - **Example**
 
   ``` js
-  const { keep, thenifyHook } = require('feathers-hooks-common');
+  const { keep, runHook } = require('feathers-hooks-common');
   
   user.get(...)
-    .then( thenifyHook()(keep('name', 'address.city')) )
-    .then(data => ...); // [{ name: 'John', address: { city: 'Montreal' }}]
+    .then( runHook()(keep('name', 'address.state')) )
+    .then(data => ...); // [{ name: 'Marshall', address: { state: 'UT' }}]
+    
+  const data = await user.get(...);
+  const result = await runHook()(data)(keep('name', 'address.state'));
   ```
   ``` js
-  const { fastJoin, thenifyHook } = require('feathers-hooks-common');
-  const thenified = thenifyHook({ app: app });
+  const { fastJoin, runHook } = require('feathers-hooks-common');
+  const runHookFinds = runHook({ app: app, method: 'find' });
   
   const paymentsRecords= [
     { _id: 101, amount: 100, patientId: 1 },
@@ -2091,7 +2090,7 @@ Argument | Type | Default | Description
   };
     
   await payments.find()
-    .then( thenified(fastJoin(paymentResolvers)) )
+    .then( runHookFinds(fastJoin(paymentResolvers)) )
     .then(data => console.log(data));
     
   // log
@@ -2111,9 +2110,9 @@ Argument | Type | Default | Description
   
   However things are not always so straightforward. There can be that one call for which we want to join specific records. We could add a conditional hook that runs just for that one call, however we may soon find ourselves with a second and a third special case.
   
-  `thenifyHook` is designed for such cases. Instead of having to register a conditioned hook, it allows us to run the hook in a `.then()` right after the service call.
+  `runHook` is designed for such cases. Instead of having to register a conditioned hook, it allows us to run the hook in a `.then()` right after the service call.
 
-{% hooksApiFootnote thenifyHook %}
+{% hooksApiFootnote runHook %}
 
 <!--=============================================================================================-->
 

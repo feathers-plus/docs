@@ -31,6 +31,8 @@ const user = await usersLoader.load(key);
 <!--- class BatchLoader --------------------------------------------------------------------------->
 <h2 id="class-batchloader">class BatchLoader( batchLoadFunc [, options] )</h2>
 
+Create a new batch-loader given a batch loading function and options.
+
 - **Arguments:**
   - `{Function} batchLoadFunc`
   - `{Object} [ options ]`
@@ -40,10 +42,22 @@ const user = await usersLoader.load(key);
     - `{Object} cacheMap`
     - `{Object} context`
     - `{Number} maxBatchSize`
-    
-- **Returns:** `{Object} batch-loader instance`
 
-- **Usage:** Create a new batch-loader given a batch loading function and options.
+Argument | Type | Default | Description
+---|:---:|---|---
+`batchLoadFunc` | `Function` | | See [Batch Function](guide.html#batch-function).
+`options` | `Object` | | Options.
+
+`options` | Argument | Type | Default | Description
+---|---|---|---|---
+ | `batch` | Boolean | `true` | Set to false to disable batching, invoking batchLoadFunc with a single load key.
+ | `cache` | Boolean | `true` | Set to false to disable memoization caching, creating a new Promise and new key in the batchLoadFunc for every load of the same key.
+ | `cacheKeyFn` | Function | `key => key` | Produces cache key for a given load key. Useful when keys are objects and two objects should be considered equivalent.
+ | `cacheMap` | Object | `new Map()` | Instance of Map (or an object with a similar API) to be used as cache. See below.
+ | `context` | Object | `null` | A context object to pass into batchLoadFunc as its second argument.
+ | `maxBatchSize` | Number | `Infinity` | Limits the number of items that get passed in to the batchLoadFunc.
+
+{% apiReturns class-batchloader "BatchLoader instance." batchLoader Object %}
 
 - **Example**
 
@@ -58,21 +72,6 @@ const user = await usersLoader.load(key);
     { context: {}, batch: true, cache: true }
   );
   ```
-  
-- **batchLoadFunc**.
-
-  See [Batch Function](guide.html#batch-function).
-  
-- **options:**
-
-Property | Type | Default | Description
----|---|---|---
-`batch` | Boolean | `true` | Set to false to disable batching, invoking batchLoadFunc with a single load key.
-`cache` | Boolean | `true` | Set to false to disable memoization caching, creating a new Promise and new key in the batchLoadFunc for every load of the same key.
-`cacheKeyFn` | Function | `key => key` | Produces cache key for a given load key. Useful when keys are objects and two objects should be considered equivalent.
-`cacheMap` | Object | `new Map()` | Instance of Map (or an object with a similar API) to be used as cache.
-`context` | Object | `null` | A context object to pass into batchLoadFunc as its second argument.
-`maxBatchSize` | Number | `Infinity` | Limits the number of items that get passed in to the batchLoadFunc.
 
 - **option.cacheMap**
 
@@ -92,20 +91,22 @@ Property | Type | Default | Description
   
 - **See also:** [Guide](./guide.html)
 
+{% apiFootnote classBatchLoader BatchLoader %}
+
 <!--- getUniqueKeys ------------------------------------------------------------------------------->
 <h2 id="get-unique-keys">static BatchLoader.getUniqueKeys( keys )</h2>
 
+Returns the unique elements in an array.
+
 - **Arguments:**
   - `{Array<String | Number>} keys`
-
-- **Returns:** `{Array<String | Number>}` the array with unique elements.
-
-- **Usage:** Returns the unique elements in an array.
-
-  > The array of keys may contain duplicates when the batch-loader's memoization cache is disabled.
-    
-  <p class="tip">Function does not handle keys of type Object nor Array.</p>
   
+Argument | Type | Default | Description
+---|---|---|---
+`keys` | `Array<` `String /` `Number >` | | The keys. May contain duplicates.
+
+{% apiReturns get-unique-keys "The keys with no duplicates." keys "Array< String / Number >" %}
+
 - **Example:**
 
   ``` js
@@ -114,9 +115,19 @@ Property | Type | Default | Description
     ...
   );
   ```
+  
+- **Details**
+
+  The array of keys may contain duplicates when the batch-loader's memoization cache is disabled.
+    
+  <p class="tip">Function does not handle keys of type Object nor Array.</p>
+  
+{% apiFootnote getUniqueKeys BatchLoader %}
 
 <!--- getResultsByKey ----------------------------------------------------------------------------->
 <h2 id="get-results-by-key">static BatchLoader.getResultsByKey( keys, records, getRecordKeyFunc, type [, options] )</h2>
+
+Reorganizes the records from the service call into the result expected from the batch function.
 
 - **Arguments:**
   - `{Array<String | Number>} keys`
@@ -127,11 +138,26 @@ Property | Type | Default | Description
     - `{null | []} defaultElem`
     - `{Function} onError`
 
-- **Returns:** `{Array<Object>}` the reorganized results.
+Argument | Type | Default | Description
+---|:---:|---|---
+`keys` | `Array<` `String /` `Number>` | | An array of `key` elements, which the value the batch loader function will use to find the records requested.
+`records` | `Array< ` `Object >` | | An array of records which, in total, resolve all the `keys`.
+`getRecordKeyFunc` | `Function` | | See below.
+`type` | `String` | | The type of value the batch loader must return for each key.
+`options` | `Object` | | Options.
 
-- **Usage:**  Reorganizes the records from the service call into the result expected from the batch function.
+`type` | Value | Description
+---|:---:|---
+ | `''` | An optional single record.
+ | `'!'` | A required single record.
+ | `'[]'` | A required array including 0, 1 or more records.
 
-  <p class="tip">Function does not handle keys of type Object nor Array.</p>
+`options` | Argument | Type | Default | Description
+---|---|:---:|---|---
+ | `defaultElem` | `{null / []}` | `null` | The value to return for a `key` having no record(s). 
+ | `onError` | `Function` | `(i, msg) => {}` | Handler for detected errors, e.g. `(i, msg) =>` `{ throw new Error(msg,` `'on element', i); }`
+ 
+{% apiReturns get-results-by-key "The result for each key. <code>results[i]</code> is the result for <code>keys[i]</code>." results "Array< Object >"%}
   
 - **Example**
 
@@ -141,14 +167,10 @@ Property | Type | Default | Description
       return getResultsByKey(keys, data, user => user.id, '', { defaultElem: [] })
     });
   ```
-  
-- **keys**
 
-  An array of `key` elements, which the value the batch loader function will use to find the records requested.
-   
-- **records**
+- **Details**  
 
-  An array of records which, in total, resolve all the `keys`.
+  <p class="tip">Function does not handle keys of type Object nor Array.</p>
   
 - **getRecordKeyFunc**
 
@@ -156,35 +178,24 @@ Property | Type | Default | Description
   ``` js
   user => user.id
   ```
-  
-- **type**
-
-  The type of value the batch loader must return for each key:
-  
-type | Description
------| ---
-`''` | An optional single record.
-`'!'` | A required single record.
-`'[]'` | A required array including 0, 1 or more records.
-
-- **options**
-
-Property | Type | Default | Description
----|---|---|---
-`defaultElem` | null, [ ] | `null` | The value to return for a `key` having no record(s).
-`onError` | Function | `(i, msg) => {}` | Handler for detected errors, e.g. `onError: (i, msg) => { throw new Error(msg, 'on element', i); }`
 
 - **See also:** [Batch-Function](./guide.html#Batch-Function)
+
+{% apiFootnote getResultsByKey BatchLoader %}
 
 <!--- load ---------------------------------------------------------------------------------------->
 <h2 id="load">batchLoader.load( key )</h2>
 
+Loads a key, returning a Promise for the value represented by that key.
+
 - **Arguments:**
   - `{String | Number | Object | Array} key`
 
-- **Returns:** `{Promise<Object>} record`
+Argument | Type | Default | Description
+---|:---:|---|---
+`key` | `String` `Number` `Object` `Array` | | The key the batch-loader uses to find the result(s).
 
-- **Usage:** Loads a key, returning a Promise for the value represented by that key.
+{% apiReturns load "Resolves to the result(s)." promise "Promise< Object >"%}
 
 - **Example:**
 
@@ -193,17 +204,32 @@ Property | Type | Default | Description
   const user = await batchLoader.load(key);
   ```
 
+{% apiFootnote load BatchLoader %}
+
 <!--- loadMany ------------------------------------------------------------------------------------>
 <h2 id="loadmany">batchLoader.loadMany( keys )</h2>
 
-- **Arguments:**
+Loads multiple keys, promising a arrays of values. 
+
+- **Arguments**
   - `{Array<String | Number | Object | Array>} keys`
 
-- **Returns:** `{Promise< Array<Object> >} array of records`
+Argument | Type | Default | Description
+---|:---:|---|---
+`keys` | `Array<` `String /` ` Number /` ` Object /` ` Array>` | | The keys the batch-loader will return result(s) for.
 
-- **Usage:**
+{% apiReturns load "Resolves to an array of result(s). <code>promise[i]</code> is the result for <code>keys[i]</code>." promise "Promise[ Array< Object > ]"%}
+
+- **Example**
+
+  ``` js
+  const usersLoader = new BatchLoader( ... );
+  const users = await usersLoader.loadMany([ key1, key2 ]);
+  ```
+
+- **Details**
  
-  Loads multiple keys, promising an array of values. This is a convenience method. `usersLoader.loadMany([ key1, key2 ])` is equivalent to the more verbose:
+  This is a convenience method. `usersLoader.loadMany([ key1, key2 ])` is equivalent to the more verbose:
   ``` js
   Promise.all([
     usersLoader.load(key1),
@@ -211,44 +237,56 @@ Property | Type | Default | Description
   ]);
   ```
 
-- **Example:**
-
-  ``` js
-  const usersLoader = new BatchLoader( ... );
-  const users = await usersLoader.loadMany([ key1, key2 ]);
-  ```
+{% apiFootnote loadMany BatchLoader %}
 
 <!--- clear --------------------------------------------------------------------------------------->
 <h2 id="clear">batchLoader.clear( key )</h2>
 
+Clears the value at key from the cache, if it exists.
+
 - **Arguments:**
   - `{String | Number | Object | Array} key`
 
-- **Returns:** `{Object} batchLoader instance`
+Argument | Type | Default | Description
+---|:---:|---|---
+`key` | `String` `Number` `Object` `Array` | | The key to remove from the cache.
 
-- **Usage:** Clears the value at key from the cache, if it exists. Returns itself for method chaining.
+- **Details**
+
+The key is matches using strict equality. This is particularly important for `Object` and `Array` keys.
+
+{% apiFootnote clear BatchLoader %}
 
 <!--- clearAll ------------------------------------------------------------------------------------>
 <h2 id="clearall">batchLoader.clearAll()</h2>
 
-- **Returns:** `{Object} batchLoader instance`
+Clears the entire cache. 
 
-- **Usage:**
+- **Details**
 
-  Clears the entire cache. To be used when some event results in unknown invalidations across this particular batch-loader. Returns itself for method chaining.
+  To be used when some event results in unknown invalidations across this particular batch-loader.
+
+{% apiFootnote clearAll BatchLoader %}
 
 <!--- prime --------------------------------------------------------------------------------------->
 <h2 id="prime">batchLoader.prime( key, value )</h2>
 
+Primes the cache with the provided key and value. 
+
 - **Arguments:**
   - `{String | Number | Object | Array} key`
-  - `{Object} value`
+  - `{Object} record`
 
-- **Returns:** `{Object} batchLoader instance`
+Argument | Type | Default | Description
+---|:---:|---|---
+`key` | `String` `Number` `Object` `Array` | | The key in the cache for the record.
+`record` | `Object` | | The value for the `key`.
 
-- **Usage:**
+- **Details**
 
-  Primes the cache with the provided key and value. If the key already exists, no change is made. To forcefully prime the cache, clear the key first with `batchloader.clear(key).prime(key, value)`. Returns itself for method chaining.
+  **If the key already exists, no change is made.** To forcefully prime the cache, clear the key first with `batchloader.clear(key)`.
+
+{% apiFootnote prime BatchLoader %}
 
 <!--- What's New --------------------------------------------------------------------------->
 <h2 id="whats-new">What's New</h2>

@@ -56,8 +56,8 @@ const hooksRaw = {
   'make-calling-params': { tags: ['code', 'services', 'func'], desc: 'Build <code>context.params</code> for service calls.' },
   'params-for-server': { tags: ['code', 'client', 'trans', 'func'], desc: 'Pass an explicit <code>context.params</code> from client to server. Client-side.' },
   'replace-items': { tags: ['code', 'data', 'func'], desc: 'Replace the records in <code>context.data</code> or <code>context.result[.data]</code>.' },
+  'run-hook': { tags: ['code', 'services', 'func'], desc: 'Let\'s you call a hook right after the service call.' },
   'common/set-by-dot': { name: 'setByDot', tags: ['code', 'dot', 'func'], desc: 'Set a property value in an object using dot notation, e.g. <code>address.city</code>.' },
-  'thenify-hook': { tags: ['code', 'services', 'func'], desc: 'Let\'s you call a hook right after the service call.' },
 };
 
 const showTagNames = {
@@ -94,8 +94,8 @@ const check1 = {
 };
 
 const check2 = {
-  before: [no, yes],
-  after: [yes, no],
+  before: ['', yes],
+  after: [yes, ''],
   null: [null, null],
   undefined: [null, null],
 };
@@ -130,8 +130,10 @@ Object.keys(hooksRaw).sort().forEach(fileName => {
     methods1 = checkMethods.join(', ');
 
     if (check[0]) {
+      before1 = before1 === no ? ' ' : before1;
+      after1 = after1 === no ? '' : after1;
       [ before2, after2 ] = check2[check[1]];
-      methods2 = ['find', 'create', 'get', 'update', 'patch', 'remove'].filter(key => checkMethods.indexOf(key) === -1).join(', ');
+      methods2 = all;
     }
   }
 
@@ -329,12 +331,51 @@ hexo.extend.tag.register('hooksApiFootnote', name => {
   </ul>`;
 });
 
+hexo.extend.tag.register('apiReturns', ([name, desc, result = 'result', type = 'Boolean']) => {
+  //console.log('ApiReturns', name, desc, result, type);
 
-/*
-### Is anything wrong, unclear, missing?
-[Leave a comment.](https://github.com/feathersjs/feathers-docs/issues/new?title=Comment:Step-Basic-Ahha&body=Comment:Step-Basic-Ahha)
+  // handle a bug
+  if (desc.substr(-1) === ',') desc = desc.substr(0, desc.length - 1);
+  if (result.substr(-1) === ',') result = result.substr(0, result.length - 1);
+  if (type.substr(-1) === ',') type = type.substr(0, type.length - 1);
 
- */
+  return `
+  <ul><li>
+    <strong>Returns</strong>
+    <ul><li>
+      <code>{${type}} ${result}</code>
+    </li></ul>
+  </li></ul>
+  
+  <table>
+  <thead>
+  <tr>
+    <th style="text-align:left">Name</th>
+    <th style="text-align:center">Type</th>
+    <th style="text-align:left">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td style="text-align:left"><code>${result}</code></td>
+    <td style="text-align:center"><code>${type}</code></td>
+    <td style="text-align:left">${desc}</td>
+  </tr>
+  </tbody>
+  </table>`;
+});
+
+
+hexo.extend.tag.register('apiFootnote', options => {
+  // console.log('apiFootnote', options);
+  const name = options[0];
+  const repo = options[1];
+
+  return `
+  <ul>
+    <li><strong>Is anything wrong, unclear, missing?</strong>: <a href="https://github.com/feathers-plus/docs/issues/new?title=Comment%20-%20${repo}%20-%20${name}&body=Comment%20-%20${repo}%20-%20${name}" target=""_blank">Leave a comment.</a></li>
+  </ul>`;
+});
 
 function setAttr(tags, tag, yes = 'yes', no = 'no') {
   return tags.indexOf(tag) === -1 ? no : yes;
