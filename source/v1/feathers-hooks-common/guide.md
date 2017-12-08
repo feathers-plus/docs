@@ -217,7 +217,7 @@ The syntax for recursive operations uses the syntax below, where the `joins` wil
 
 The comments resolver below adds related comment records to the passed record. The resolver function returns those comments, and that is the data which we will recursively operate on.
 
-> The resolver function must return the data that is to be recursively operated on.
+> The resolver function must return the data that is to be recursively operated on. Forgetting to do this is a common mistake.
 
   ``` js
   const postResolvers = {
@@ -573,6 +573,83 @@ Each batch-loader made just one database call:
 
 > Only *2* database calls were needed to construct the result above. `populate` requires *22* calls.
 
+  
+### Using a Persistent Cache
+
+Our BatchLoaders have been batching service calls together and keeping those results in a cache. This way those records don't have to be read again.
+
+However each BatchLoader has been starting each request with an empty cache. So if 2 sequential `fastJoin` hook calls each need user id 101, they both need to **prime** their cache by each reading that record.
+
+We can improve the situation by using persistent caches with the BatchLoaders. A persistent cache stores records so future requests for those records can be served faster; the records stored in the cache are duplicates of records stored in the database.
+
+Let's see how we can use the [cache hook](./index.html#cache) as it maintains a persistent cache for the service its registered on.
+
+  ``` js
+  const { cache, fastJoin, makeCallingParams } = require('feathers-hooks-common');
+  const BatchLoader = require('@feather-plus/batch-loader');
+  const CacheMap = require('@feathers-plus/cache');
+  const { getResultsByKey, getUniqueKeys } = BatchLoader;
+  
+  // Create a cache for a maximum of 100 users
+  const cacheMapUsers = CacheMap({ max: 100 }); 
+  
+  // Create a batchLoader using the persistent cache
+  const userBatchLoader = new BatchLoader(async keys => {
+    const result = await users.find(makeCallingParams({}, { id: { $in: getUniqueKeys(keys) } }));
+    return getResultsByKey(keys, result, user => user.id, '!');
+  },
+    { cacheMap: cacheMapUsers }
+  );
+  
+  const postResolvers = {
+    before: context => {
+      context._loaders = { user: {} };
+      context._loaders.user.id = userBatchLoader;
+    },
+  
+    joins: {
+      author: () => async (post, context) =>
+        post.author = await context._loaders.user.id.load(post.userId),
+  
+      starers: () => async (post, context) => !post.starIds ? null :
+        post.starers = await context._loaders.user.id.loadMany(post.starIds),
+    }
+  };
+  
+  const query = {
+    author: true,
+    starers: [['id', 'name']],
+    comments: {
+      args: null,
+      author: [['id', 'name']]
+    },
+  };
+  
+  module.exports = {
+    before: {
+      all: cache(cacheMapUsers)
+    },
+    after: {
+      all: [
+        cache(cacheMapUsers),
+        fastJoin(postResolvers, () => query)
+      ],
+    }
+  };
+  ```
+
+  > The `cache` hook **must** be registered in both `before` and `after`.
+  
+  The number of service calls needed to run the `query` above **the second time**:
+  
+Using | number of service calls
+---:|:---:
+`populate` | **22**
+`fastJoin` alone | **2**
+`fastJoin` and `cache` | **0**
+
+  The `cache` hook also makes `get` service calls more efficient.
+  
 ### The GraphQL Feathers Adapter
 
 By now you have an understanding of the foundations of Facebook's [GraphQL](http://graphql.org/). GraphQL however is more powerful and flexible.

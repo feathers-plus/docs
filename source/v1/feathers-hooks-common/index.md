@@ -49,26 +49,39 @@ module.exports = {
 ```
 
 <!--=============================================================================================-->
-## Migrating from Auk to Buzzard
+## New Features in Buzzard
 
-These changes may affect your projects when you switch from this repo's last Feathers *Auk* version (v3.10.0) to its first Feathers *Buzzard* version (v4.0.0).
+These features are new in the Buzzard version.
 
   - The docs [have been rewritten.](https://feathers-plus.github.io/v1/feathers-hooks-common)
   
+  - You can now find hooks using [tags.](#Find-Hooks-using-Tags) Each Feathers hook and utility function is listed under all the tags relevant to it.
+  
   - The new `fastJoin` hook is a much faster, more flexible alternative to `populate`.
-    - It makes only about 10% of the service calls, i.e. it makes *2* calls when `populate` might make *20*.
-    - It provides any Feathers service with GraphQL-light capabilities.
-    - The new `@feathers-plus/graphql` service adapter provides similar performance with full GraphQL compatibility. 
+    - It makes only about 10% of the service calls, i.e. it makes *2* calls when `populate` would make *20*.
+    - It operates on record formats which `populate` can't process.
+    - It provides any Feathers service with GraphQL-light capabilities. (The new `@feathers-plus/graphql` service adapter provides similar performance with full GraphQL compatibility.) 
     
   - The new `runHook` utility may help simplify your registered hooks. It let's you call a hook with `service.get(...).then(runHook()(populate(...)));`.
   
   - Other new hooks and utility functions.
+    - `alterItems` - Flexibly mutate data and results. Powerful.
     - `cache` - Persistent, least-recently-used record cache for services.
-    - `keep`, `keepQuery`.
-    - `oper` - Flexibly mutate data and results.
-    - `operQuery` - Flexibly mutate the query object.
+    - `disablePagination` - Disables pagination when `query.$limit` is -1 or '-1'.
+    - `discardQuery`, `keep`, `keepQuery` - See Migration below.
     - `makeCallingParams` utility - Help construct `context.params` when calling services within hooks.
+    - `required` - Check selected fields exist and are not falsey. Numeric 0 is acceptable.
+    - `runParallel` - Run a hook in parallel to the other hooks and the service call.
+  
+  - Enhancements to existing hooks.
+    - `debug` now displays `context.params` property names and displays the values of selected ones.
+    - `preventChanges` can now optionally remove unacceptable changes instead of throwing.
     
+<!--=============================================================================================-->
+## Migrating from Auk to Buzzard
+
+These changes may affect your projects when you switch from this repo's last Feathers *Auk* version (v3.10.0) to its first Feathers *Buzzard* version (v4.0.0).
+  
   - These hooks are deprecated and will be removed in the next FeathersJS version *Crow*.
     - Deprecated `pluck` in favor of `keep`, e.g. `iff(isProvider('external'),` ` keep(...fieldNames))`. This deprecates the last hook with unexpected internal "magic". **Be careful!**
     - Deprecated `pluckQuery` in favor of `keepQuery` for naming consistency.
@@ -98,7 +111,152 @@ These changes may affect your projects when you switch from this repo's last Fea
 ## Hooks
 
 <!--=============================================================================================-->
-<h3 id="debug">debug( label )</h3>
+<h3 id="alteritems">alterItems( func )</h3>
+  
+{% hooksApi alterItems %}
+
+- **Arguments** 
+  - `{Function} func`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`func` | `Function` | `(item,` `context) =>` `{}` | Function modifies `item` in place. See below.
+
+- **Example**
+
+  ``` js
+  const { alterItems } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+      all: [
+        alterItems(rec => { delete rec.password; }) // Like `discard('password')`.
+        alterItems(rec => rec.email = email.lowerCase()), // Like `lowerCase('email')`.
+      ],
+  } };
+  ```
+  Async mutations can be handled with async/await:
+  ``` js
+  alterItems(rec => {
+    rec.userRecord = (async () => await service.get(...) )()
+  })
+  ```
+  You can also perform async mutations using Promises by returning a Promise that is resolved once all mutations are complete:
+  ``` js
+  alterItems(rec => new Promise(resolve => {
+    service.get(...).then(result => {
+      rec.userRecord = result;
+      resolve();
+  }});
+  ```
+
+- **Details**
+
+  The declarative nature of most of the common hooks, e.g. `discard('password')`, requires you to remember the names of a fair number of hooks, their parameters, and any possible nuances.
+  
+  The `alterItems` hook offers an imperative alternative where you directly alter the items. It allows you to reduce the number of trivial hooks you have to register, and you are aware of exactly what your `alterItems` hooks do.
+
+  `func` is called for each item in `context.data` (before hook) or `context.result[.data]` (after hook). It receives the parameters
+    
+  - `{Object} item`
+  - `{Object} context`
+
+  
+  Argument | Type | Description
+  ---|:---:|---
+  `item` | `Object` | The item. The function modifies it in place.
+  `context` | `Object` | The current context. It contains any alterations made to items so far.
+  
+{% hooksApiFootnote alterItems %}
+
+<!--=============================================================================================-->
+<h3 id="cache">cache(cacheMap [, keyField] [, options ])</h3>
+
+{% hooksApi cache %}
+
+- **Arguments**
+
+  - `{Object | Map} cacheMap`
+  - `{String} [ keyField ]`
+  - `{Object} [ options ]`
+    - `{Function} [ clone ]`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`cacheMap` | `Object` `Map` |  | Instance of `Map`, or an object with a similar API, to be used as the cache.
+`keyField` | `String` | `context.service.id` or `item._id ? '_id' !! 'id'` | The name of the record id field.
+`option` | `Object` | | Options.
+
+`options` | Argument | Type | Default | Description
+---|---|:---:|---|---
+ | `clone` | `Function` | `item => JSON.parse(` `JSON.stringify(item) )` | Function to perform a deep clone. See below.
+
+- **Example**
+
+  ``` js
+  const CacheMap = require('@feathers-plus/cache');
+  const { cache } = require('feathers-hooks-common');
+  
+  cacheMap = CacheMap({ max: 100 }); // Keep the 100 most recently used.
+  
+  module.exports = {
+    before: {
+      all: cache(cacheMap)
+    },
+    after: {
+      all: cache(cacheMap)
+    }
+  };
+  ```
+  ``` js
+  const { cache } = require('feathers-hooks-common');
+  
+  cacheMap = new Map();
+  
+  module.exports = {
+    before: {
+      all: cache(cacheMap)
+    },
+    after: {
+      all: cache(cacheMap)
+    }
+  };
+  ```
+  
+  > The `cache` hook **must** be registered in both `before` and `after`.
+  
+  <p class="tip">The cache will grow without limit when `Map` is used and the resulting memory pressure may adversely affect your performance. `Map` should only be used when you know or can control its size.</p>
+  
+- **Details**
+
+  The `cache` hook maintain a persistent cache for the service it is registerd on. A persistent cache stores records so future requests for those records can be served faster; the records stored in the cache are duplicates of records stored in the database.
+
+  The `get` service method retrieves records from the cache and updates `context.result` `[.data]`. The other methods remove their `context.data` entries from the cache in the `before` hook, and add entries in the `after` hook. All the records returned by a `find` call are added to the cache. 
+  
+  The `cache` hook may be provided a custom Map instance to use as its memoization cache. Any object that implements the methods get(), set(), delete() and clear() can be provided. This allows for custom Maps which implement various [cache algorithms](https://en.wikipedia.org/wiki/Cache_replacement_policies) to be provided.
+  
+  The companion `@feathers-plus/cache` provides a least recently-used cache which discards the least recently used items first. It is compatible with `cache` as well as the BatchLoaders used with the `fastJoin` hook.
+  
+  > The `cache` hook can make [fastJoin](#fastjoin) hooks run more efficiently.
+  
+- **options.clone**
+
+  The clone function has a single parameter.
+  
+  - `{Object} item`
+  
+  It returns
+    
+  - `{Object} clonedItem`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`item` | `Object` | | The record.
+`clonedItem` | `Object` | | A clone of `item`.
+
+{% hooksApiFootnote cache %}
+
+<!--=============================================================================================-->
+<h3 id="debug">debug( label [, ...fieldNames ] )</h3>
 
   
 {% hooksApi debug %}
@@ -106,10 +264,12 @@ These changes may affect your projects when you switch from this repo's last Fea
 
 - **Arguments** 
   - `{String} label`
+  - `{Array < String >} [ fieldNames ]`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
 `label` | `String` | | Label to identify the logged information.
+`fieldNames` | dot notation | | The field values in `context.params` to display.
 
 - **Example**
 
@@ -126,11 +286,14 @@ Argument | Type | Default | Description
   data: { name: 'Joe Doe' }
   query: { sex: 'm' }
   result: { assigned: true }
+  params props: [ 'query' ]
   * step 2
   type: before, method: create
   data: { name: 'Joe Doe', createdAt: 1510518511547 }
   query: { sex: 'm' }
   result: { assigned: true }
+  params props: [ 'query' ]
+  params.query: { sex: 'm' }
   error: ...
   ```
 
@@ -183,6 +346,28 @@ Argument | Type | Default | Description
   When using the `patch` or `remove` methods, a `null` id could mutate many, even all the records in the database, so accidentally using it may cause undesirable results.
 
 {% hooksApiFootnote disableMultiItemChange %}
+
+<!--=============================================================================================-->
+<h3 id="disablePagination">disablePagination()</h3>
+
+{% hooksApi disablePagination %}
+
+
+- **Example**
+
+  ``` js
+  const { disablePagination } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+    find: disablePagination()
+  } };
+  ```
+  
+- **Details**
+
+  Pagination is disabled if `context.query.$limit` is -1 or '-1'. It works for all types of calls including REST.
+
+{% hooksApiFootnote disablePagination %}
 
 <!--=============================================================================================-->
 <h3 id="disallow">disallow( ...transports )</h3>
@@ -585,6 +770,74 @@ Argument | Type | Default | Description
   ]
   ```
 
+- **Example Using a Persistent Cache**
+
+  ``` js
+  const { cache, fastJoin, makeCallingParams } = require('feathers-hooks-common');
+  const BatchLoader = require('@feather-plus/batch-loader');
+  const CacheMap = require('@feathers-plus/cache');
+  const { getResultsByKey, getUniqueKeys } = BatchLoader;
+  
+  // Create a cache for a maximum of 100 users
+  const cacheMapUsers = CacheMap({ max: 100 }); 
+  
+  // Create a batchLoader using the persistent cache
+  const userBatchLoader = new BatchLoader(async keys => {
+    const result = await users.find(makeCallingParams({}, { id: { $in: getUniqueKeys(keys) } }));
+    return getResultsByKey(keys, result, user => user.id, '!');
+  },
+    { cacheMap: cacheMapUsers }
+  );
+  
+  const postResolvers = {
+    before: context => {
+      context._loaders = { user: {} };
+      context._loaders.user.id = userBatchLoader;
+    },
+  
+    joins: {
+      author: () => async (post, context) =>
+        post.author = await context._loaders.user.id.load(post.userId),
+  
+      starers: () => async (post, context) => !post.starIds ? null :
+        post.starers = await context._loaders.user.id.loadMany(post.starIds),
+    }
+  };
+  
+  const query = {
+    author: true,
+    starers: [['id', 'name']],
+    comments: {
+      args: null,
+      author: [['id', 'name']]
+    },
+  };
+  
+  module.exports = {
+    before: {
+      all: cache(cacheMapUsers)
+    },
+    after: {
+      all: [
+        cache(cacheMapUsers),
+        fastJoin(postResolvers, () => query)
+      ],
+    }
+  };
+  ```
+  
+  The number of service calls needed to run the `query` above **the second time**:
+  
+Using | number of service calls
+---:|:---:
+`populate` | **22**
+`fastJoin` alone | **2**
+`fastJoin` and `cache` | **0**
+
+  The `cache` hook also makes `get` service calls more efficient.
+
+  > The `cache` hook **must** be registered in both `before` and `after`.
+  
 - **Details**
   
   We often want to combine rows from two or more tables based on a relationship between them. The `fastJoin` hook will select records that have matching values in both tables. It can batch service calls and cache records, thereby needing roughly an order of magnitude fewer database calls than the `populate` hook, e.g. *2* calls instead of *20*.
@@ -593,6 +846,8 @@ Argument | Type | Default | Description
   
   `fastJoin` uses a GraphQL-like imperative API, and it is not restricted to using data from Feathers services. Resources for which there are no Feathers adapters can [be used.](../batch-loader/common-patterns.html#Using-non-Feathers-services)
 
+  The companion `@feathers-plus/cache` implements a least recently-used cache which discards the least recently used items first. When used in conjunction with the `cache` hook, it can be used to implement persistent caches for BatchLoaders. BatchLoaders configured this way would retain their cache between requests, eliminating the need to *prime* the cache at the start of each request.
+  
 {% hooksApiFootnote fastJoin %}
 
 <!--=============================================================================================-->
@@ -1085,11 +1340,19 @@ Argument | Type | Default | Description
 {% hooksApiFootnote populate %}
 
 <!--=============================================================================================-->
-<h3 id="preventchanges">preventChanges( ...fieldNames )</h3>
+<h3 id="preventchanges">preventChanges( ifThrow, ...fieldNames )</h3>
 
 {% hooksApi preventChanges %}
 
-{% hooksApiFieldNames preventChanges "The fields which may not be patched." %}
+- **Arguments**
+
+  - `{Boolean} ifThrow`
+  - `{Array < String >} fieldNames`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`ifThrow` | `Boolean` | | Deletes any `fieldNames` if `false`; throws if `true`.
+`fieldNames` | dot notation | | The fields names which may not be patched.
 
 - **Example**
 
@@ -1106,6 +1369,65 @@ Argument | Type | Default | Description
   Consider using validateSchema if you would rather specify which fields are allowed to change.
 
 {% hooksApiFootnote preventChanges %}
+
+<!--=============================================================================================-->
+<h3 id="required">required(...fieldNames)</h3>
+
+{% hooksApi required %}
+
+{% hooksApiFieldNames required "These fields must exist and not be falsey. Numeric 0 is acceptable." %}
+
+- **Example**
+
+  ``` js
+  const { required } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+    all: required('email', 'password')
+  } };
+  ```
+
+{% hooksApiFootnote required %}
+
+<!--=============================================================================================-->
+<h3 id="runParallel">runParallel( hookFunc, clone [, depth ] )</h3>
+
+{% hooksApi runParallel %}
+
+- **Arguments**
+
+  - `{Function} hookFunc`
+  - `{Function} clone`
+  - `{Number} [ depth ]`
+
+Argument | Type | Default | Description
+---|:---:|:---:|---
+`hookFunc` | `Function` |  | The hook function to run in parallel to the rest of the service call.
+`clone` | `Function` | | Function to deep clone its only parameter.
+`depth` | `Number` | 6 | Depth to which `context` is to be cloned. 0 does not clone. A depth of 5 would clone `context.result.data.[].item`.
+
+- **Example**
+
+  ``` js
+  const { runParallel } = require('feathers-hooks-common');
+  const clone = require('clone');
+  
+  function sendEmail(...) {
+    return context => { ... };
+  }
+  
+  module.exports = { after: {
+    create: runParallel(sendEmail(...), clone)
+  } };
+  ```
+  
+- **Details**
+
+  `hookFunc` is scheduled with a `setTimeout`. The next hook starts immediately.
+
+  The hook was provided by bedeoverend. Thank you.
+
+{% hooksApiFootnote runParallel %}
 
 <!--=============================================================================================-->
 <h3 id="serialize">serialize( schema )</h3>
@@ -1335,6 +1657,7 @@ Argument | Type | Default | Description
   ```
   
   <p class="tip">The `user` record is read by feathers-authentication` with a `get`. The `softDelete` hook will be run for this call unless it is conditioned to ignore it. This situation raises the most issues for this hook.</p>
+  
 {% hooksApiFootnote softDelete %}
 
 <!--=============================================================================================-->
@@ -1343,6 +1666,7 @@ Argument | Type | Default | Description
 {% hooksApi some %}
 
 - **Arguments**
+
   - `{Array< Function >} predicates`
 
 Argument | Type | Default | Description
@@ -1623,8 +1947,12 @@ Argument | Type | Default | Description
   ```
   
   > You could, for example, return `{ name1: message, name2: message }` which might be more suitable for a UI.
+
+- **Internationalization of Messages**
   
-  > You can consider using ajv-i18n, together with the messages option, to internationalize your error messages.
+  You can consider using [ajv-i18n](https://github.com/epoberezkin/ajv-i18n), together with ajv's `messages` option, to internationalize your error messages.
+
+  You can also consider copying `addNewErrorDflt`, the default error message formatter, modifying it for your needs, and using that as `newFormattedMessages`.
 
 {% hooksApiFootnote validateSchema %}
 
@@ -2029,6 +2357,8 @@ Argument | Type | Default | Description
   By default, only the `context.params.query` object is transferred from a Feathers client to the server, for security among other reasons. However you can explicitly transfer other `context.params` props with the client utility function `paramsForServer` in conjunction with the `paramsFromClient` hook on the server.
 
   This technique also works for service calls made on the server.
+  
+  <p class="tip">The data is transfered using `context.params.query.$client`. If that field already exists, it must be an Object.</p>
 
 {% hooksApiFootnote paramsForServer %}
 
@@ -2116,6 +2446,7 @@ Argument | Type | Default | Description
 
 <!--=============================================================================================-->
 
+
 <!--=============================================================================================-->
 
 <!--=============================================================================================-->
@@ -2125,6 +2456,7 @@ Argument | Type | Default | Description
 
 
 - **Arguments**
+
   - `???`
 
 Argument | Type | Default | Description

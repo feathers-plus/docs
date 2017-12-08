@@ -6,17 +6,22 @@ const hooksRaw = {
   // fileName: 'fast-join',
   // src: 'https://github.com/feathers-plus/feathers-hooks-common/blob/master/lib/services/fast-join.js',
 
+  'alter-items': { tags: ['code', 'cond', 'data', 'pred', 'relation', 'imp'], desc: 'Make changes to data or result items. Very flexible.'},
+  'cache': { tags: ['data', 'services', 'perf'], desc: 'Persistent, least-recently-used record cache for services.'},
   'combine': { tags: ['code', 'multiNa', 'cond'], desc: 'Sequentially execute multiple sync or async hooks.'},
   'debug': { tags: 'code', desc: 'Display the current hook <code>context</code> for debugging.' },
   'de-populate': { tags: 'relation', desc: 'Remove records and properties created by the <code>populate</code> hook.' },
   'disallow': { tags: 'methods', desc: 'Prevents access to a service method completely or for specific transports.'},
   'disable-multi-item-change': { tags: ['methods', 'update', 'patch', 'remove'], desc: 'Prevents <code>null</code> from being used as an id in patch and remove service methods.',
     check: [0, 'before', ['update', 'patch', 'remove']] },
+  'disable-pagination': { tags: ['methods', 'data'], desc: 'Disables pagination when <code>query.$limit</code> is -1 or \'-1\'.',
+    check: [0, 'before', ['find']] },
   'discard': { tags: 'data', desc: 'Delete certain fields from the record(s).',
     check: [1, 'before', ['create', 'update', 'patch']] },
-  'discard-query': { tags: ['query'], desc: 'Delete certain fields from the query object.' },
+  'discard-query': { tags: ['query'], desc: 'Delete certain fields from the query object.',
+    check: [0, 'before', null] },
   'common/every': { name: 'every', tags: ['cond', 'pred'], desc: 'Return the <code>and</code> of a series of sync or async predicate functions.' },
-  'fast-join': { tags: ['relation'], desc: 'Join related records. It\'s very fast.',
+  'fast-join': { tags: ['relation', 'perf', 'imp'], desc: 'Join related records. It\'s very fast.',
     guide: 'fastJoin' },
   'common/iff': { name: 'iff', tags: 'cond', desc: 'Execute one or another series of hooks depending on a sync or async predicate.' },
   'common/iff-else': { name: 'iffElse', tags: 'cond', desc: 'Execute one array of hooks or another based on a sync or async predicate.' },
@@ -31,9 +36,12 @@ const hooksRaw = {
     guide: 'populate' },
   'prevent-changes': { tags: ['data', 'methods'], desc: 'Prevent <code>patch</code> service calls from changing certain fields.',
     check: [0, 'before', ['patch']] },
+  'required': { tags: ['valid', 'data', 'services'], desc: 'Check selected fields exist and are not falsey. Numeric 0 is acceptable.',
+    check: [0, 'before', null] },
+  'run-parallel': { tags: ['client', 'data', 'perf', 'services'], desc: 'Run a hook in parallel to the other hooks and the service call.' },
   'serialize': { tags: 'relation', desc: 'Prune values from related records. Calculate new values.' },
   'set-now': { tags: 'data', desc: 'Create/update certain fields to the current date-time.' },
-  'set-slug': { tags: ['trans'], desc: 'Fix slugs in URL, e.g. <code>/stores/:storeId</code>.' },
+  'set-slug': { tags: ['trans', 'rest'], desc: 'Fix slugs in URL, e.g. <code>/stores/:storeId</code>.' },
   'sifter': { tags: ['data', 'methods', 'relation', 'services', 'find'], desc: 'Filter data or result records using a MongoDB-like selection syntax.',
     check: [0, 'after', 'find'] },
   'soft-delete': { tags: 'services', desc: 'Flag records as logically deleted instead of physically removing them.',
@@ -41,11 +49,11 @@ const hooksRaw = {
   'common/some': { name: 'some', tags: ['cond', 'pred'], desc: 'Return the <code>or</code> of a series of sync or async predicate functions.' },
   'stash-before': { tags: ['data', 'services'], desc: 'Stash current value of record, usually before mutating it. Performs a <code>get</code> call.',
     check: [0, 'before', ['get', 'update', 'patch', 'remove']] },
-  'traverse': { tags: ['data', 'query'], desc: 'Transform fields & objects in place in the record(s) using a recursive walk. Powerful.' },
+  'traverse': { tags: ['data', 'query', 'imp', 'rest'], desc: 'Transform fields & objects in place in the record(s) using a recursive walk. Powerful.' },
   'common/unless': { name: 'unless', tags: 'cond', desc: 'Execute a series of hooks if a sync or async predicate is falsey.' },
-  'validate': { tags: ['notAfter', 'data', 'services', 'create', 'update', 'patch'], desc: 'Validate data using a validation function.',
+  'validate': { tags: ['valid', 'data', 'services', 'create', 'update', 'patch'], desc: 'Validate data using a validation function.',
     guide: 'validate', check: [0, 'before', ['create', 'update', 'patch']] },
-  'validate-schema': { tags: ['data', 'services'], desc: 'Validate data using JSON-Schema.' },
+  'validate-schema': { tags: ['valid', 'data', 'services'], desc: 'Validate data using JSON-Schema.' },
   'when': { name: 'when', fileName: 'common/iff', tags: 'cond', desc: 'An alias for <code>iff</code>.' },
 
   'check-context': { tags: ['code', 'services', 'func'], desc: 'Restrict a hook to run for certain methods and method types.' },
@@ -61,17 +69,21 @@ const hooksRaw = {
 };
 
 const showTagNames = {
-  relation: 'Relations',
-  methods: 'Service methods',
-  services: 'Services',
-  data: 'Data and Results',
-  cond: 'Conditionals',
-  trans: 'Transport',
-  query: 'Query object',
   client: 'Client/server',
-  dot: 'Dot notation',
   code: 'Coding',
+  cond: 'Conditionals',
+  data: 'Data and Results',
+  dot: 'Dot notation',
+  imp: 'Imperative API',
+  methods: 'Service methods',
+  perf: 'Performance',
   pred: 'Predicates',
+  query: 'Query object',
+  relation: 'Relations',
+  rest: 'REST',
+  services: 'Services',
+  trans: 'Transport',
+  valid: 'Validation',
 };
 
 const all = 'all';
@@ -109,7 +121,7 @@ Object.keys(hooksRaw).sort().forEach(fileName => {
 
   const name = info.name || toCamelCase(fileName);
   const tags = Array.isArray(info.tags) ? info.tags : [info.tags];
-  const showTags = tags.filter(name => ignoreTags.indexOf(name) === -1).map(name => showTagNames[name] || name);
+  const showTags = tags.filter(name => ignoreTags.indexOf(name) === -1).map(name => showTagNames[name] || name).sort();
   const tagsHtml = showTags.map(name => `<a href="#tag-${encodeURIComponent(name)}">${name}</a>`).join(', ');
 
   const multi = Object.keys(multiDisplay).reduce((result, key) => {
@@ -328,52 +340,6 @@ hexo.extend.tag.register('hooksApiFootnote', name => {
   </ul>
   <ul>
     <li><strong>Is anything wrong, unclear, missing?</strong>: <a href="https://github.com/feathers-plus/docs/issues/new?title=Comment%20-%20Hooks%20-%20${name}&body=Comment%20-%20Hooks%20-%20${name}" target=""_blank">Leave a comment.</a></li>
-  </ul>`;
-});
-
-hexo.extend.tag.register('apiReturns', ([name, desc, result = 'result', type = 'Boolean']) => {
-  //console.log('ApiReturns', name, desc, result, type);
-
-  // handle a bug
-  if (desc.substr(-1) === ',') desc = desc.substr(0, desc.length - 1);
-  if (result.substr(-1) === ',') result = result.substr(0, result.length - 1);
-  if (type.substr(-1) === ',') type = type.substr(0, type.length - 1);
-
-  return `
-  <ul><li>
-    <strong>Returns</strong>
-    <ul><li>
-      <code>{${type}} ${result}</code>
-    </li></ul>
-  </li></ul>
-  
-  <table>
-  <thead>
-  <tr>
-    <th style="text-align:left">Name</th>
-    <th style="text-align:center">Type</th>
-    <th style="text-align:left">Description</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td style="text-align:left"><code>${result}</code></td>
-    <td style="text-align:center"><code>${type}</code></td>
-    <td style="text-align:left">${desc}</td>
-  </tr>
-  </tbody>
-  </table>`;
-});
-
-
-hexo.extend.tag.register('apiFootnote', options => {
-  // console.log('apiFootnote', options);
-  const name = options[0];
-  const repo = options[1];
-
-  return `
-  <ul>
-    <li><strong>Is anything wrong, unclear, missing?</strong>: <a href="https://github.com/feathers-plus/docs/issues/new?title=Comment%20-%20${repo}%20-%20${name}&body=Comment%20-%20${repo}%20-%20${name}" target=""_blank">Leave a comment.</a></li>
   </ul>`;
 });
 
