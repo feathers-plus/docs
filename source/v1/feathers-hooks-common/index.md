@@ -9,14 +9,11 @@ repo: feathers-hooks-common
 <!--=============================================================================================-->
 ## Usage
 
-Use feathers-hooks-common v3.10.0 with FeathersJS Auk.
 Use feathers-hooks-common v4.x.x with FeathersJS Buzzard.
 
-<p class="tip">Until its published on npm, you can get install v4.0.0 with `"feathers-hooks-common":` `"git://github.com/feathers-plus/feathers-hooks-common.git#master"` in package.json.
+Use feathers-hooks-common v3.10.0 with FeathersJS Auk. v4.x.x. should also work if you don't use callbacks in your hooks.</p>
 
-v4.x.x. should work with Feathers Auk if you don't use callbacks in your hooks.</p>
-
-> Hook may be used on the client as well as the server.
+> Hooks may be used on the client as well as the server.
 
 ``` js
 npm install --save feathers-hooks-common
@@ -122,6 +119,8 @@ Argument | Type | Default | Description
 ---|:---:|---|---
 `func` | `Function` | `(item,` `context) =>` `{}` | Function modifies `item` in place. See below.
 
+{% hooksApiReturns alterItems "The mutated <code>item</code>. Returning <code>undefined</code> means the <code>item</code> in the parameters was mutated in place." result "undefined || item" %}
+
 - **Example**
 
   ``` js
@@ -166,6 +165,10 @@ Argument | Type | Default | Description
   `item` | `Object` | The item. The function modifies it in place.
   `context` | `Object` | The current context. It contains any alterations made to items so far.
   
+- **Returns**
+
+  `func` may alternatively return a replacement `item` rather than `undefined`. This is a convenience feature which permits, for example, use of functions from the [Lodash](https://lodash.com/) library, as such functions tend  return new objects.
+    
 {% hooksApiFootnote alterItems %}
 
 <!--=============================================================================================-->
@@ -326,7 +329,7 @@ Argument | Type | Default | Description
 {% hooksApiFootnote dePopulate %}
 
 <!--=============================================================================================-->
-<h3 id="disableMultiItemChange">disableMultiItemChange( )</h3>
+<h3 id="disablemultiitemchange">disableMultiItemChange( )</h3>
 
 {% hooksApi disableMultiItemChange %}
 
@@ -348,7 +351,28 @@ Argument | Type | Default | Description
 {% hooksApiFootnote disableMultiItemChange %}
 
 <!--=============================================================================================-->
-<h3 id="disablePagination">disablePagination()</h3>
+<h3 id="disablemultiitemcreate">disableMultiItemCreate( )</h3>
+
+{% hooksApi disableMultiItemCreate %}
+
+- **Example**
+
+  ``` js
+  const { disableMultiItemCreate } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+    create: disableMultiItemCreate()
+  } };
+  ```
+
+- **Details**
+
+  The `create` method creates multiple record if passed an array of items. This hook prevents that, allowing only single records to be created.
+
+{% hooksApiFootnote disableMultiItemCreate %}
+
+<!--=============================================================================================-->
+<h3 id="disablepagination">disablePagination()</h3>
 
 {% hooksApi disablePagination %}
 
@@ -519,10 +543,11 @@ Argument | Type | Default | Description
  | `after` | `context` `=> { }` |  | Processing performed after all other operations are completed.
  | `joins` | `Object` |  | Resolver functions provide a mapping between a portion of a operation and actual backend code responsible for handling it.
 
-> Read the [guide](guide.md/fastjoin) for more information on the arguments.
+> Read the [guide](guide.html#fastjoin) for more information on the arguments.
 
 - **Example using Feathers services**
 
+  <p class="tip">The services in all these examples are assumed, for simplicity, to have pagination disabled. You will have to decide when to use `paginate: false` in your code.</p>
   ``` js
   // project/src/services/posts/posts.hooks.js
   const { fastJoin } = require('feathers-hooks-common');
@@ -626,7 +651,7 @@ Argument | Type | Default | Description
   ``` js
   // project/src/services/posts/posts.hooks.js
   const { fastJoin } = require('feathers-hooks-common');
-  const BatchLoader = require('@feather-plus/batch-loader');
+  const BatchLoader = require('@feathers-plus/batch-loader');
   const { loaderFactory } = BatchLoader;
   
   const postResolvers = {
@@ -668,7 +693,7 @@ Argument | Type | Default | Description
   ``` js
   // project/src/services/posts/posts.hooks.js
   const { fastJoin, makeCallingParams } = require('feathers-hooks-common');
-  const BatchLoader = require('@feather-plus/batch-loader');
+  const BatchLoader = require('@feathers-plus/batch-loader');
   const { getResultsByKey, getUniqueKeys } = BatchLoader;
     
   const commentResolvers = {
@@ -774,7 +799,7 @@ Argument | Type | Default | Description
 
   ``` js
   const { cache, fastJoin, makeCallingParams } = require('feathers-hooks-common');
-  const BatchLoader = require('@feather-plus/batch-loader');
+  const BatchLoader = require('@feathers-plus/batch-loader');
   const CacheMap = require('@feathers-plus/cache');
   const { getResultsByKey, getUniqueKeys } = BatchLoader;
   
@@ -825,7 +850,6 @@ Argument | Type | Default | Description
     }
   };
   ```
-  
   The number of service calls needed to run the `query` above **the second time**:
   
 Using | number of service calls
@@ -1082,6 +1106,63 @@ Name | Type | Default | Description
 {% hooksApiFootnote lowerCase %}
 
 <!--=============================================================================================-->
+<h3 id="mongokeys">mongoKeys(ObjectID, keys)</h3>
+
+{% hooksApi mongoKeys %}
+
+
+- **Arguments**
+
+  - `{Function} ObjectID`
+  - `{Array < String >} foreignKeyNames`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`ObjectID` | `Function` | - | `require('mongodb').ObjectID` or equivalent.
+`foreignKeyNames` | `Array < String >` dot notation allowed | - | Field names of the foreign keys. 
+
+- **Example**
+
+  ``` js
+  const { ObjectID = require('mongodb');
+  const { mongoKeys } = require('feathers-hooks-common');
+  
+  /* Comment Schema
+  {
+    _id,
+    body,
+    authorId,   // User creating this Comment
+    postId,     // Comment is for this Post
+    edit: {
+      reason,
+      editorId, // User last editing Comment
+    )
+  }
+  */
+  
+  const foreignKeys = [
+   '_id', 'authorId', 'postId', 'edit.editorId'
+  ];
+  
+  module.exports = { before: {
+    find: mongoKeys(ObjectID, foreignKeys)  
+  } };
+  
+  // Usage
+  comment.find({ query: { postId: '111111111111' } })             // Get all Comments for the Post.
+  comment.find({ query: { authorId: { $in: [...] } } })           // Get all Comments from these authors.
+  comment.find({ query: { edit: { editorId: { $in: [...] } } } }) // Get all comments edited by these editors.
+  ```
+  
+- **Details**
+
+  In MongoDB, foreign keys must be wrapped in ObjectID when used in a query, e.g. `comment.find({ query: { authorId: new ObjectID('111111111111') } })`.
+  
+  `mongoKeys` automates this, given the field names of all the foreign keys in the schema. This reduces the boilerplate cluuter and reduces the chance of bugs occurring.
+
+{% hooksApiFootnote mongoKeys %}
+
+<!--=============================================================================================-->
 <h3 id="paramsFromClient">paramsFromClient( ...whitelist )</h3>
 
 {% hooksApi paramsFromClient %}
@@ -1178,7 +1259,7 @@ Argument | Type | Default | Description
  | `provider` | `undefined` | | Call the service as the server, not with the client's transport.
  | `include` | `Array<` `Object >` or `Object` | | Continue recursively join records to these records.
 
-> Read the [guide](guide.md/populate) for more information on the arguments.
+> Read the [guide](guide.html#populate) for more information on the arguments.
 
 - **Examples**
 
@@ -1390,7 +1471,7 @@ Argument | Type | Default | Description
 {% hooksApiFootnote required %}
 
 <!--=============================================================================================-->
-<h3 id="runParallel">runParallel( hookFunc, clone [, depth ] )</h3>
+<h3 id="runparallel">runParallel( hookFunc, clone [, depth ] )</h3>
 
 {% hooksApi runParallel %}
 
@@ -1501,7 +1582,7 @@ Argument | Type | Default | Description
 {% hooksApiFootnote serialize %}
 
 <!--=============================================================================================-->
-<h3 id="setNow">setNow( ...fieldNames )</h3>
+<h3 id="setnow">setNow( ...fieldNames )</h3>
   
 {% hooksApi setNow %}
 
@@ -1524,7 +1605,7 @@ Argument | Type | Default | Description
 {% hooksApiFootnote setNow %}
 
 <!--=============================================================================================-->
-<h3 id="setSlug">setSlug( slug [, fieldName] )</h3>
+<h3 id="setslug">setSlug( slug [, fieldName] )</h3>
 
 {% hooksApi setSlug %}
 
@@ -1612,7 +1693,7 @@ Argument | Type | Default | Description
 {% hooksApiFootnote sifter %}
 
 <!--=============================================================================================-->
-<h3 id="softDelete">softDelete( fieldName )</h3>
+<h3 id="softdelete">softDelete( fieldName )</h3>
 
 {% hooksApi softDelete %}
 
@@ -1866,7 +1947,7 @@ Argument | Type | Default | Description
 {% hooksApiFootnote validate %}
 
 <!--=============================================================================================-->
-<h3 id="validateSchema">validateSchema( schema, ajv [, options] )</h3>
+<h3 id="validateschema">validateSchema( schema, ajv [, options] )</h3>
   
 {% hooksApi validateSchema %}
 
@@ -2052,7 +2133,7 @@ Argument | Type | Default | Description
 {% hooksApiFootnote combine %}
 
 <!--=============================================================================================-->
-<h3 id="deletebyDot">deleteByDot( obj, path )</h3>
+<h3 id="deletebydot">deleteByDot( obj, path )</h3>
 
 {% hooksApi deleteByDot %}
 
@@ -2157,7 +2238,7 @@ Argument | Type | Default | Description
 {% hooksApiFootnote getByDot %}
 
 <!--=============================================================================================-->
-<h3 id="setbyDot">setByDot( obj, path, value )</h3>
+<h3 id="setbydot">setByDot( obj, path, value )</h3>
 
 {% hooksApi setByDot %}
 
@@ -2491,4 +2572,11 @@ Argument | Type | Default | Description
 <!--=============================================================================================-->
 <h2 id="whats-new">What's New</h2>
 
-  - <a href="https://github.com/feathers-plus/feathers-hooks-common/blob/master/CHANGELOG.md">Changelog.</a>
+The details are at <a href="https://github.com/feathers-plus/feathers-hooks-common/blob/master/CHANGELOG.md">Changelog.</a>
+
+#### Feb. 2018
+
+- Buzzard version published as **npm** as v4.x.x.
+- `alterItems` may now optionally return the items rather than modifying them in place.
+- `disableMultiItemCreate` introduced. It prevents a service from creating multiple records in one service call.
+- `mongoKeys` introduced for MongoDB services. Its wraps foreign keys found in `query` in ObjectID.

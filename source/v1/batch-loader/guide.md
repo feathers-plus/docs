@@ -153,7 +153,7 @@ The other concern is a record mutating. You can create a hook which clears a rec
 usersLoader.clear(1);
 ```
 
-<p class="tip">A common hook to do this is in development.</p>
+> `@feathers-plus/cache/lib/hooks` contains hooks which clear the keys of mutated records.
 
 ## Explore Performance Gains
 

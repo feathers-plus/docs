@@ -50,12 +50,12 @@ Argument | Type | Default | Description
 
 `options` | Argument | Type | Default | Description
 ---|---|---|---|---
- | `batch` | Boolean | `true` | Set to false to disable batching, invoking batchLoadFunc with a single load key.
- | `cache` | Boolean | `true` | Set to false to disable memoization caching, creating a new Promise and new key in the batchLoadFunc for every load of the same key.
+ | `batch` | Boolean | `true` | Set to false to disable batching, invoking `batchLoadFunc` with a single load key.
+ | `cache` | Boolean | `true` | Set to false to disable memoization caching, creating a new Promise and new key in the `batchLoadFunc` for every load of the same key.
  | `cacheKeyFn` | Function | `key => key` | Produces cache key for a given load key. Useful when keys are objects and two objects should be considered equivalent.
  | `cacheMap` | Object | `new Map()` | Instance of Map (or an object with a similar API) to be used as cache. See below.
- | `context` | Object | `null` | A context object to pass into batchLoadFunc as its second argument.
- | `maxBatchSize` | Number | `Infinity` | Limits the number of items that get passed in to the batchLoadFunc.
+ | `context` | Object | `null` | A context object to pass into `batchLoadFunc` as its second argument.
+ | `maxBatchSize` | Number | `Infinity` | Limits the number of keys when calling `batchLoadFunc`.
 
 {% apiReturns class-batchloader "BatchLoader instance." batchLoader Object %}
 
@@ -66,12 +66,18 @@ Argument | Type | Default | Description
   const { getResultsByKey, getUniqueKeys } = BatchLoader;
 
   const usersLoader = new BatchLoader(async (keys, context) => {
-      const data = await users.find({ query: { id: { $in: getUniqueKeys(keys) } } });
+      const data = await users.find({ query: { id: { $in: getUniqueKeys(keys) } }, paginate: false });
       return getResultsByKey(keys, data, user => user.id, '')
     },
     { context: {}, batch: true, cache: true }
   );
   ```
+
+- **Pagination**
+
+  The number of results returned by a query using `$in` is controlled by the pagination `max` set for that Feathers service. You need to specify a `paginate: false` option to ensure that records for all the keys are returned.
+   
+  The maximum number of keys the `batchLoadFunc` is called with can be controlled by the BatchLoader itself with the `maxBatchSize` option. 
 
 - **option.cacheMap**
 
@@ -291,4 +297,9 @@ Argument | Type | Default | Description
 <!--- What's New --------------------------------------------------------------------------->
 <h2 id="whats-new">What's New</h2>
 
-  - <a href="https://github.com/feathers-plus/batch-loader/blob/master/CHANGELOG.md">Changelog.</a>
+The details are at <a href="https://github.com/feathers-plus/batch-loader/blob/master/CHANGELOG.md">Changelog.</a>
+
+#### Feb. 2018
+
+- Added information about pagination within the `batchLoadFunc`.
+  

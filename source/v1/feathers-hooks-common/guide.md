@@ -48,6 +48,8 @@ The `fastJoin(resolvers, query)` API, like GraphQL, uses resolvers to provide a 
 
 It also takes an optional query with which you can customise the current operation. For example, the returned information may have to differ depending on the needs of the client making the service call. 
     
+<p class="tip">The services in all these examples are assumed, for simplicity, to have pagination disabled. You will have to decode when to use `paginate: false` in your code.</p>
+
 ### Resolvers
 
   ``` js
@@ -320,7 +322,7 @@ You need to understand batch-loaders before we proceed, so [read about them now.
 
   ``` js
   const { fastJoin } = require('feathers-hooks-common');
-  const BatchLoader = require('@feather-plus/batch-loader');
+  const BatchLoader = require('@feathers-plus/batch-loader');
   const { loaderFactory } = BatchLoader;
   
   const postResolvers = {
@@ -376,7 +378,7 @@ The `loaderFactory(users, 'id', false)` above is just a convenience wrapper for 
 
   ``` js
   const { fastJoin, makeCallingParams } = require('feathers-hooks-common');
-  const BatchLoader = require('@feather-plus/batch-loader');
+  const BatchLoader = require('@feathers-plus/batch-loader');
   const { getResultsByKey, getUniqueKeys } = BatchLoader;
   
   const postResolvers = {
@@ -412,7 +414,7 @@ Let's also add a `reputation` array of objects to `posts`. This will show the in
   ``` js
   // project/src/services/posts/posts.hooks.js
   const { fastJoin, makeCallingParams } = require('feathers-hooks-common');
-  const BatchLoader = require('@feather-plus/batch-loader');
+  const BatchLoader = require('@feathers-plus/batch-loader');
   const { getResultsByKey, getUniqueKeys } = BatchLoader;
     
   const commentResolvers = {
@@ -586,7 +588,7 @@ Let's see how we can use the [cache hook](./index.html#cache) as it maintains a 
 
   ``` js
   const { cache, fastJoin, makeCallingParams } = require('feathers-hooks-common');
-  const BatchLoader = require('@feather-plus/batch-loader');
+  const BatchLoader = require('@feathers-plus/batch-loader');
   const CacheMap = require('@feathers-plus/cache');
   const { getResultsByKey, getUniqueKeys } = BatchLoader;
   
@@ -1169,3 +1171,5 @@ module.exports = {
   }
 };
 ```
+
+.

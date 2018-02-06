@@ -29,7 +29,10 @@
     "version": "3.4.0"
   },
   "scripts": {
-    "webpack": "webpack"
+    "webpack": "webpack",
+    "deploy": "hexo -g deploy",
+    "generate": "hexo generate",
+    "server": "hexo server"
   },
   "dependencies": {
     "hexo": "^3.2.0",
