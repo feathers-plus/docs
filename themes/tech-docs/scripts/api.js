@@ -1,6 +1,6 @@
 
 hexo.extend.tag.register('apiReturns', ([name, desc, result = 'result', type = 'Boolean']) => {
-  //console.log('ApiReturns', name, desc, result, type);
+  // console.log('ApiReturns', name, desc, result, type);
 
   // handle a bug
   if (desc.substr(-1) === ',') desc = desc.substr(0, desc.length - 1);

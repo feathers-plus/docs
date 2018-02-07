@@ -8,6 +8,6 @@ hexo.extend.helper.register('getPagesInFolder', (site, path) => {
   return ourPages;
 });
 
-function getFolder(path) {
+function getFolder (path) {
   return path.substring(0, path.lastIndexOf('/'));
 }
