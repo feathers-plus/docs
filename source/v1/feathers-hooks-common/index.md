@@ -1441,7 +1441,7 @@ Argument | Type | Default | Description
   const { preventChanges } = require('feathers-hooks-common');
   
   module.exports = { before: {
-    patch: preventChanges('security.badge')
+    patch: preventChanges(true, 'security.badge')
   } };
   ```
   
