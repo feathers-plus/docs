@@ -6,6 +6,101 @@ dropdown: frameworks
 repo: feathers-vuex
 ---
 
+## Organizing the services in your project
+You can use the file system to organize each service into its own module. This is especially useful in organizing larger-sized projects.  Here's an example `store.js`.  It uses Webpack's require.context feature save repetitive imports:
+
+```js
+import Vue from 'vue'
+import Vuex from 'vuex'
+import feathersVuex from 'feathers-vuex'
+import feathersClient from '../feathers-client'
+
+const { auth, FeathersVuex } = feathersVuex(feathersClient, { idField: '_id' })
+
+Vue.use(Vuex)
+Vue.use(FeathersVuex)
+
+const requireModule = require.context(
+  // The relative path holding the service modules
+  './services',
+  // Whether to look in subfolders
+  false,
+  // Only include .js files (prevents duplicate imports)
+  /.js$/
+)
+const servicePlugins = requireModule.keys().map(modulePath => requireModule(modulePath).default)
+
+export default new Vuex.Store({
+  state: {},
+  getters: {},
+  mutations: {},
+  modules: {},
+  plugins: [
+    // Use the spread operator to register all of the imported plugins
+    ...servicePlugins,
+
+    auth({ userService: 'users' })
+  ]
+})
+```
+
+With the `store.js` file in place, we can start adding services to the `services` folder.  Here's an example user service.  Notice that this format is a clean way to use hooks, as well.
+
+```js
+import feathersVuex from 'feathers-vuex'
+import feathersClient from '../../feathers-client'
+
+const { service } = feathersVuex(feathersClient, { idField: '_id' })
+
+const servicePath = 'users'
+const servicePlugin = service(servicePath, {
+  instanceDefaults: {
+    email: '',
+    password: '',
+    roles: [],
+    firstName: '',
+    lastName: '',
+    get fullName () {
+      return `${this.firstName} ${this.lastName}`
+    }
+  }
+})
+
+feathersClient.service(servicePath)
+  .hooks({
+    before: {
+      all: [],
+      find: [],
+      get: [],
+      create: [],
+      update: [],
+      patch: [],
+      remove: []
+    },
+    after: {
+      all: [],
+      find: [],
+      get: [],
+      create: [],
+      update: [],
+      patch: [],
+      remove: []
+    },
+    error: {
+      all: [],
+      find: [],
+      get: [],
+      create: [],
+      update: [],
+      patch: [],
+      remove: []
+    },
+  })
+
+export default servicePlugin
+```
+
+
 ## Actions return reactive store records
 Previously, when you directly used the response from an action, the individual records were not reactive.  This meant that these plain objects wouldn't update when you updated the matching record in the store.
 
