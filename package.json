@@ -30,7 +30,7 @@
   },
   "scripts": {
     "webpack": "webpack",
-    "deploy": "hexo -g deploy",
+    "deploy": "hexo deploy",
     "generate": "hexo generate",
     "server": "hexo server"
   },
