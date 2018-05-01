@@ -37,7 +37,7 @@ export default {
   methods: {
     ...mapActions('appointments', { findAppointments: 'find' })
   },
-  created (0 {
+  created () {
     // Find all appointments. We'll use the getters to separate them.
     this.findAppointments({ query: {} })
   })
