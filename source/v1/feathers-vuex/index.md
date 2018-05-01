@@ -21,18 +21,20 @@ repo: feathers-vuex
 
 - Fully powered by Vuex & Feathers
 - Realtime By Default
-- Actions With Reactive Data
+- Actions With Reactive Data *
 - Local Queries
-- Fall-Through Caching
+- Fall-Through Caching *
 - Feathers Query Syntax
-- `$FeathersVuex` Vue Plugin
+- `$FeathersVuex` Vue Plugin *
 - Live Queries
-- Per-Service Data Modeling
-- Clone & Commit
-- Vuex Strict Mode
-- Per-Record Defaults
-- Data Level Computes
-- Relation Support
+- Per-Service Data Modeling *
+- Clone & Commit *
+- Vuex Strict Mode *
+- Per-Record Defaults *
+- Data Level Computes *
+- Relation Support *
+
+`* New in v1.2.0`
 
 ## Installation
 
