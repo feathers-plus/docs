@@ -2362,7 +2362,6 @@ Argument | Type | Default | Description
 `query` | `Object`  |  | The `context.params.query` for the new context.
 `include` | `Object`  |  | The names of the props in `context` to include in the new context.
 `inject` | `Object`  |  | Additional props to add to the new context.
-`newContext` | `Object`  |  | The new context created
   
 - **Returns**
 
