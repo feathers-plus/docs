@@ -25,10 +25,11 @@ repo: feathers-vuex
 - Local Queries
 - Fall-Through Caching *
 - Feathers Query Syntax
-- `$FeathersVuex` Vue Plugin *
+- `$FeathersVuex` [Vue Plugin](/v1/feathers-vuex/vue-plugin.html) *
 - Live Queries
-- Per-Service Data Modeling *
+- [Per-Service Data Modeling](/v1/feathers-vuex/common-patterns.html#Basic-Data-Modeling-with-instanceDefaults) *
 - Clone & Commit *
+- Simplified Auth
 - Vuex Strict Mode *
 - Per-Record Defaults *
 - Data Level Computes *
@@ -87,6 +88,7 @@ export default new Vuex.Store({
       autoRemove: true, // Automatically remove records missing from responses (only use with feathers-rest)
       enableEvents: false, // Turn off socket event listeners. It's true by default
       addOnUpsert: true, // Add new records pushed by 'updated/patched' socketio events into store, instead of discarding them. It's false by default
+      replaceItems: true, // If true, updates & patches replace the record in the store. Default is false, which merges in changes
       skipRequestIfExists: true, // For get action, if the record already exists in store, skip the remote request. It's false by default
       modelName: 'OldTask' // Default modelName would have been 'Task'
     })

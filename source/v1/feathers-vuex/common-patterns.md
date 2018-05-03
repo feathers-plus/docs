@@ -217,7 +217,7 @@ export default new Vuex.Store({
 })
 ```
 
-With the above configuration, each `Todo` instance will have the attributes provided as `instanceDefaults`.  This is especially useful for binding to form data.  If the attributes aren't defined while binding, the automatic Vue reactivity won't work.  Remember to not set any of the attributes to `undefined`, but instead use `null`.  If not, the reactivity breaks, and you might spend some time wondering why your form is broken.
+With the above configuration, when you create a [`Todo` instance](/v1/feathers-vuex/model-classes.html), it will have the attributes provided as `instanceDefaults`.  This is especially useful for binding to form data.  If the attributes aren't defined while binding, the automatic Vue reactivity won't work.  Remember to not set any of the attributes to `undefined`, but instead use `null`.  If not, the reactivity breaks, and you might spend some time wondering why your form is broken.
 
 ## Relationships for Populated Data
 
@@ -263,7 +263,7 @@ Suppose a requirement is put on the `/todos` service to populate the `user` in t
 
 Can you see the problem that will occur with this response?  When this record is put into the `/todos` store, it will contain a copy of the user record.  But we already have the user record in the `/users` store.  And what happens when the user data changes?  Now it's out of sync.  To keep it in sync, you might have to manually listen for `users updated` & `users patched` events.  Then you might have to write a custom mutation to update the user record attached to every applicable `todo` record.  This gets messy, fast!
 
-Well, you've probably guessed by now that we've come up with an easier way to solve this problem. The introduction of `instanceDefaults` allowed for another awesome feature: Model Relationships!  To setup a relationship, specify a Model name, as a string, to any property, like this:
+There's an easier way to solve this problem. The introduction of `instanceDefaults` allowed for another awesome feature: Model Relationships!  To setup a relationship, specify a Model name, as a string, to any property, like this:
 
 ```js
 instanceDefaults: {
@@ -274,7 +274,7 @@ instanceDefaults: {
 }
 ```
 
-When this record is instantiated, the `user` attribute will first be turned into a User model instance, stored properly in the `/users` store. The `todo.user` atribute will be a reference to that user.  No more duplicate data!  Here's an example of how to set this up.  The following example specifies that Todo instances can have a `user` attribute that contains a `User` Model instance:
+When this record is instantiated, the `user` attribute will first be turned into a User [model instance](/v1/feathers-vuex/model-classes.html), stored properly in the `/users` store. The `todo.user` attribute will be a reference to that user.  No more duplicate data!  Here's an example of how to set this up.  The following example specifies that Todo instances can have a `user` attribute that contains a `User` Model instance:
 
 ```js
 import Vue from 'vue'

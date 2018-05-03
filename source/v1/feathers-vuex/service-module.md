@@ -19,6 +19,7 @@ Each service comes loaded with the following default state:
     idField: 'id',
     servicePath: 'v1/todos' // The full service path
     autoRemove: false, // Indicates that this service will not automatically remove results missing from subsequent requests.
+    replaceItems: false, // When set to true, updates and patches will replace the record in the store instead of merging changes
     paginate: false, // Indicates if pagination is enabled on the Feathers service.
 
     isFindPending: false,
@@ -44,6 +45,8 @@ The following attributes are available in each service module's state:
 - `currentId {Number|String}` - the id of the item marked as current.
 - `copy {Object}` - a deep copy of the current item at the moment it was marked as current. You can make changes to the copy without modifying the `current`.  You can then use the `commitCopy` mutation to save the changes as the `current` or `rejectCopy` to revert `copy` to once again match `current`.  You may prefer to use the new [clone API]() for [managing multiple copies with model instances](/v1/feathers-vuex/common-patterns.html#Multiple-Copies).
 - `servicePath {String}` - the full service path, even if you alias the namespace to something else.
+- `autoRemove {Boolean` - indicates that this service will not automatically remove results missing from subsequent requests.  Only use with feathers-rest. Default is false.
+- `replaceItems {Boolean}` - When set to true, updates and patches will replace the record in the store instead of merging changes.  Default is false
 - `idField {String}` - the name of the field that holds each item's id. *Default: `'id'`*
 - `paginate {Boolean}` - Indicates if the service has pagination turned on.  This changes the response of the `find` action and getter to match the response that Feathers gives.
 
