@@ -408,11 +408,11 @@ Argument | Type | Default | Description
 
 `transports` | Value | Description
 ---|---|---
- | `socketio` | allow calls by Socket.IO transport
- | `primus` | allow calls by Primus transport
- | `rest` | allow calls by REST transport
- | `external` | allow calls other than from server
- | `server` | allow calls from server
+ | `socketio` | disallow calls by Socket.IO transport
+ | `primus` | disallow calls by Primus transport
+ | `rest` | disallow calls by REST transport
+ | `external` | disallow calls other than from server
+ | `server` | disallow calls from server
  
 - **Example**
 
