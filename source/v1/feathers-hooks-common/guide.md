@@ -6,6 +6,53 @@ dropdown: extensions
 repo: feathers-hooks-common
 ---
 
+## Making Hook Params Dynamic
+
+You will usually use static parameters for your hooks, e.g. `disallow('rest')`. However you will periodically need the parameters to vary depending on then current circumstances.
+
+This code will **not work** as hoped, as `disallowWhat` is evaluated when the module is required, not at each service call.
+```js
+function disallowWhat() {
+  return someVariableCircumstance() ? 'rest' : 'external';
+}
+// ...
+module.exports = { before: {
+  all: disallow(disallowWhat())
+} };
+```
+
+This code will also **not do**, as most parameters do not permit functions, and `disallowWhat` will not be called for each service call.
+```js
+function disallowWhat() {
+  return someVariableCircumstance() ? 'rest' : 'external';
+}
+// ...
+module.exports = { before: {
+  all: disallow(disallowWhat)
+} };
+```
+
+You are able to call `disallowWhat` for each service call as follows.
+```js
+function disallowWhat() {
+  return someVariableCircumstance() ? 'rest' : 'external';
+}
+// ...
+module.exports = { before: {
+  all: context => disallow(disallowWhat())(context)
+} };
+```
+
+`disallowWhat` is called each time the hook is run. `disallow(disallowWhat())` creates a new hook with the value returned by `disallowWhat()`, and then that hook is invoked with `(context)`.
+
+Let's look at another example. The `user` record identifies information the user permits to be public, in its `public` field. We can write a hook retaining only the fields allowed to be exposed.
+```js
+module.exports = { after: {
+  get: context => keep(...context.params.user.public)(context)
+} };
+```
+
+
 ## fastJoin
 
 
@@ -139,9 +186,10 @@ The above query requests the author resolver be run, but not the starers resolve
     joins: {
       author: ...,
       
-      starers: $select => async post => { post.starers = await users.find({ query: {
-        id: { $in: post.starIds }, $select: $select || ['name']
-      } }) },
+      starers: $select => async post => { post.starers = await users.find({
+        query: { id: { $in: post.starIds }, $select: $select || ['name'] },
+        pagination: false
+      }) },
     }
   };
 
@@ -153,6 +201,8 @@ The above query requests the author resolver be run, but not the starers resolve
 Parameters may be passed to the resolver functions. The `starers` field will contain both the `id` and `name` from the user record, rather than the default of only `name`.
   
 The `context => query` syntax shows the query can be dynamically modified based on information provided by the client.
+
+The `pagination:false` suppress pagination for this call, ensuring all the matching records are returned.
 
 > Being able to create dynamic queries is an important concept to remember.
 
@@ -226,16 +276,18 @@ The comments resolver below adds related comment records to the passed record. T
     joins: {
       comments: {
         resolver: ($select, $limit, $sort) => async post => {
-          post.comments = await comments.find({ query: {
-            postId: post.id, $select: $select, $limit: $limit || 5, [$sort]: { createdAt: -1 }
-          } });
+          post.comments = await comments.find({
+            query: { postId: post.id, $select: $select, $limit: $limit || 5, [$sort]: { createdAt: -1 } },
+            pagination: false
+          });
           return post.comments;
         },
         
         joins: {
-          author: $select => async comment => { comment.author = (await users.find({ query: {
-            id: comment.userId, $select: $select
-          } }))[0] },
+          author: $select => async comment => { comment.author = (await users.find({
+            query: { id: comment.userId, $select: $select },
+            pagination: false
+          }))[0] },
         },
       },
     }
@@ -286,9 +338,10 @@ We don't want to have to include the resolver for the user record every time we 
   ``` js
   const commentResolvers = {
     joins: {
-      author: $select => async comment => { comment.author = (await users.find({ query: {
-        id: comment.userId, $select: $select || [ 'name' ]
-      } }))[0] },
+      author: $select => async comment => { comment.author = (await users.find({
+        query: { id: comment.userId, $select: $select || [ 'name' ] },
+        pagination: false
+      }))[0] },
     },
   };
   
@@ -296,9 +349,10 @@ We don't want to have to include the resolver for the user record every time we 
     joins: {
       comments: {
         resolver: ($select, $limit, $sort) => async post => {
-          post.comments = await comments.find({ query: {
-            postId: post.id, $select: $select, $limit: $limit || 5, [$sort]: { createdAt: -1 }
-          } });
+          post.comments = await comments.find({
+            query: { postId: post.id, $select: $select, $limit: $limit || 5, [$sort]: { createdAt: -1 } },
+            pagination: false
+          });
           return post.comments;
         },
         
@@ -328,7 +382,7 @@ You need to understand batch-loaders before we proceed, so [read about them now.
   const postResolvers = {
     before: context => {
       context._loaders = { user: {} };
-      context._loaders.user.id = loaderFactory(users, 'id', false)(context);
+      context._loaders.user.id = loaderFactory(users, 'id', false, { pagination: false })(context);
     },
   
     joins: {
@@ -348,7 +402,7 @@ Let's look at the code in this example:
   `before:` | This function is executed before the operations start. Only the top-most `before` is run; any in recursive `joins` are ignored.
   `context._loaders` | An empty object is initialized by `fastJoin`. This is implemented as a stack, any value existing before `fastJoin` starts is stashed, and later restored as the hook terminates.
   `context._loaders.user.id` | You can avoid confusion by organizing batch-loaders unambiguously. In this example `user` indicates the batch-loader returns single `user` records; the `id` indicates its keys will match `user.id`.
-  `loaderFactory(users,` ` 'id', false)` | A convenience method for building straight forward batch-loaders. The batch loader reads record from the `users` service. The keys passed to it are `id` fields which it will match to `user.id`. The `false` indicates the batch loader returns single records for each key rather than an array of records.
+  `loaderFactory(users,` ` 'id', false, { pagination: false })` | A convenience method for building straight forward batch-loaders. The batch loader reads record from the `users` service. The keys passed to it are `id` fields which it will match to `user.id`. The `false` indicates the batch loader returns single records for each key rather than an array of records. `params.pagination`is set to `false` to disable pagination.
   `context._loaders` `.user.id.load()` | Obtains data from the batch-loader for one key. Externally it acts like `await users.find(...)`.
   `context._loaders` `.user.id.loadMany()` | This is how you obtain records for multiple keys from the data-loader.
   `!post.starIds ? null : ...` | Handle `posts.starIds` which may not exist.
@@ -386,7 +440,9 @@ The `loaderFactory(users, 'id', false)` above is just a convenience wrapper for 
       context._loaders = { user: {} };
       
       context._loaders.user.id = new BatchLoader(async (keys, context) => {
-          const result = await users.find(makeCallingParams(context, { id: { $in: getUniqueKeys(keys) } }));
+          const result = await users.find(makeCallingParams(
+            context, { id: { $in: getUniqueKeys(keys) } }, undefined, { pagination: false }
+          ));
           return getResultsByKey(keys, result, user => user.id, '!');
         },
         { context }
@@ -429,14 +485,18 @@ Let's also add a `reputation` array of objects to `posts`. This will show the in
       context._loaders = { user: {}, comments: {} };
   
       context._loaders.user.id = new BatchLoader(async (keys, context) => {
-          const result = await users.find(makeCallingParams(context, { id: { $in: getUniqueKeys(keys) } }));
+          const result = await users.find(makeCallingParams(
+            context, { id: { $in: getUniqueKeys(keys) } }, undefined, { pagination: false }
+          ));
           return getResultsByKey(keys, result, user => user.id, '!');
         },
         { context }
       );
 
       context._loaders.comments.postId = new BatchLoader(async (keys, context) => {
-          const result = await comments.find(makeCallingParams(context, { postId: { $in: getUniqueKeys(keys) } }));
+          const result = await comments.find(makeCallingParams(
+            context, { postId: { $in: getUniqueKeys(keys) } }, undefined, { pagination: false }
+          ));
           return getResultsByKey(keys, result, comment => comment.postId, '[!]');
         },
         { context }
@@ -597,7 +657,9 @@ Let's see how we can use the [cache hook](./index.html#cache) as it maintains a 
   
   // Create a batchLoader using the persistent cache
   const userBatchLoader = new BatchLoader(async keys => {
-    const result = await users.find(makeCallingParams({}, { id: { $in: getUniqueKeys(keys) } }));
+    const result = await users.find(makeCallingParams(
+      {}, { id: { $in: getUniqueKeys(keys) } }, undefined, { pagination: false }
+    ));
     return getResultsByKey(keys, result, user => user.id, '!');
   },
     { cacheMap: cacheMapUsers }

@@ -48,6 +48,8 @@ module.exports = {
 <!--=============================================================================================-->
 ## New Features in Buzzard
 
+> Features added since the initial Buzzard release are listed in the [What's New section](#whats-new).
+
 These features are new in the Buzzard version.
 
   - The docs [have been rewritten.](https://feathers-plus.github.io/v1/feathers-hooks-common)
@@ -106,6 +108,82 @@ These changes may affect your projects when you switch from this repo's last Fea
 
 <!--=============================================================================================-->
 ## Hooks
+
+<!--=============================================================================================-->
+<h3 id="actondefault">actOnDefault( ...hooks )</h3>
+
+{% hooksApi actOnDefault %}
+
+
+- **Arguments**
+
+  - `{...Function}` Hook functions.
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`hooks` | `...Function` |  | The hooks to run. They will mutate `context.data` for before hooks, or `context.result` for after hooks. This is the default action for hooks. 
+
+- **Example**
+
+  ``` js
+  const { actOnDefault, actOnDispatch } = require('feathers-hooks-common');
+  
+  module.exports = { after: {
+      find: [
+        hook1(),
+        actOnDispatch(hook2(), actOnDefault(hook3()), hook4()),
+        hook5()
+      ]
+  } };
+  ```
+  Hooks `hook1`, `hook3` and `hook5` will run "normally", mutating `content.result`.
+  Hooks `hook2` and `hook4` will mutate `context.dispatch`.
+  
+- **Details**
+
+  A hook can call a series of hooks using `actOnDispatch`. Some of those hooks may call other hooks with `actOnDefault` or `actOnDispatch`. This can "turtle down" to further layers.
+  
+  The main purpose of `actOnDefault` is to "undo" `actOnDispatch`.
+  
+{% hooksApiFootnote actOnDefault %}
+
+<!--=============================================================================================-->
+<h3 id="actondispatch">actOnDispatch( ...hooks )</h3>
+
+{% hooksApi actOnDispatch %}
+
+
+- **Arguments**
+
+  - `{...Function}` Hook functions.
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`hooks` | `...Function` |  | The hooks to run. They will mutate `context.dispatch`.
+
+- **Example**
+
+  ``` js
+  const { actOnDefault, actOnDispatch } = require('feathers-hooks-common');
+  
+  module.exports = { after: {
+      find: [
+        hook1(),
+        actOnDispatch(hook2(), actOnDefault(hook3()), hook4()),
+        hook5()
+      ]
+  } };
+  ```
+  Hooks `hook1`, `hook3` and `hook5` will run "normally", mutating `content.result`.
+  Hooks `hook2` and `hook4` will mutate `context.dispatch`.
+  
+- **Details**
+
+  A hook can call a series of hooks using `actOnDispatch`. Some of those hooks may call other hooks with `actOnDefault` or `actOnDispatch`. This can "turtle down" to further layers.
+  
+  <p class="tip">context.dispatch is a writeable, optional property and contains a "safe" version of the data that should be sent to any client. If context.dispatch has not been set context.result will be sent to the client instead.<br/><br/>Note: context.dispatch only affects the data sent through a Feathers Transport like REST or Socet.io. An internal method call will still get the data set in context.result.</p>
+  
+{% hooksApiFootnote actOnDispatch %}
 
 <!--=============================================================================================-->
 <h3 id="alteritems">alterItems( func )</h3>
@@ -554,13 +632,15 @@ Argument | Type | Default | Description
   
   const postResolvers = {
     joins: {
-      author: (...args) => async post => post.author = (await users.find({ query: {
-        id: post.userId
-      } }))[0],
+      author: (...args) => async post => post.author = (await users.find({
+        query: { id: post.userId },
+        pagination: false
+      }))[0],
       
-      starers: $select => async post => post.starers = await users.find({ query: {
-        id: { $in: post.starIds }, $select: $select || ['name']
-      } }),
+      starers: $select => async post => post.starers = await users.find({
+        query: { id: { $in: post.starIds }, $select: $select || ['name'] },
+        pagination: false
+      }),
     }
   };
   
@@ -595,14 +675,16 @@ Argument | Type | Default | Description
   const postResolvers = {
     joins: {
       comments: {
-        resolver: ($select, $limit, $sort) => async post => post.comments = await comments.find({ query: {
-          postId: post.id, $select: $select, $limit: $limit || 5, [$sort]: { createdAt: -1 }
-        } }),
+        resolver: ($select, $limit, $sort) => async post => post.comments = await comments.find({
+          query: { postId: post.id, $select: $select, $limit: $limit || 5, [$sort]: { createdAt: -1 } },
+          pagination: false
+        }),
           
         joins: {
-          author: $select => async comment => comment.author = (await users.find({ query: {
-            id: comment.userId, $select: $select
-          } }))[0],
+          author: $select => async comment => comment.author = (await users.find({
+            query: { id: comment.userId, $select: $select },
+            pagination: false
+          }))[0],
         },
       },
     }
@@ -657,7 +739,7 @@ Argument | Type | Default | Description
   const postResolvers = {
     before: context => {
       context._loaders = { user: {} };
-      context._loaders.user.id = loaderFactory(users, 'id', false)(context);
+      context._loaders.user.id = loaderFactory(users, 'id', false, { pagination: false })(context);
     },
     joins: {
       author: () => async (post, context) =>
@@ -708,14 +790,18 @@ Argument | Type | Default | Description
       context._loaders = { user: {}, comments: {} };
       
       context._loaders.user.id = new BatchLoader(async (keys, context) => {
-          const result = await users.find(makeCallingParams(context, { id: { $in: getUniqueKeys(keys) } }));
+          const result = await users.find(makeCallingParams(
+            context, { id: { $in: getUniqueKeys(keys) } }, undefined, { pagination: false }
+          ));
           return getResultsByKey(keys, result, user => user.id, '!');
         },
         { context }
       );
       
       context._loaders.comments.postId = new BatchLoader(async (keys, context) => {
-          const result = await comments.find(makeCallingParams(context, { postId: { $in: getUniqueKeys(keys) } }));
+          const result = await comments.find(makeCallingParams(
+            context, { postId: { $in: getUniqueKeys(keys) } }, undefined, { pagination: false }
+          ));
           return getResultsByKey(keys, result, comment => comment.postId, '[!]');
         },
         { context }
@@ -808,7 +894,8 @@ Argument | Type | Default | Description
   
   // Create a batchLoader using the persistent cache
   const userBatchLoader = new BatchLoader(async keys => {
-    const result = await users.find(makeCallingParams({}, { id: { $in: getUniqueKeys(keys) } }));
+    const result = await users.find(makeCallingParams(
+      {}, { id: { $in: getUniqueKeys(keys) } }, undefined, { pagination: false }));
     return getResultsByKey(keys, result, user => user.id, '!');
   },
     { cacheMap: cacheMapUsers }
@@ -1693,6 +1780,43 @@ Argument | Type | Default | Description
 {% hooksApiFootnote sifter %}
 
 <!--=============================================================================================-->
+<h3 id="skipremaininghooks">skipRemainingHooks( predicate )</h3>
+
+{% hooksApi skipRemainingHooks %}
+
+  <p class="tip">The database call itself will be shipped only if `context.result` has been set.</p>
+
+- **Arguments**
+
+  - `{Function | Boolean} predicate`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`predicate` | `Function`, `Boolean` | `content => content.result` | A predicate. If true the remaining hooks are skipped. The default checks if `context.result` has been set.
+
+- **Example**
+
+  Skip the remaining hooks if the record was found in the cache.
+  ``` js
+  const { cache, skipRemainingHooks } = require('feathers-hooks-common');
+  
+  module.exports = { before: {
+    get: [cache(new Map()), skipRemainingHooks()] 
+  } };
+  ```
+  Skip all the `after` hooks if the service call was initiated by the server.
+  ``` js
+  module.exports = { after: {
+    all: [skipRemainingHooks(context => !context.provider)] 
+  } };
+  ```
+  
+  
+- **Details**
+
+{% hooksApiFootnote skipRemainingHooks %}
+
+<!--=============================================================================================-->
 <h3 id="softdelete">softDelete( fieldName )</h3>
 
 {% hooksApi softDelete %}
@@ -2163,6 +2287,8 @@ Argument | Type | Default | Description
 - **Details**
 
   You can use `phones.home.0.main` to handle arrays.
+  
+  If you delete an array element, e.g. `phones.home.1`, that element will be removed from the array.
 
 {% hooksApiFootnote deleteByDot %}
 
@@ -2579,3 +2705,10 @@ The details are at <a href="https://github.com/feathers-plus/feathers-hooks-comm
 - `alterItems` may now optionally return the items rather than modifying them in place.
 - `disableMultiItemCreate` introduced. It prevents a service from creating multiple records in one service call.
 - `mongoKeys` introduced for MongoDB services. Its wraps foreign keys found in `query` in ObjectID.
+
+#### March 2018
+
+- Documented how to [make any hook parameter dynamic](guide.html#Making-Hook-Params-Dynamic).
+- `skipRemainingHooks` introduced. It conditionally skips running all remaining hooks.
+- `actOnDispatch(...hooks)` and `actOnDefault(...hooks)`. You can use them to run most common hooks, and any hooks using `getItems` and `replaceItems` so they mutate `context.dispatch` rather than `context.data` or `context.result`.
+- `mongoKeys` can now be used with any type of service call, not just `find`.
