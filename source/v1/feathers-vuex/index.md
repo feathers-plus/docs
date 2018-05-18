@@ -85,6 +85,7 @@ export default new Vuex.Store({
       idField: '_id', // The field in each record that will contain the id
       nameStyle: 'path', // Use the full service path as the Vuex module name, instead of just the last section
       namespace: 'custom-namespace', // Customize the Vuex module name.  Overrides nameStyle.
+      debug: true, // Enable some logging for debugging
       autoRemove: true, // Automatically remove records missing from responses (only use with feathers-rest)
       enableEvents: false, // Turn off socket event listeners. It's true by default
       addOnUpsert: true, // Add new records pushed by 'updated/patched' socketio events into store, instead of discarding them. It's false by default
