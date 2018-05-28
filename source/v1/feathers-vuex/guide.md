@@ -73,7 +73,7 @@ export default function (context) {
   const { auth } = store.state
 
   if (!auth.publicPages.includes(route.name) && !auth.payload) {
-    return redirect('login')
+    return redirect('/login')
   }
 }
 ```
