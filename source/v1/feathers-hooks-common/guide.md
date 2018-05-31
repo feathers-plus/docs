@@ -1109,7 +1109,7 @@ purchaseOrders.after({
 Comprehensive validation may include the following:
 
 - Object schema validation. Checking the item object contains the expected properties with values in the expected format. The values might get sanitized. Knowing the item is well formed makes further validation simpler.
-- Re-running any validation supposedly already done on the front-end. It would an asset if the server can re-run the same code the front-end used.
+- Re-running any validation supposedly already done on the front-end. It would be an asset if the server can re-run the same code the front-end used.
 - Performing any validation and sanitization unique to the server.
 
 A full featured example of such a process appears below. It validates and sanitizes a new user before adding the user to the database.
