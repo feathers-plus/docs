@@ -109,7 +109,7 @@ Removes the passed in items or ids from the store.
 ### `setCurrent(state, item)`
 - `item {Number|String|Object}` - the object with id to be set as the current item, or the id of the object in the store that should become the `current` item.  Setting the `current` item or id also create the deep-cloned `copy`.
 
-#### `commitCopy(state)`
+### `commitCopy(state)`
 Saves changes from the `copy` to the `current` item.
 
 ### `rejectCopy(state)`

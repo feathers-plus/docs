@@ -2032,7 +2032,7 @@ Argument | Type | Default | Description
 - **Example**
 
   ``` js
-  const { callbackToPromise, validate } = require('feathers-hooks-common');
+  const { validate } = require('feathers-hooks-common');
   const { promisify } = require('util');
   
   // function myCallbackValidator(values, cb) { ... }
@@ -2316,7 +2316,12 @@ Argument | Type | Default | Description
   ``` js
   const { discard, existsByDot, iff } = require('feathers-hooks-common');
   
-  const discardBadge = () => iff(!existsByDot('security.passcode'), discard('security.badge'));
+  const discardBadge = () => context => {
+    iff(
+      !existsByDot(context.data, 'security.passcode'),
+      discard('security.badge')
+    )(context);
+  }
 
   module.exports = { before: {
     find: discardBadge()
@@ -2325,7 +2330,8 @@ Argument | Type | Default | Description
   
 - **Details**
 
-  You can use `phones.home.0.main` to handle arrays. Properties with a value of `undefined` are considered to exist.
+  You can use `phones.home.0.main` to handle arrays.  
+  Properties with a value of `undefined` are considered to exist.
 
 {% hooksApiFootnote existsByDot %}
 
