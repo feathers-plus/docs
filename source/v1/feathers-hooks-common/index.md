@@ -225,6 +225,13 @@ Argument | Type | Default | Description
       resolve();
   }});
   ```
+  
+  You can also perform async mutations using Promises by returning a Promise that is resolved once all mutations are complete:
+  ```js
+  alterItems(async rec => {
+    rec.userRecord = await service.get(...);
+  }) 
+  ```
 
 - **Details**
 
@@ -2725,4 +2732,4 @@ The details are at <a href="https://github.com/feathers-plus/feathers-hooks-comm
 #### June 2018
 
 - `discard` and `keep` support records which are `null`.
-- A more convenient signature is used by `alterItems` for async functions.
+- A new, more convenient signature for async functions has been introduced for `alterItems`.
