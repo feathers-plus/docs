@@ -2029,7 +2029,7 @@ Argument | Type | Default | Description
 - **Example**
 
   ``` js
-  const { callbackToPromise, validate } = require('feathers-hooks-common');
+  const { validate } = require('feathers-hooks-common');
   const { promisify } = require('util');
   
   // function myCallbackValidator(values, cb) { ... }
