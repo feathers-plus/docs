@@ -421,3 +421,13 @@ export default new Vuex.Store({
   ]
 })
 ```
+
+## Enable Debug Logging
+
+If items aren't not getting added to the store properly, try setting the `debug` option on the service.  It enables some additional logging that may be useful:
+
+```
+service('todos', {
+  debug: true
+})
+```
