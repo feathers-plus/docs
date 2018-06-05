@@ -211,12 +211,6 @@ Argument | Type | Default | Description
       ],
   } };
   ```
-  Async mutations can be handled with async/await:
-  ``` js
-  alterItems(rec => {
-    rec.userRecord = (async () => await service.get(...) )()
-  })
-  ```
   You can also perform async mutations using Promises by returning a Promise that is resolved once all mutations are complete:
   ``` js
   alterItems(rec => new Promise(resolve => {
@@ -224,6 +218,12 @@ Argument | Type | Default | Description
       rec.userRecord = result;
       resolve();
   }});
+  ```
+  Or you can use an async function:
+  ``` js
+  alterItems(async rec => {
+    rec.userRecord = await service.get(...)
+  })
   ```
 
 - **Details**
