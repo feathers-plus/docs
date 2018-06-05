@@ -245,7 +245,7 @@ Argument | Type | Default | Description
   
 - **Returns**
 
-  `func` may alternatively return a replacement `item` rather than `undefined`. This is a convenience feature which permits, for example, use of functions from the [Lodash](https://lodash.com/) library, as such functions tend  return new objects.
+  `func` may alternatively return a replacement `item` rather than `undefined`. This is a convenience feature which permits, for example, use of functions from the [Lodash](https://lodash.com/) library, as such functions tend to return new objects.
     
 {% hooksApiFootnote alterItems %}
 
@@ -537,6 +537,8 @@ Argument | Type | Default | Description
 - **Details**
 
   Delete the fields either from `context.data` (before hook) or `context.result[.data]` (after hook).
+  They are not modified if they are not an object, so a `null` value is supported.
+  
   
 {% hooksApiFootnote discard %}
 
@@ -1141,6 +1143,7 @@ Name | Type | Default | Description
 - **Details**
 
   Update either `context.data` (before hook) or `context.result[.data]` (after hook).
+  Their values are returned if they are not an object, so a `null` value is supported.
 
 {% hooksApiFootnote keep %}
 
@@ -2712,3 +2715,8 @@ The details are at <a href="https://github.com/feathers-plus/feathers-hooks-comm
 - `skipRemainingHooks` introduced. It conditionally skips running all remaining hooks.
 - `actOnDispatch(...hooks)` and `actOnDefault(...hooks)`. You can use them to run most common hooks, and any hooks using `getItems` and `replaceItems` so they mutate `context.dispatch` rather than `context.data` or `context.result`.
 - `mongoKeys` can now be used with any type of service call, not just `find`.
+
+#### June 2018
+
+- `discard` and `keep` support records which are `null`.
+- A more convenient signature is used by `alterItems` for async functions.
