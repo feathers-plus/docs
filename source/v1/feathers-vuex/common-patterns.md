@@ -16,7 +16,7 @@ export default {
   name: 'some-component',
   computed: {
     ...mapState('appointments', { areAppointmentsLoading: 'isFindPending' }),
-    ...mapGetters('appointments', findAppointmentsInStore: 'find' ),
+    ...mapGetters('appointments', { findAppointmentsInStore: 'find' } ),
     // Query for future appointments
     queryUpcoming () {
       return { date: { $gt: new Date() }}
