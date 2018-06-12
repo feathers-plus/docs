@@ -2070,9 +2070,6 @@ Argument | Type | Default | Description
 `formValues` | `Object` | | The data, e.g. `{ name: 'John', ... }`
 `context` | `Object` | | The hook context.
 `errors` | `Object` `null` | | An error object like `{ fieldName1: 'message', ... }`
-
-  Promise functions should throw on an error or reject with `new errors.BadRequest('Error message', { errors: { fieldName1: 'message', ... } });`. Their `.then` returns either sanitized values to replace the data in the `context`, or `null`.
-
   
   > If you have a different signature for the validator then pass a wrapper as the validator e.g. `values => myValidator(..., values, ...)`.
 
