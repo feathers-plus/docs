@@ -643,12 +643,12 @@ Argument | Type | Default | Description
     joins: {
       author: (...args) => async post => post.author = (await users.find({
         query: { id: post.userId },
-        pagination: false
+        paginate: false
       }))[0],
       
       starers: $select => async post => post.starers = await users.find({
         query: { id: { $in: post.starIds }, $select: $select || ['name'] },
-        pagination: false
+        paginate: false
       }),
     }
   };
@@ -686,13 +686,13 @@ Argument | Type | Default | Description
       comments: {
         resolver: ($select, $limit, $sort) => async post => post.comments = await comments.find({
           query: { postId: post.id, $select: $select, $limit: $limit || 5, [$sort]: { createdAt: -1 } },
-          pagination: false
+          paginate: false
         }),
           
         joins: {
           author: $select => async comment => comment.author = (await users.find({
             query: { id: comment.userId, $select: $select },
-            pagination: false
+            paginate: false
           }))[0],
         },
       },
@@ -748,7 +748,7 @@ Argument | Type | Default | Description
   const postResolvers = {
     before: context => {
       context._loaders = { user: {} };
-      context._loaders.user.id = loaderFactory(users, 'id', false, { pagination: false })(context);
+      context._loaders.user.id = loaderFactory(users, 'id', false, { paginate: false })(context);
     },
     joins: {
       author: () => async (post, context) =>
@@ -800,7 +800,7 @@ Argument | Type | Default | Description
       
       context._loaders.user.id = new BatchLoader(async (keys, context) => {
           const result = await users.find(makeCallingParams(
-            context, { id: { $in: getUniqueKeys(keys) } }, undefined, { pagination: false }
+            context, { id: { $in: getUniqueKeys(keys) } }, undefined, { paginate: false }
           ));
           return getResultsByKey(keys, result, user => user.id, '!');
         },
@@ -809,7 +809,7 @@ Argument | Type | Default | Description
       
       context._loaders.comments.postId = new BatchLoader(async (keys, context) => {
           const result = await comments.find(makeCallingParams(
-            context, { postId: { $in: getUniqueKeys(keys) } }, undefined, { pagination: false }
+            context, { postId: { $in: getUniqueKeys(keys) } }, undefined, { paginate: false }
           ));
           return getResultsByKey(keys, result, comment => comment.postId, '[!]');
         },
@@ -904,7 +904,7 @@ Argument | Type | Default | Description
   // Create a batchLoader using the persistent cache
   const userBatchLoader = new BatchLoader(async keys => {
     const result = await users.find(makeCallingParams(
-      {}, { id: { $in: getUniqueKeys(keys) } }, undefined, { pagination: false }));
+      {}, { id: { $in: getUniqueKeys(keys) } }, undefined, { paginate: false }));
     return getResultsByKey(keys, result, user => user.id, '!');
   },
     { cacheMap: cacheMapUsers }
