@@ -1873,6 +1873,9 @@ Argument | Type | Default | Description
   
   <p class="tip">The `user` record is read by feathers-authentication` with a `get`. The `softDelete` hook will be run for this call unless it is conditioned to ignore it. This situation raises the most issues for this hook.</p>
   
+  <p class="tip">The hook will not function properly if you remove the `deleted` flag in your hooks. It has to returned in the record.</p>
+
+  
 {% hooksApiFootnote softDelete %}
 
 <!--=============================================================================================-->
@@ -2177,6 +2180,108 @@ An alias for [iff](#iff).
 
 <!--=============================================================================================-->
 ## Utilities
+
+<!--=============================================================================================-->
+<h3 id="callingparams">callingParams(options)(context)</h3>
+
+{% hooksApi callingParams %}
+
+- **Arguments**
+  - `{Object} options`
+  - `{Object} context`
+  
+Argument | Type | Default | Description
+---|:---:|---|---
+`options` | `Object` |  | How to construct params for service call.
+`context` | `Object` |  | The `context` of the hook which will make the service call. 
+  
+`options` | Argument | Type | Default | Description
+-|---|:---:|---|---
+ | `query` | `Object`  |  | The `params.query` for the calling params.
+ | `propNames` | `Array< String >`  |  | The names of the props in `context.params` to include in the new params.
+ | `newProps` | `Object`  |  | Additional props to add to the new params.
+ | `hooksToDisable` | `Array< String >`  |  | The names of hooks to disable during the service call. `populate`, `fastJoin`, `softDelete` and `stashBefore` are supported.
+    
+- **Returns**
+
+  - `{Object} newParams`
+
+Variable | Type | Default | Description
+---|:---:|---|---
+`newParams` | `Object`  |  | The params for the service call.
+
+- **Example**
+
+  ``` js
+  const { callingParams, callingParamsDefaults } = require('feathers-hooks-common');
+  // Authentication props to always copy. Suitable for feathers-authentication-management.
+  callingParamsDefaults(['provider', 'authenticated', 'user', 'isVerified']);
+  
+  async function myCustomHook(context) {
+    // ...
+    const result = await service.find(callingParams({
+      query: { { id: { $in: [1, 2, 3] } } },
+      propNames: ['customProp'],
+      newProps: { mongoose: ... },
+      hooksToDisable: 'populate'
+    }), context);
+    // ...
+  }
+  ```
+  
+- **Details**
+
+  When calling another service within a hook, [consideration must be given](https://auk.docs.feathersjs.com/guides/step-by-step/basic-feathers/writing-hooks.html#calling-a-service) to what the `params` should be for the called service. For example, should the called service see that a client is making the call, or the server? What authentication and authorization information should be provided? You can use this convenience function to help create that `params`.
+  
+  The properties `provider`, `authenticated` and `user` are the standard authentication properties used by Feathers. They are copied automatically.
+  
+  These defaults and others can be changed app-wide by calling the `callingParamsDefaults` utility.
+   
+{% hooksApiFootnote callingParams %}
+
+<!--=============================================================================================-->
+<h3 id="callingparamsdefaults">callingParamsDefaults(propNames, newProps)</h3>
+
+{% hooksApi callingParamsDefaults %}
+
+- **Arguments**
+  - `{Array< String >} propNames`
+  - `{Object} newProps`
+  
+Argument | Type | Default | Description
+---|:---:|---|---
+`propNames` | `Array< String >`  |  | The names of the props in `context.params` to automatically include in the new params.
+`newProps` | `Object`  |  | Additional props to add to the new params. 
+
+- **Example**
+
+  ``` js
+  const { callingParams, callingParamsDefaults } = require('feathers-hooks-common');
+  // Authentication props to always copy. Suitable for feathers-authentication-management.
+  // Only hooks will be calling `callingParams`. Set a flag so other hooks recognize such a call.
+  callingParamsDefaults(['provider', 'authenticated', 'user', 'isVerified'], { _calledByHook: true });
+  
+  async function myCustomHook(context) {
+    // ...
+    const result = await service.find(callingParams({
+      query: { { id: { $in: [1, 2, 3] } } },
+      propNames: ['customProp'],
+      newProps: { mongoose: ... },
+      hooksToDisable: 'populate'
+    }), context);
+    // ...
+  }
+  ```
+  
+- **Details**
+
+  When calling another service within a hook, [consideration must be given](https://auk.docs.feathersjs.com/guides/step-by-step/basic-feathers/writing-hooks.html#calling-a-service) to what the `params` should be for the called service. For example, should the called service see that a client is making the call, or the server? What authentication and authorization information should be provided? You can use this convenience function to help create that `params`.
+  
+  The properties `provider`, `authenticated` and `user` are the standard authentication properties used by Feathers. They are copied automatically.
+  
+  These defaults and others can be changed app-wide by calling the `callingParamsDefaults` utility.
+   
+{% hooksApiFootnote callingParamsDefaults %}
 
 <!--=============================================================================================-->
 <h3 id="checkcontext">checkContext( context [, type ] [, methods ] [, label ] )</h3>
@@ -2485,9 +2590,9 @@ Argument | Type | Default | Description
 <!--=============================================================================================-->
 <h3 id="makecallingparams">makeCallingParams( context, query, include, inject )</h3>
 
-
 {% hooksApi makeCallingParams %}
 
+<p class="tip">You should prefer using the `callingParams` utility to `makeCallingParams`.</p>
 
 - **Arguments**
   - `{Object} context`
@@ -2499,7 +2604,7 @@ Argument | Type | Default | Description
 ---|:---:|---|---
 `context` | `Object`  |  | The existing hook context.
 `query` | `Object`  |  | The `context.params.query` for the new context.
-`include` | `Object`  |  | The names of the props in `context` to include in the new context.
+`include` | `Array< String >`  |  | The names of the props in `context` to include in the new context.
 `inject` | `Object`  |  | Additional props to add to the new context.
   
 - **Returns**
@@ -2527,7 +2632,7 @@ Variable | Type | Default | Description
   
 - **Details**
 
-  When calling another service within a hook, [consideration must be given](https://docs.feathersjs.com/guides/step-by-step/basic-feathers/writing-hooks.html#calling-a-service) to what the `context.params` should be for the called service. For example, should the called service see that a client is making the call, or the server? What authentication and authorization information should be provided? You can use this convenience function to help create that `context.params`.
+  When calling another service within a hook, [consideration must be given](https://auk.feathersjs.com/guides/step-by-step/basic-feathers/writing-hooks.html#calling-a-service) to what the `context.params` should be for the called service. For example, should the called service see that a client is making the call, or the server? What authentication and authorization information should be provided? You can use this convenience function to help create that `context.params`.
    
   The value `context.params._populate: 'skip'` is automatically added to skip any `fastJoin` or `populate` hooks registered on the called service. Set it to `false`, like in the example above, to make those hooks run.
 
@@ -2730,3 +2835,4 @@ The details are at <a href="https://github.com/feathers-plus/feathers-hooks-comm
 
 - `discard` and `keep` support records which are `null`.
 - A new, more convenient signature for async functions has been introduced for `alterItems`.
+- `callingParams` and `callingParamsDefaults` utility functions added. `callingParams` should now be used rather than `makeCallingParams`.

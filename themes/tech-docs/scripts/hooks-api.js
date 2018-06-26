@@ -6,7 +6,7 @@ const hooksRaw = {
   // fileName: 'fast-join',
   // src: 'https://github.com/feathers-plus/feathers-hooks-common/blob/master/lib/services/fast-join.js',
 
-  'act-on-default': { tags: ['code', 'cond', 'data'], desc: 'Runs a series of hooks which mutate context.data or content.result (the Feathers default).' },
+  'act-on-default': { tags: ['code', 'cond', 'data'], desc: 'Runs a series of hooks which mutate context.data or content.result (the Feathers default).', srcFile: 'services/act-on-dispatch.js' },
   'act-on-dispatch': { tags: ['code', 'cond', 'data'], desc: 'Runs a series of hooks which mutate context.dispatch.' },
   'alter-items': { tags: ['code', 'cond', 'data', 'pred', 'relation', 'imp'], desc: 'Make changes to data or result items. Very flexible.'},
   'cache': { tags: ['data', 'services', 'perf'], desc: 'Persistent, least-recently-used record cache for services.'},
@@ -37,7 +37,7 @@ const hooksRaw = {
   'lower-case': { check: [1, 'before', ['create', 'update', 'patch']], tags: 'data', desc: 'Convert certain field values to lower case.' },
   'mongo-keys': { tags: ['mongo', 'data', 'relation'], desc: 'Wrap MongoDB foreign keys in ObjectID.',
     check: [0, 'before', null] },
-  'params-from-client': { tags: ['code', 'client', 'trans'], desc: 'Pass <code>context.params</code> from client to server. Server hook.' },
+  'params-from-client': { tags: ['code', 'client', 'trans', 'calls'], desc: 'Pass <code>context.params</code> from client to server. Server hook.' },
   'populate': { tags: 'relation', desc: 'Join related records.',
     guide: 'populate' },
   'prevent-changes': { tags: ['data', 'methods'], desc: 'Prevent <code>patch</code> service calls from changing certain fields.',
@@ -63,19 +63,22 @@ const hooksRaw = {
   'validate-schema': { tags: ['valid', 'data', 'services'], desc: 'Validate data using JSON-Schema.' },
   'when': { name: 'when', fileName: 'common/iff', tags: 'cond', desc: 'An alias for <code>iff</code>.' },
 
+  'calling-params': { tags: ['code', 'calls', 'func'], desc: 'Build <code>params</code> for a service call.' },
+  'calling-params-defaults': { tags: ['code', 'calls', 'func'], desc: 'Set defaults for building <code>params</code> for service calls with <code>callingParams</code>.' },
   'check-context': { tags: ['code', 'services', 'func'], desc: 'Restrict a hook to run for certain methods and method types.' },
   'common/delete-by-dot': { name: 'deleteByDot', tags: ['code', 'dot', 'func'], desc: 'Deletes a property from an object using dot notation, e.g. <code>address.city</code>.' },
   'common/exists-by-dot': { name: 'existsByDot', tags: ['code', 'dot', 'func'], desc: 'Check if a property exists in an object by using dot notation, e.g. <code>address.city</code>.' },
   'common/get-by-dot': { name: 'getByDot', tags: ['code', 'dot', 'func'], desc: 'Return a property value from an object using dot notation, e.g. <code>address.city</code>.' },
   'get-items': { tags: ['code', 'data', 'func'], desc: 'Get the records in <code>context.data</code> or <code>context.result[.data]</code>.' },
-  'make-calling-params': { tags: ['code', 'services', 'func'], desc: 'Build <code>context.params</code> for service calls.' },
-  'params-for-server': { tags: ['code', 'client', 'trans', 'func'], desc: 'Pass an explicit <code>context.params</code> from client to server. Client-side.' },
+  'make-calling-params': { tags: ['code', 'calls', 'func'], desc: 'Build <code>context.params</code> for service calls.' },
+  'params-for-server': { tags: ['code', 'client', 'trans', 'func', 'calls'], desc: 'Pass an explicit <code>context.params</code> from client to server. Client-side.' },
   'replace-items': { tags: ['code', 'data', 'func'], desc: 'Replace the records in <code>context.data</code> or <code>context.result[.data]</code>.' },
   'run-hook': { tags: ['code', 'services', 'func'], desc: 'Let\'s you call a hook right after the service call.' },
   'common/set-by-dot': { name: 'setByDot', tags: ['code', 'dot', 'func'], desc: 'Set a property value in an object using dot notation, e.g. <code>address.city</code>.' },
 };
 
 const showTagNames = {
+  calls: 'Calling services',
   client: 'Client/server',
   code: 'Coding',
   cond: 'Conditionals',
@@ -159,10 +162,12 @@ Object.keys(hooksRaw).sort().forEach(fileName => {
 
   // console.log(name, before1, after1, methods1, before2, after2, methods2);
 
+  const srcFileName = info.srcFile || `${fileName.indexOf('/') === -1 ? 'services/' : ''}${fileName}.js`;
+
   hooks[name] = {
     fileName,
     label: encodeURIComponent(info.label || name.toLowerCase()),
-    src: `https://github.com/feathers-plus/feathers-hooks-common/blob/master/lib/${fileName.indexOf('/') === -1 ? 'services/' : ''}${fileName}.js`,
+    src: `https://github.com/feathers-plus/feathers-hooks-common/blob/master/lib/${srcFileName}`,
     multi,
     before1,
     after1,
