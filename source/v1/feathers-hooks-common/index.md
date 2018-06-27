@@ -2195,13 +2195,13 @@ Argument | Type | Default | Description
 `options` | `Object` | | How to construct params for service call.
 `context` | `Object` | | The `context` of the hook which will make the service call. 
   
-Argument | Type | Default | Description
----|:---:|---|---
-`query` | `Object` | | The `params.query` for the calling params.
-`propNames` | `Array< String >` | `[]` | The names of the props in `context.params` to include in the new params.
-`newProps` | `Object`  | `{}` | Additional props to add to the new params.
-`hooksToDisable` | `Array< String >` | `[]` | The names of hooks to disable during the service call. `populate`, `fastJoin`, `softDelete` and `stashBefore` are supported.
-`ignoreDefaults` | `Boolean` | `false` |  Ignore the defaults `propNames` and `newProps`.
+`options` | Argument | Type | Default | Description
+---|---|:---:|---|---
+ | `query` | `Object` | | The `params.query` for the calling params.
+ | `propNames` | `Array< String >` | `[]` | The names of the props in `context.params` to include in the new params.
+ | `newProps` | `Object`  | `{}` | Additional props to add to the new params.
+ | `hooksToDisable` | `Array< String >` | `[]` | The names of hooks to disable during the service call. `populate`, `fastJoin`, `softDelete` and `stashBefore` are supported.
+ | `ignoreDefaults` | `Boolean` | `false` |  Ignore the defaults `propNames` and `newProps`.
     
 - **Returns**
 
