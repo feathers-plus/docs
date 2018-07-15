@@ -77,7 +77,7 @@ As mentioned, `save` performs either `create` or `patch`, but you can use the `p
 
 The `create` method is a shortcut for calling the `create` action (service method) using the instance data. The `params` argument will be used in the Feathers client request.  See the [Feathers Service](https://docs.feathersjs.com/api/services.html#service-methods) docs, for reference.
 
-You might not every need to use `.create()`, but can instead use the `.save()` method. Let `feathers-vuex` call `create` or `patch`.
+You might not ever need to use `.create()`, but can instead use the `.save()` method. Let `feathers-vuex` call `create` or `patch`.
 
 ```js
 const { Todo } = this.$FeathersVuex
@@ -91,7 +91,7 @@ todo.create() // --> Creates the todo on the server using the instance data
 
 The `patch` method is a shortcut for calling the `patch` action (service method) using the instance data. The instance's id field is used for the `patch` id.  The `params` argument will be used in the Feathers client request.  See the [Feathers Service](https://docs.feathersjs.com/api/services.html#service-methods) docs, for reference.
 
-Similar to the `.create()` method, you might not every need to use `.patch()` if you just use `.save()` and let `feathers-vuex` figure out how to handle it.
+Similar to the `.create()` method, you might not ever need to use `.patch()` if you just use `.save()` and let `feathers-vuex` figure out how to handle it.
 
 ```js
 const { Todo } = this.$FeathersVuex
