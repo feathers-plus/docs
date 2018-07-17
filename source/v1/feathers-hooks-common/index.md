@@ -2532,11 +2532,12 @@ Argument | Type | Default | Description
 - **Example**
 
   ``` js
-  const { getItems, replaceItems } = require(('feathers-hooks-common');
+  const { getItems, replaceItems } = require('feathers-hooks-common');
   
   const insertCode = code => context {
-    const items = getItems(context);
-    !Array.isArray(items) ? items.code = code : (items.forEach(item => { item.code = code; }));
+    const complex = getItems(context);
+    const items = Array.isArray(complex) ? complex : [complex];
+    items.map(item => { return item.code = code; });
     replaceItems(context, items);
   };
   
@@ -2569,7 +2570,7 @@ Argument | Type | Default | Description
 - **Example**
 
   ``` js
-  const { getItems, replaceItems } = require(('feathers-hooks-common');
+  const { getItems, replaceItems } = require('feathers-hooks-common');
     
   const insertCode = code => context {
     const items = getItems(context);
