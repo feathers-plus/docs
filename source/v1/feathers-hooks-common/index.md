@@ -2536,7 +2536,7 @@ Argument | Type | Default | Description
   
   const insertCode = code => context {
     const complex = getItems(context);
-    const items = Array.isArray(complex) ? items : [items];
+    const items = Array.isArray(complex) ? complex : [complex];
     items.map(item => { return item.code = code; });
     replaceItems(context, items);
   };
