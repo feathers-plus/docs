@@ -39,6 +39,7 @@ const { auth } = feathersVuex(feathersClient, { idField: '_id' })
 
 const store = new Vuex.Store({
   plugins: [
+    service('users'),
     auth({ userService: 'users' }) // if your user service endpoint is named 'users'
   ]
 })
