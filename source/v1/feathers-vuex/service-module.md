@@ -185,7 +185,7 @@ let params = {}
 store.dispatch('todos/get', [1, params])
 ```
 
-### `create(data)`
+### `create(data)` or `create([data, params])`
 Create one or multiple records.
 - `data {Object|Array}` - if an object is provided, a single record will be created. If an array of objects is provided, multiple records will be created.
 
