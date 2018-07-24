@@ -46,59 +46,6 @@ module.exports = {
 ```
 
 <!--=============================================================================================-->
-## New Features in Buzzard
-
-> Features added since the initial Buzzard release are listed in the [What's New section](#whats-new).
-
-These features are new in the Buzzard version.
-
-  - The docs [have been rewritten.](https://feathers-plus.github.io/v1/feathers-hooks-common)
-  
-  - You can now find hooks using [tags.](#Find-Hooks-using-Tags) Each Feathers hook and utility function is listed under all the tags relevant to it.
-  
-  - The new `fastJoin` hook is a much faster, more flexible alternative to `populate`.
-    - It makes only about 10% of the service calls, i.e. it makes *2* calls when `populate` would make *20*.
-    - It operates on record formats which `populate` can't process.
-    - It provides any Feathers service with GraphQL-light capabilities. (The new `@feathers-plus/graphql` service adapter provides similar performance with full GraphQL compatibility.) 
-    
-  - The new `runHook` utility may help simplify your registered hooks. It let's you call a hook with `service.get(...).then(runHook()(populate(...)));`.
-  
-  - Other new hooks and utility functions.
-    - `alterItems` - Flexibly mutate data and results. Powerful.
-    - `cache` - Persistent, least-recently-used record cache for services.
-    - `disablePagination` - Disables pagination when `query.$limit` is -1 or '-1'.
-    - `discardQuery`, `keep`, `keepQuery` - See Migration below.
-    - `makeCallingParams` utility - Help construct `context.params` when calling services within hooks.
-    - `required` - Check selected fields exist and are not falsey. Numeric 0 is acceptable.
-    - `runParallel` - Run a hook in parallel to the other hooks and the service call.
-  
-  - Enhancements to existing hooks.
-    - `debug` now displays `context.params` property names and displays the values of selected ones.
-    - `preventChanges` can now optionally remove unacceptable changes instead of throwing.
-    
-<!--=============================================================================================-->
-## Migrating from Auk to Buzzard
-
-These changes may affect your projects when you switch from this repo's last Feathers *Auk* version (v3.10.0) to its first Feathers *Buzzard* version (v4.0.0).
-  
-  - These hooks are deprecated and will be removed in the next FeathersJS version *Crow*.
-    - Deprecated `pluck` in favor of `keep`, e.g. `iff(isProvider('external'),` ` keep(...fieldNames))`. This deprecates the last hook with unexpected internal "magic". **Be careful!**
-    - Deprecated `pluckQuery` in favor of `keepQuery` for naming consistency.
-    - Deprecated `removeQuery` in favor of `discardQuery` for naming consistency.
-    - Deprecated `client` in favor of `paramsFromClient` for naming consistency.
-    - Deprecated `createdAt` and `updatedAt` in favor of `setNow`.
-    - Deprecated `callbackToPromise` in favor of Node's `require('util').promisify`.
-    - Deprecated `promiseToCallback` as there's probably no need for it anymore.
-    
-  - Removed hooks previously deprecated in *Auk*.:
-    - Removed support for the deprecated legacy syntax in `populate`.
-    - Removed `remove`.
-    
-  - The license now includes a clause which prevents the repo from being published on npm under another name. That is its only purpose; you can otherwise continue using the repo just as you have in the past.
-          
-
-
-<!--=============================================================================================-->
 ## Find Hooks using Tags
 
   Each Feathers hook and utility function is listed under all the tags relevant to it.
@@ -1824,14 +1771,20 @@ Argument | Type | Default | Description
   
 - **Details**
 
+  The remaining before hooks will be skipped is you use `shipRemainingHooks` as a before hook. However the after hooks will still be run.
+  
+  `shipRemainingHooks` skips the remaining hooks in the before, after or error hooks. It will skip the remaining hooks if used within the `combine` hook.
+
 {% hooksApiFootnote skipRemainingHooks %}
 
 <!--=============================================================================================-->
 <h3 id="softdelete">softDelete( fieldName )</h3>
 
+  <p class="tip">DEPRECATED. Use the **softDelete2** hook instead. It is a noteable improvement over softDelete.</p>
+
 {% hooksApi softDelete %}
 
-  <p class="tip">Must be registered  on *all* the call types: create, get, update, patch, remove and find.</p>
+  <p class="tip">The softDelete2 hooks must be correctly positioned.</p>
 
 - **Arguments**
   - `{String} fieldName`
@@ -1877,6 +1830,231 @@ Argument | Type | Default | Description
 
   
 {% hooksApiFootnote softDelete %}
+
+<!--=============================================================================================-->
+<h3 id="softdelete2">softDelete2( options )</h3>
+
+{% hooksApi softDelete2 %}
+
+  <p class="tip">softDelete2 must be correctly positioned as both a before and an after hook. Refer to the **Details** section and the **Examples**.</p>
+
+- **Arguments**
+  - `{Object} options`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`options` | `Object` | `{}` | The options for the hook. The allowed options differ depending on whether the hook is used in before or after.
+
+When used as a before hook:
+
+`options` | Argument | Type | Default | Description
+---|---|---
+ | `deletedAt` | `String` | `'deletedAt'` | The prop name whose value is the time stamp when the record was logically deleted. `Date.now()` is used as the time stamp.
+ | `keepOnCreate` | `Boolean` | `false` | The prop `deletedAt` is set to -1 when a record is created. An option value of `true` will retain the existing value of `deletedAt` if one is provided. This is useful when loading a dataset with records.
+ | `skipProbeOnGet` | `Boolean` | `false` | softDelete2 makes a probing `get` call to determine if a record is active before mutating it. It makes this probing call even for a `get` call, though that's redundant. An option value of `true` results in a single `get` call, improving performance. This however may cause unexpected interactions with other hooks which is why performing the probing call is the default.
+ | `allowIgnore` `DeletedAt` | `Boolean` | `true` | Your app usually has to access records even if they are logically deleted. softDelete2 acts like a no-op for calls with `params.$ignoreDeletedAt: true`. Clients can be prevented from using this with the `paramsFromClient` hook. If you consider it a security issue that server code is allowed to do this, an option value of `false` disables this capability in softDelete2.
+ | `probeCall` | `Function` | built-in default | A custom function to perform the probing get call. Its signature is `(context, options)` where `options` is these options.)
+ | `patchCall` | `Function` | built-in default | A custom function to perform the patch call which marks the record as deleted. Its signature is `(context, options)` where `options` is these options.)
+ 
+When used as an after hook:
+
+`options` | Argument | Type | Default | Description
+---|---|---
+ | `deletedAt` | `String` | `'deletedAt'` | It must be specified in the after hook if its specified in the before hook.
+ | `skipProbeOnGet` | `Boolean` | `false` | It must be specified in the after hook if its specified in the before hook.
+ | `allowIgnore` `DeletedAt` | `Boolean` | `true` | It must be specified in the after hook if its specified in the before hook.
+ 
+- **Examples**
+
+Usage without authentication:
+  
+  ``` js
+  // On server
+  const { softDelete2 } = require('feathers-hooks-common');
+  const posts = app.service('posts');
+  
+  module.exports = {
+    before: {
+      all: softDelete2()
+    },
+    after: 
+      all: softDelete2()
+    }
+  };
+  
+  // will throw if item is marked deleted.
+  const rec = await posts.get(0);
+  
+  // methods can be run avoiding softDelete handling
+  const rec = await posts.get(0, { $ignoreDeletedAt: true });
+  ```
+  
+Usage with authentication:
+  
+  ```js
+  // On server
+  const { authenticate } = require('@feathersjs/authentication').hooks;
+  const { hashPassword, protect } = require('@feathersjs/authentication-local').hooks;
+  const { restrictToOwner } = require('feathers-authentication-hooks');
+  const { softDelete2, paramsFromClient } = require('feathers-hooks-common');
+  
+  const users = app.service('users');
+  const posts = app.service('posts');
+
+  users.hooks({
+    before: {
+      all:    [],
+      find:   [                 authenticate('jwt'), softDelete2() ],
+      get:    [                 authenticate('jwt'), softDelete2() ],
+      create: [ hashPassword(), authenticate('jwt'), softDelete2() ],
+      update: [ hashPassword(), authenticate('jwt'), softDelete2() ],
+      patch:  [ hashPassword(), authenticate('jwt'), softDelete2() ],
+      remove: [                 authenticate('jwt'), softDelete2() ]
+    },
+    after: {
+      all:    [ protect('password'), softDelete2() ] /* Must always be the last 2 hooks */
+    }
+  });
+
+  posts.hooks({
+    before: {
+      all:    [ paramsFromClient('$ignoreDeletedAt'), authenticate('jwt') ],
+      get:    [ softDelete2(), restrictToOwner({ idField: 'id', ownerField: 'ownerId' }) ],
+      create: [ softDelete2(), restrictToOwner({ idField: 'id', ownerField: 'ownerId' }) ],
+      update: [ softDelete2(), restrictToOwner({ idField: 'id', ownerField: 'ownerId' }) ],
+      patch:  [ softDelete2(), restrictToOwner({ idField: 'id', ownerField: 'ownerId' }) ],
+      remove: [ restrictToOwner({ idField: 'id', ownerField: 'ownerId' }), softDelete2() ]
+    },
+    after: {
+      all: softDelete2()
+    }
+  });
+  
+  // On client
+  const { paramsForServer } = require('feathers-hooks-common/lib/services/params-for-server');
+  
+  await app.authenticate({
+    strategy: 'local',
+    email: 'foo@gmail.com',
+    password: 'bar'
+  });
+  
+  const posts = app.service('posts');
+  
+  // will throw if item is marked deleted.
+  const rec1 = await posts.get(0);
+    
+  // methods can be run avoiding softDelete handling
+  const rec2 = await posts.get(0, paramsForServer({ $ignoreDeletedAt: true }));
+  ```
+
+- **Detail**
+
+  softDelete2 makes a probing get call to check if a record is logically deleted before allowing it to be accessed or mutated. It also replaces remove calls with ones to patch `deletedAt: Date.now()` into the record.
+  
+  Find calls, plus patch or remove calls with a `null` id, do not need a probing get. softDelete2 modifies their `params.query` to ignore logically deleted records.
+  
+- **An issue with hooks**
+
+  As mentioned, softDelete2 makes get and patch calls. You may want to use the authentication hook `restrictToOwner`, but that makes its own version of a probing get call. Other hooks, such as `stashBefore`, also make get calls.
+
+  A problem may arise because all such calls run the hooks associated with that call. Let's say, for example, the hooks on your get method include `fastJoin`. The `restrictToOwner` probing get call will run the `fastJoin` on its probing get call, degrading performance significantly. You have to find ways of explicitly disabling hooks like `fastJoin`.
+  
+  Even worse, the nested running of such hooks can create incompatibilities resulting in errors.
+  
+- **How softDelete2 controls hooks**
+
+  softDelete2 is run for every call on a service, so its careful to not run unnecessary hooks during its probing get and removal patch calls. The hooks following the before `softDelete2()` are skipped, as are those following the after `softDelete2()`. *This skipping occurs only for the probing get and removal patch calls. All hooks are executed for the original call.* 
+  
+  In the example below: 
+  - The hooks21 & hooks41 hooks on get and patch are run during the probing get and removing patch.
+  - The hooks22 & hooks42 hooks are not run during those calls.
+  - So on an update: hooks31 (for update), hooks21 (probing get), hooks32 (for update) are run.
+  - So on a remove: hooks51 (for remove), hooks21 (probing get), hooks41 (removal patch) are run.
+  ```js
+  module.exports = {
+    before: {
+     find:   [...hooks01, softDelete(), ...hooks02],
+     create: [...hooks11, softDelete(), ...hooks12],
+     get:    [...hooks21, softDelete(), ...hooks22],
+     update: [...hooks31, softDelete(), ...hooks32],
+     patch:  [...hooks41, softDelete(), ...hooks42],
+     remove: [...hooks51, softDelete()] // softDelete must be the last hook run for remove calls.
+    },
+    after: {
+      all: softDelete2(), // Must be the first hook run for get or patch calls.
+    }
+  };
+  ```
+
+- **options.allowIgnoreDeletedAt**
+
+  softDelete2 will allow access to logically deleted records if the call's params includes `$ignoreDeletedAt: true` while options.allowIgnoreDeletedAt is `true` (the default). Be careful setting it to `false` as not even server calls will be able to read logically deleted records.
+  
+  You can prevent just client calls from using `$ignoreDeletedAt: true` by not specifying `$ignoreDeletedAt` in the [`paramsFromClient`](#paramsFromClient) hook.
+  
+  You may need to prevent other hooks from running as well. You can use code similar to
+  ```js
+  iff(context => !context.params.$ignoreDeletedAt, restrictToOwner(...))
+  ```
+  
+- **options.probeCall**
+
+  The default probing get call function is
+  ```js
+  const { callingParams, callingParamsDefault } = require('feathers-hooks-common');
+  
+  async function defaultProbeCall (context, options) {
+    const params = callingParams({
+      newProps: { provider: undefined }, hooksToDisable: ['softDelete2']
+    })(context);
+  
+    return context.service.get(context.id, params);
+  }
+  ```
+  where `options` is the options provided softDelete2. Its resulting params will be:
+  ```js
+  params = {
+    authenticated: context.params.authenticated,
+    user: context.params.user,
+    provider: undefined,
+    $disableSoftDelete2: true
+  };
+  ```
+  You can change the params produced by the default function by calling [`callingParamsDefaults`](#callingparamsdefaults). You can instead provide your own probing call function using options.probeCall.
+  
+- **options.patchCall**
+
+  The default function to perform the patch call which marks the record as deleted is
+  ```js
+  const { callingParams, callingParamsDefault } = require('feathers-hooks-common');
+
+  async function defaultPatchCall (context, options) {
+    const deletedAt = options.deletedAt || defaultDeletedAt;
+  
+    const params = callingParams({
+      query: Object.assign({}, context.params.query, { [deletedAt]: -1 }),
+      newProps: { provider: undefined },
+      hooksToDisable: ['softDelete2']
+    })(context);
+  
+    return context.service.patch(context.id, { [deletedAt]: Date.now() }, params);
+  }
+  ```
+  where `options` is the options provided softDelete2. Its resulting params will be:
+  ```js
+  params = {
+    query: { ..., deletedAt: -1 },
+    authenticated: context.params.authenticated,
+    user: context.params.user,
+    provider: undefined,
+    $disableSoftDelete2: true
+  };
+  ```
+  You can change the params produced by the default function by calling [`callingParamsDefaults`](#callingparamsdefaults). You can instead provide your own probing call function using options.patchCall.
+  
+  
+{% hooksApiFootnote softDelete2 %}
 
 <!--=============================================================================================-->
 <h3 id="some">some( ...predicates )</h3>
@@ -2532,11 +2710,15 @@ Argument | Type | Default | Description
 - **Example**
 
   ``` js
-  const { getItems, replaceItems } = require(('feathers-hooks-common');
+  const { getItems, replaceItems } = require('feathers-hooks-common');
   
   const insertCode = code => context {
     const items = getItems(context);
-    !Array.isArray(items) ? items.code = code : (items.forEach(item => { item.code = code; }));
+    if (Array.isArray(items)) {
+      items.forEach(item => { item.code = code; });
+    } else {
+      items.code = code;
+    }
     replaceItems(context, items);
   };
   
@@ -2569,11 +2751,15 @@ Argument | Type | Default | Description
 - **Example**
 
   ``` js
-  const { getItems, replaceItems } = require(('feathers-hooks-common');
+  const { getItems, replaceItems } = require('feathers-hooks-common');
     
   const insertCode = code => context {
     const items = getItems(context);
-    !Array.isArray(items) ? items.code = code : (items.forEach(item => { item.code = code; }));
+    if (Array.isArray(items)) {
+      items.forEach(item => { item.code = code; });
+    } else {
+      items.code = code;
+    }
     replaceItems(context, items);
   };
     
@@ -2814,6 +3000,57 @@ Argument | Type | Default | Description
  The [`validateSchema`](#validateSchema) does a wide selection of [type coercions](https://github.com/epoberezkin/ajv/blob/master/COERCION.md), as well as checking for missing and unexpected fields.
 
 <!--=============================================================================================-->
+## New Features in Buzzard
+
+> Features added since the initial Buzzard release are listed in the [What's New section](#whats-new).
+
+These features are new in the Buzzard version.
+
+  - The docs [have been rewritten.](https://feathers-plus.github.io/v1/feathers-hooks-common)
+  
+  - You can now find hooks using [tags.](#Find-Hooks-using-Tags) Each Feathers hook and utility function is listed under all the tags relevant to it.
+  
+  - The new `fastJoin` hook is a much faster, more flexible alternative to `populate`.
+    - It makes only about 10% of the service calls, i.e. it makes *2* calls when `populate` would make *20*.
+    - It operates on record formats which `populate` can't process.
+    - It provides any Feathers service with GraphQL-light capabilities. (The new `@feathers-plus/graphql` service adapter provides similar performance with full GraphQL compatibility.) 
+    
+  - The new `runHook` utility may help simplify your registered hooks. It let's you call a hook with `service.get(...).then(runHook()(populate(...)));`.
+  
+  - Other new hooks and utility functions.
+    - `alterItems` - Flexibly mutate data and results. Powerful.
+    - `cache` - Persistent, least-recently-used record cache for services.
+    - `disablePagination` - Disables pagination when `query.$limit` is -1 or '-1'.
+    - `discardQuery`, `keep`, `keepQuery` - See Migration below.
+    - `makeCallingParams` utility - Help construct `context.params` when calling services within hooks.
+    - `required` - Check selected fields exist and are not falsey. Numeric 0 is acceptable.
+    - `runParallel` - Run a hook in parallel to the other hooks and the service call.
+  
+  - Enhancements to existing hooks.
+    - `debug` now displays `context.params` property names and displays the values of selected ones.
+    - `preventChanges` can now optionally remove unacceptable changes instead of throwing.
+    
+<!--=============================================================================================-->
+## Migrating from Auk to Buzzard
+
+These changes may affect your projects when you switch from this repo's last Feathers *Auk* version (v3.10.0) to its first Feathers *Buzzard* version (v4.0.0).
+  
+  - These hooks are deprecated and will be removed in the next FeathersJS version *Crow*.
+    - Deprecated `pluck` in favor of `keep`, e.g. `iff(isProvider('external'),` ` keep(...fieldNames))`. This deprecates the last hook with unexpected internal "magic". **Be careful!**
+    - Deprecated `pluckQuery` in favor of `keepQuery` for naming consistency.
+    - Deprecated `removeQuery` in favor of `discardQuery` for naming consistency.
+    - Deprecated `client` in favor of `paramsFromClient` for naming consistency.
+    - Deprecated `createdAt` and `updatedAt` in favor of `setNow`.
+    - Deprecated `callbackToPromise` in favor of Node's `require('util').promisify`.
+    - Deprecated `promiseToCallback` as there's probably no need for it anymore.
+    
+  - Removed hooks previously deprecated in *Auk*.:
+    - Removed support for the deprecated legacy syntax in `populate`.
+    - Removed `remove`.
+    
+  - The license now includes a clause which prevents the repo from being published on npm under another name. That is its only purpose; you can otherwise continue using the repo just as you have in the past.
+          
+<!--=============================================================================================-->
 <h2 id="whats-new">What's New</h2>
 
 The details are at <a href="https://github.com/feathers-plus/feathers-hooks-common/blob/master/CHANGELOG.md">Changelog.</a>
@@ -2837,3 +3074,7 @@ The details are at <a href="https://github.com/feathers-plus/feathers-hooks-comm
 - `discard` and `keep` support records which are `null`.
 - A new, more convenient signature for async functions has been introduced for `alterItems`.
 - `callingParams` and `callingParamsDefaults` utility functions added. `callingParams` should now be used rather than `makeCallingParams`.
+
+#### July 2018
+
+- `softDelete2` is a notable improvement over `softDelete`. It cooperates well with authentication and the `restrictToOwner` hook. Custom functions are supported for its probing get and removal patch calls. Hooks defined on these call methods will, by default,not be executed to eliminate interactions.
