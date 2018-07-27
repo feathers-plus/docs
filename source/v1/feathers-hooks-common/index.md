@@ -1102,6 +1102,33 @@ Name | Type | Default | Description
 {% hooksApiFootnote keep %}
 
 <!--=============================================================================================-->
+<h3 id="keep">keepIn( field, fieldNames )</h3>
+
+{% hooksApi keepIn %}
+
+<p class="tip">The keepIn hook will remove any fields not specified even if the service is being called from the server. You may want to condition the hook to run only for external transports, e.g. `iff(isProvider('external'), keepIn(...))`.</p>
+
+{% hooksApiFieldNames keepIn "The only fields you want to keep in a nested array inside the record(s)." %}
+
+- **Example**
+
+  ``` js
+  const { keepIn } = require('feathers-hooks-common');
+    
+  module.exports = { after: {
+    create: keepIn('users', ['name', 'dept', 'address.city']),
+    find: keepIn('account.users', ['name', 'dept', 'address.city']),
+  } };
+  ```
+
+- **Details**
+
+  Update either `context.data` (before hook) or `context.result[.data]` (after hook).
+  Their values are returned if they are not an object, so a `null` value is supported.
+
+{% hooksApiFootnote keepIn %}
+
+<!--=============================================================================================-->
 <h3 id="keepquery">keepQuery( ...fieldNames )</h3>
 
 {% hooksApi keepQuery %}
