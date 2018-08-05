@@ -1102,13 +1102,20 @@ Name | Type | Default | Description
 {% hooksApiFootnote keep %}
 
 <!--=============================================================================================-->
-<h3 id="keep">keepInArray( field, fieldNames )</h3>
+<h3 id="keepinarray">keepInArray( arrayName, fieldNames )</h3>
 
 {% hooksApi keepInArray %}
 
 <p class="tip">The keepInArray hook will remove any fields not specified even if the service is being called from the server. You may want to condition the hook to run only for external transports, e.g. `iff(isProvider('external'), keepInArray(...))`.</p>
 
-{% hooksApiFieldNames keepInArray "The only fields you want to keep in a nested array inside the record(s)." %}
+- **Arguments**
+  - `{String} arrayName`
+  - `{Array< String >} fieldNames`
+
+Argument | Type | Default | Description
+---|---|---
+`arrayName` | `String` | | Field name containing an array of objects. Dot notation is supported.
+`fieldNames` | `Array< String >` | | Field names to keep in each object. Dot notation is supported.
 
 - **Example**
 
@@ -3082,7 +3089,7 @@ These changes may affect your projects when you switch from this repo's last Fea
 
 The details are at <a href="https://github.com/feathers-plus/feathers-hooks-common/blob/master/CHANGELOG.md">Changelog.</a>
 
-#### Feb. 2018
+#### February 2018
 
 - Buzzard version published as **npm** as v4.x.x.
 - `alterItems` may now optionally return the items rather than modifying them in place.
@@ -3105,3 +3112,6 @@ The details are at <a href="https://github.com/feathers-plus/feathers-hooks-comm
 #### July 2018
 
 - `softDelete2` is a notable improvement over `softDelete`. It cooperates well with authentication and the `restrictToOwner` hook. Custom functions are supported for its probing get and removal patch calls. Hooks defined on these call methods will, by default,not be executed to eliminate interactions.
+
+#### Auguset 2018
+- `keepInArray` For an array of objects, keeps selected field in each object. Contributed by Dekel Barzilay (dekelev).
