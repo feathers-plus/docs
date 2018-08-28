@@ -1124,7 +1124,7 @@ A full featured example of such a process appears below. It validates and saniti
 ### Validation using Validate
 
 ```javascript
-// file /server/services/users/hooks/index.js
+// file /server/services/users/users.hooks.js
 const auth = require('feathers-authentication').hooks;
 const { callbackToPromise, remove, validate } = require('feathers-hooks-common');
 const validateSchema = require('feathers-hooks-validate-joi');
