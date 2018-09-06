@@ -65,7 +65,7 @@ The following state attribute will be populated with any request error, serializ
 - `errorOnCreate {Error}`
 - `errorOnUpdate {Error}`
 - `errorOnPatch {Error}`
-- `errorOnRemo {Error}`
+- `errorOnRemove {Error}`
 
 ## Service Getters
 Service modules include the following getters:
