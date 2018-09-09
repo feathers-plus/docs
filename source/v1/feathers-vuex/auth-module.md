@@ -26,6 +26,30 @@ The following actions are included in the `auth` module:
 - `logout`: use instead of `feathersClient.logout()`
 The Vuex auth store may not update if you use the feathers client version.
 
+```js
+export default {
+  // ...
+  methods: {
+    
+    login() {
+      this.$store.dispatch('auth/authenticate' {
+        email: '...',
+        password: '...'
+      })
+    }
+    
+    // ...
+    
+    logout() {
+      this.$store.dispatch('auth/logout')
+    }
+    
+  }
+  // ...
+}
+
+```
+
 
 ### Configuration
 You can provide a `userService` in the auth plugin's options to automatically populate the user upon successful login.
