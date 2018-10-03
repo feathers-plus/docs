@@ -169,7 +169,7 @@ In this example, only the `service` attribute is provided. There is no `query` p
 </feathers-vuex-data>
 ```
 
-### Fetch data from the API and the same data from the getter.
+### Fetch data from the API and the same data from the Vuex store
 
 This example fetches data from the API server because a query was provided.  Internally, this same `query` is used for both the `find` action and the `find` getter.  Read other examples to see how to use distinct queries.  Be aware that if you use pagination directives like `$skip` or `$limit`, you must use two queries to get the records you desire.
 
