@@ -13,7 +13,7 @@ Currently in `feathers-vuex@next`, a renderless Vue component is available and a
 
 This first version does not assist with server-side pagination, but you can use it with your own pagination logic using the `query` or `fetchQuery` attributes, described later. To see why you might want to use this component, here are two example components that are functionally equivalent.  This first example does not use this component. It uses the vuex store, directly:
 
-```vue
+```html
 <template>
   <section class="admin-categories">
     {{categories}}
@@ -56,7 +56,7 @@ export default {
 
 The example above uses 38 lines of code to perform what the example below does with only 23 lines of code.  This next example uses the `FeathersVuexData` component:
 
-```vue
+```html
 <template>
   <section class="admin-categories">
     <feathers-vuex-data service="categories" :query="{}">
