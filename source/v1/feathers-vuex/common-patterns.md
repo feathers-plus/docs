@@ -223,6 +223,34 @@ export default new Vuex.Store({
 
 With the above configuration, when you create a [`Todo` instance](/v1/feathers-vuex/model-classes.html), it will have the attributes provided as `instanceDefaults`.  This is especially useful for binding to form data.  If the attributes aren't defined while binding, the automatic Vue reactivity won't work.  Remember to not set any of the attributes to `undefined`, but instead use `null`.  If not, the reactivity breaks, and you might spend some time wondering why your form is broken.
 
+## Model-Specific Computed Properties
+
+You may find yourself in a position where model-specific computed properties would be very useful. (github issue)[https://github.com/feathers-plus/feathers-vuex/issues/163]  This is already possible using es5 accessors. You can use both getters and setters inside `instanceDefaults`:
+
+```js
+export default new Vuex.Store({
+  plugins: [
+    service('post', {
+      instanceDefaults: {
+        description: '',
+        isComplete: false,
+        comments: [],
+        get numberOfCommenters () {
+            // Put your logic here.
+        },
+        set someOtherProp () {
+            //  Setters also work
+        }
+      }
+    })
+  ]
+})
+```
+
+
+
+
+
 ## Relationships for Populated Data
 
 A common task with almost any API is properly handling relationships between endpoints.  Imagine an API where you have `/todos` and `/users` services.  Each todo record can belong to a single user, so a todo has a `userId`.
