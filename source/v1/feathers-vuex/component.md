@@ -242,7 +242,7 @@ You can also provide an array of strings to watch multiple properties:
 
 ### Use a distinct `query` and `fetchQuery`
 
-In this scenario, the `fetchQuery` is be used to grab a larger dataset from the API server (all todos with a matching `userId`). The `query` is used by the `find` getter to display a subset of this data from the store.  If the `isComplete` attribute gets set to `true`, only completed todos will be displayed.  Since a `fetchQuery` is provided, the `watch` attribute will be modified to watch the `fetchQuery` object.
+In this scenario, the `fetchQuery` is be used to grab a larger dataset from the API server (all todos with a matching `userId`). The `query` is used by the `find` getter to display a subset of this data from the store.  If the `isComplete` attribute gets set to `true`, only completed todos will be displayed.  Since a `fetchQuery` is provided, the `watch` strings will be modified internally to watch the `fetchQuery` object.  This means if you are watching `query.userId` and you add a `fetchQuery`, the component is smart enough to know you meant `fetchQuery.userId`. You don't have to rewrite your `watch` attribute after adding a `fetchQuery` prop.
 
 ```html
 <template>
