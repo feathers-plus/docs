@@ -260,6 +260,7 @@ The `find` action queries data from the remote server.  It returns a promise tha
   pagination: {
     default: {
       query: {}, // Same as params.query
+      queriedAt: 1538594642481, // The timestamp when the query returned
       ids: [0, 1, 2], // the ids in the store for the records that were returned from the server
       limit: 0, // the response.limit
       skip: 0, // the response.skip
@@ -278,6 +279,7 @@ It's possible that you'll want to store pagination information for more than one
   pagination: {
     mainListView: {
       query: { $limit: 1 }, // Same as params.query
+      queriedAt: 1538594642481, // The timestamp when the query returned
       ids: [0], // the ids in the store for the records that were returned from the server
       limit: 1, // the response.limit
       skip: 0, // the response.skip
