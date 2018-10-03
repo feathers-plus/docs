@@ -17,13 +17,11 @@ Here's what it looks like to use the new component:
 
 ```html
 <template>
-  <section class="admin-categories">
-    <feathers-vuex-data service="categories" :query="{}" watch="query">
-      <div slot-scope="{ items: categories }">
-        {{categories}}
-      </div>
-    </feathers-vuex-data>
-  </section>
+  <feathers-vuex-data service="categories" :query="{}" watch="query">
+    <section class="admin-categories" slot-scope="{ items: categories }">
+      {{categories}}
+    </section>
+  </feathers-vuex-data>
 </template>
 
 <script>
