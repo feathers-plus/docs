@@ -1,7 +1,7 @@
 ---
 title: Renderless Data Component
 type: guide
-order: 6
+order: 7
 dropdown: frameworks
 repo: feathers-vuex
 ---
