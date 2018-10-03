@@ -11,7 +11,32 @@ repo: feathers-vuex
 
 Currently in `feathers-vuex@next`, a renderless Vue component is available and automatically registered globally when the FeathersVuex Vue plugin is used. This component simplifies performing queries against the store and/or the API server. It makes the data available inside the component's default slot.
 
-This first version does not assist with server-side pagination, but you can use it with your own pagination logic using the `query` or `fetchQuery` attributes, described later. To see why you might want to use this component, here are two example components that are functionally equivalent.  This first example does not use this component. It uses the vuex store, directly:
+This first version does not assist with server-side pagination, but you can use it with your own pagination logic using the `query` or `fetchQuery` attributes, described later. To see why you might want to use this component, here are two example components that are functionally equivalent.
+
+Here's what it looks like to use the new component:
+
+```html
+<template>
+  <section class="admin-categories">
+    <feathers-vuex-data service="categories" :query="{}" watch="query">
+      <div slot-scope="{ items: categories }">
+        {{categories}}
+      </div>
+    </feathers-vuex-data>
+  </section>
+</template>
+
+<script>
+export default {
+  name: 'admin-categories'
+}
+</script>
+
+<style lang="scss">
+</style>
+```
+
+The above example is functionally equivalent to this much longer example which doesn't use the new component:
 
 ```html
 <template>
@@ -39,41 +64,11 @@ export default {
       return this.findCategoriesInStore({ query: this.query }).data
     }
   },
-
   methods: {
     ...mapActions('categories', { findCategories: 'find' })
   },
-
   created () {
     this.findCategories({ query: this.query })
-  }
-}
-</script>
-
-<style lang="scss">
-</style>
-```
-
-The example above uses 38 lines of code to perform what the example below does with only 23 lines of code.  This next example uses the `FeathersVuexData` component:
-
-```html
-<template>
-  <section class="admin-categories">
-    <feathers-vuex-data service="categories" :query="{}">
-      <div slot-scope="props">
-        {{props.items}}
-      </div>
-    </feathers-vuex-data>
-  </section>
-</template>
-
-<script>
-import FeathersVuexData from '../FeathersVuexData.vue'
-
-export default {
-  name: 'admin-categories',
-  components: {
-    FeathersVuexData
   }
 }
 </script>
