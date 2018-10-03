@@ -49,7 +49,7 @@ The following attributes are available in each service module's state:
 - `autoRemove {Boolean` - indicates that this service will not automatically remove results missing from subsequent requests.  Only use with feathers-rest. Default is false.
 - `replaceItems {Boolean}` - When set to true, updates and patches will replace the record in the store instead of merging changes.  Default is false
 - `idField {String}` - the name of the field that holds each item's id. *Default: `'id'`*
-- `paginate {Boolean}` - Indicates if the service has pagination turned on.  This changes the response of the `find` action and getter to match the response that Feathers gives.
+- `paginate {Boolean}` - Indicates if the service has pagination turned on.
 
 The following state attributes allow you to bind to the pending state of requests:
 - `isFindPending {Boolean}` - `true` if there's a pending `find` request.  `false` if not.
