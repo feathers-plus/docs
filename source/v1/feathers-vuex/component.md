@@ -131,6 +131,8 @@ By default, the following props are available in the scope data:
 - **isGetPending {Boolean}** The same as the `isFindPending`, but for `get` requests.
 - **pagination {Object}** pagination data from the Vuex store, keyed by the `qid` attribute.  By default, this will be specific to this component instance. (If you find a use case for sharing pagination between component instances, you can give both components the same `qid` string as a prop.)
 
+It's also possible to modify the scope data by passing a function as the `edit-scope` prop.  See the example for [modifying scope data](#Modify-the-scope-data)
+
 ### Destructuring props
 
 Use the object destructuring syntax to pull specific variables out of the `slot-scope` object.  In the following example, instead of using `slot-scope="props"`, it directly accesses the `items` prop through destructuring:
