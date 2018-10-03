@@ -9,7 +9,7 @@ repo: feathers-vuex
 > This feature is currently in pre-release. The API is subject to change.  It's documented here for those who would like to participate in testing it out and potentially feeling out a better API.
 > Built in pagination support will likely be added before final release. Another possible improvement would be a syntax for handling multiple queries in a single component, if feasible.
 
-Currently in `feathers-vuex@next`, a renderless Vue component is available and automatically registered globally when the FeathersVuex Vue plugin is used. This component simplifies performing queries against the store and/or the API server. It makes the data available inside the component's default slot.
+Currently in `feathers-vuex@next`, a new renderless, data provider component simplifies performing queries against the store and/or the API server. It makes the data available inside the component's default slot.
 
 This first version does not assist with server-side pagination, but you can use it with your own pagination logic using the `query` or `fetchQuery` attributes, described later. To see why you might want to use this component, here are two example components that are functionally equivalent.
 
@@ -82,6 +82,10 @@ export default {
 This component uses Vuex getters (to query data from the local store) and actions (to query data from the API server).  When a `query` is provided, the component pulls data from the API server and puts it into the store.  That same `query` is then used to query data from the local Vuex store.  Keep this in mind, especially when attempting to use server-side pagination.  To use server-side pagination, use the `query` prop for getting data from the local vuex store, then use the `fetchQuery` prop to retrieve data from the API server.
 
 ## Registering the component
+
+This component is automatically registered globally when using the FeathersVuex Vue plugin.
+
+If you prefer to manually register the component, pass `{ component: false }` as options when using the FeathersVuex Vue plugin, then do the following:
 
 ```js
 import { FeathersVuexData } from 'feathers-vuex'
