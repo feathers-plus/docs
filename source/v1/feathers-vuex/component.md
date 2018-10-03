@@ -157,7 +157,7 @@ You can also rename scope props through the Object destructuring syntax.  The  `
 
 ## Usage Examples
 
-### Find all local data
+### A basic find all
 
 In this example, only the `service` attribute is provided. There is no `query` provided, so the default of `{}` is used. This example queries all data from the store and whatever the API returns with such a `query`.
 
