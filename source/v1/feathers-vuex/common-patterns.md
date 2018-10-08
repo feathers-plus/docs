@@ -20,7 +20,7 @@ export default {
   name: 'some-component',
   computed: {
     ...mapState('appointments', { areAppointmentsLoading: 'isFindPending' }),
-    ...mapGetters('appointments', findAppointmentsInStore: 'find' ),
+    ...mapGetters('appointments', { findAppointmentsInStore: 'find' } ),
     // Query for future appointments
     queryUpcoming () {
       return { date: { $gt: new Date() }}
@@ -31,11 +31,11 @@ export default {
     },
     // The list of upcoming appointments.
     upcomingAppointments () {
-      return this.findApointmentsInStore({ query: this.queryUpcoming }).data
+      return this.findAppointmentsInStore({ query: this.queryUpcoming }).data
     },
     // The list of past appointments
     pastAppointments () {
-      return this.findApointmentsInStore({ query: this.queryPast }).data
+      return this.findAppointmentsInStore({ query: this.queryPast }).data
     }
   },
   methods: {
@@ -44,7 +44,7 @@ export default {
   created () {
     // Find all appointments. We'll use the getters to separate them.
     this.findAppointments({ query: {} })
-  })
+  }
 }
 ```
 
