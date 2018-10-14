@@ -102,7 +102,7 @@ Vue.component('feathers-vuex-data', FeathersVuexData)
 ## Props
 
 - **service {String}** - **required** the service path. This must match a service that has already been registered with FeathersVuex.
-- **query {Object}** - the query object. If only the `query` attribute is provided, the same query will be used for both the `find` getter and the `find` action. See the `fetchQuery` attribute for more information. When using server-side pagination, use the `fetchQuery` prop and the `query` prop for querying data from the local store. **Default: {}**
+- **query {Object}** - the query object. If only the `query` attribute is provided, the same query will be used for both the `find` getter and the `find` action. See the `fetchQuery` attribute for more information. When using server-side pagination, use the `fetchQuery` prop and the `query` prop for querying data from the local store. If the query is `null` or `undefined`, the query against both the API and store will be skipped. The find getter will return an empty array.
 - **watch {String|Array}** - specify the attributes of the `query` or `fetchQuery` to watch. Pass 'query' to watch the entire query object.  Pass 'query.name' to watch the 'name' property of the query. Watch is turned off by default, so the API server will only be queried once, by default.  The only exception is for the `id` prop.  The `id` prop is always watched.  **Default: []**
 - **fetchQuery {Object}** - when provided, the `fetchQuery` serves as the query for the API server. The `query` param will be used against the service's local Vuex store. **Default: undefined**
 - **method {String}** - **find or get** forces a query to be either a `find` or `get` query.  In general, you will not use this because the component handles it on its own. **Default: undefined**
@@ -126,7 +126,8 @@ When using this component, the scope data will become available to the first ele
 
 By default, the following props are available in the scope data:
 
-- **items {Array|Object}** The array of records for find operations, or the Object for `get` operations.
+- **items {Array|Object}** The resulting array of records for find operations.
+- **item {Object}**  The resulting object for `get` operations
 - **isFindPending {Boolean}** When there's an active request to the API server, this will be `true`.  This is not the same as the `isFindPending` from the Vuex state.  The value in the Vuex state is `true` whenever **any** component is querying data from that same service.  This `isFindPending` attribute is specific to each component instance.
 - **isGetPending {Boolean}** The same as the `isFindPending`, but for `get` requests.
 - **pagination {Object}** pagination data from the Vuex store, keyed by the `qid` attribute.  By default, this will be specific to this component instance. (If you find a use case for sharing pagination between component instances, you can give both components the same `qid` string as a prop.)
@@ -161,7 +162,7 @@ You can also rename scope props through the Object destructuring syntax.  The  `
 
 ### A basic find all
 
-In this example, only the `service` attribute is provided. There is no `query` provided, so the default of `{}` is used. This example queries all data from the store and whatever the API returns with such a `query`.
+In this example, only the `service` attribute is provided. There is no `query` nor `id` provided, so no queries are made. So `props.items` in this example returns an empty array.
 
 ```html
 <feathers-vuex-data service="todos">
@@ -362,7 +363,7 @@ You can also perform `get` queries by using the `id` property.  In the next exam
   service="todos"
   :id="selectedUserId"
 >
-  <div scope-data="{ items: currentUser, isGetPending }">
+  <div scope-data="{ item: currentUser, isGetPending }">
     <div v-if="isGetPending" class="loading"> loading... </div>
     {{currentUser}}
   </div>
