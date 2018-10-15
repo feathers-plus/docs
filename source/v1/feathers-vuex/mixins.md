@@ -1,7 +1,7 @@
 ---
 title: Mixins
 type: guide
-order: 7
+order: 8
 dropdown: frameworks
 repo: feathers-vuex
 ---
