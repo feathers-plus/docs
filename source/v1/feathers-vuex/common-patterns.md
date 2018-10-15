@@ -10,6 +10,10 @@ repo: feathers-vuex
 
 Using the new `<feathers-vuex-find>` and `<feathers-vuex-get>` components provides concise access to the best features of `feathers-vuex`, including live queries, reactive lists, custom pagination tracking per component, and fall-through cacheing of local data in the Vuex store.  Check out the [Renderless Data Components](./components.html) docs for more details.
 
+## Use the `makeFindMixin` and `makeGetMixin` utilities
+
+The mixin utilities provide the same functionality as the components, but with more power and flexibility.  Check out the [Mixin docs](./mixins.html) for more details.
+
 ## Reactive Lists with Live Queries
 Using Live Queries will greatly simplify app development.  The `find` getter enables this feature.  Here's how you might setup a component to take advantage of them.  For the below example, let's create two live-query lists using two getters.
 
