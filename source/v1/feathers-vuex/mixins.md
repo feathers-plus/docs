@@ -90,7 +90,7 @@ The `makeGetMixin` has these unique options:
 
 ## Dynamically Generated Props
 
-Based on what options you provide to each mixin, some dynamically-generated props will be added to the current component.
+Based on what options you provide to each mixin, some dynamically-generated props will be added to the current component.  Note that the example below only shows the return values from the computes, not the functions.
 
 ```js
 makeFindMixin({ service: 'videos' }) = {
@@ -122,7 +122,7 @@ makeFindMixin({ service: 'videos' }) = {
 }
 ```
 
-If you were to handle two queries from the same service, you would use the `name` attribute to rename one of them.  The results would be named accordingly.
+If you were to handle two queries from the same service, you would use the `name` attribute to rename one of them.  The results would be named accordingly.  Note that the example below only shows the return values from the computes, not the functions.
 
 ```js
 makeFindMixin({ service: 'videos', name: 'myVideos' }) = {
