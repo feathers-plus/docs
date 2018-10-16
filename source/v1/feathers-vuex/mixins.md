@@ -52,7 +52,7 @@ Notice in the above example that using the mixin automatically makes the `todos`
 The `makeFindMixin` and `makeGetMixin` utilities share the following options in common. Unique options are found further down.
 
 - **service {String}** - **required** the service path. This must match a service that has already been registered with FeathersVuex.
-- **name {String}** - The name to use in all of the dynamically-generated property names. See below he
+- **name {String}** - The name to use in all of the dynamically-generated property names. See the section about Dynamically Generated Props
 
 - **query {String|Function}** - One of two possible query params.  (The other is `fetchQuery`)  When only `query` is used, it will be used for both the `find` getter and the `find` action.  When using server-side pagination, use `fetchQuery` for server communciation and the `query` prop for pulling data from the local store. If the query is `null` or `undefined`, the query against both the API and store will be skipped. The find getter will return an empty array. **Default {String}: `${camelCasedService}Query`** (So, by default, it will attempt to use the property on the component called serviceName + "Query")
   - **{String}** - The name of the attribute in the current component which holds or returns the query object.
