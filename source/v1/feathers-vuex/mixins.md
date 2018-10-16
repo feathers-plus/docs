@@ -162,8 +162,7 @@ It's possible to change the service name on the fly.  To do this, pass a functio
 ```
 <template>
   <div>
-{{items}}
-    <!-- <video-library></video-library> -->
+    {{items}}
   </div>
 </template>
 
