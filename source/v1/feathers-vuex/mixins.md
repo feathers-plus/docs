@@ -53,6 +53,7 @@ The `makeFindMixin` and `makeGetMixin` utilities share the following options in 
 
 - **service {String}** - **required** the service path. This must match a service that has already been registered with FeathersVuex.
 - **name {String}** - The name to use in all of the dynamically-generated property names. See the section about Dynamically Generated Props
+- **items {String}** - The attribute name to use for the records.
 
 - **query {String|Function}** - One of two possible query params.  (The other is `fetchQuery`)  When only `query` is used, it will be used for both the `find` getter and the `find` action.  When using server-side pagination, use `fetchQuery` for server communciation and the `query` prop for pulling data from the local store. If the query is `null` or `undefined`, the query against both the API and store will be skipped. The find getter will return an empty array. **Default {String}: `${camelCasedService}Query`** (So, by default, it will attempt to use the property on the component called serviceName + "Query")
   - **{String}** - The name of the attribute in the current component which holds or returns the query object.
@@ -154,24 +155,70 @@ makeFindMixin({ service: 'videos', name: 'myVideos' }) = {
 }
 ```
 
-## Using `makeFindMixin`
+## Using a dynamic service
 
-Using the `makeFindMixin`
+You can actually pass a computed property to access a dynamic service name, so you can change the service name on the fly.  Below is an example of how to set that up.  Notice how the `serviceName` attribute is changed after three seconds.  The `items` option is used to rename the items to something more generic.
 
 ```
+<template>
+  <div>
+{{items}}
+    <!-- <video-library></video-library> -->
+  </div>
+</template>
+
 <script>
 import { makeFindMixin } from 'feathers-vuex'
 
 export default {
-  name: 'test-mixins',
+  name: 'my-component',
+  data: () => ({
+    serviceName: 'videos'
+  }),
   mixins: [
-    makeFindMixin({ service: 'todos', query: 'todosQuery' })
+    makeFindMixin({
+      name: 'service',
+      service () { return this.serviceName },
+      items: 'items'
+    })
   ],
   computed: {
-    todosQuery () {
-      return {}
+    serviceQuery () {
+      return { $limit: 1 }
     }
+  },
+  created () {
+    setTimeout(() => {
+      this.serviceName = 'users'
+    }, 3000)
   }
 }
 </script>
+
+<style lang="scss">
+</style>
+```
+
+In the above example, the mixin data would look like this:
+
+```js
+const mixedInDataFromAboveExample = {
+  data: () => ({
+    isFindServicePending: false,
+    serviceLocal: false,
+    serviceQid: 'default',
+    serviceQueryWhen: true,
+    serviceWatch: []
+  }),
+  // Only showing the return values, not the actual functions
+  computed: {
+    items: [ /* results */ ],
+
+    // The pagination data with matching qid from the store
+    servicePaginationData: {},
+
+    // The mixin will expect to find this. This won't be created automatically.
+    serviceQuery () {}
+  }
+}
 ```
