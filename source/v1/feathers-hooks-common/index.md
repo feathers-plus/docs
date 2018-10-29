@@ -214,6 +214,7 @@ Argument | Type | Default | Description
   - `{String} [ keyField ]`
   - `{Object} [ options ]`
     - `{Function} [ clone ]`
+    - `{Function} [makeCacheKey]`
 
 Argument | Type | Default | Description
 ---|:---:|---|---
@@ -224,6 +225,8 @@ Argument | Type | Default | Description
 `options` | Argument | Type | Default | Description
 ---|---|:---:|---|---
  | `clone` | `Function` | `item => JSON.parse(` `JSON.stringify(item) )` | Function to perform a deep clone. See below.
+ | `clone` | `Function` | `key => key` | Function to convert record key to cache key. Use this to convert MongoDB/Mongoose ObjectId/bson keys to a cache key using `item._id.toString()`.
+  
 
 - **Example**
 
@@ -231,7 +234,7 @@ Argument | Type | Default | Description
   const CacheMap = require('@feathers-plus/cache');
   const { cache } = require('feathers-hooks-common');
   
-  cacheMap = CacheMap({ max: 100 }); // Keep the 100 most recently used.
+  const cacheMap = CacheMap({ max: 100 }); // Keep the 100 most recently used.
   
   module.exports = {
     before: {
@@ -245,7 +248,7 @@ Argument | Type | Default | Description
   ``` js
   const { cache } = require('feathers-hooks-common');
   
-  cacheMap = new Map();
+  const cacheMap = new Map();
   
   module.exports = {
     before: {
@@ -253,6 +256,24 @@ Argument | Type | Default | Description
     },
     after: {
       all: cache(cacheMap)
+    }
+  };
+  ```
+  ``` js
+  const CacheMap = require('@feathers-plus/cache');
+  const mongoose = require('mongoose');
+  const { cache } = require('feathers-hooks-common');
+  
+  const cacheMap = CacheMap({ max: 100 });
+  const makeCacheKey = key => key instanceof mongoose.Types.ObjectId ?
+    key.toString() : key;
+  
+  module.exports = {
+    before: {
+      all: cache(cacheMap, undefined, { makeCacheKey })
+    },
+    after: {
+      all: cache(cacheMap, undefined, { makeCacheKey })
     }
   };
   ```
@@ -272,6 +293,8 @@ Argument | Type | Default | Description
   The companion `@feathers-plus/cache` provides a least recently-used cache which discards the least recently used items first. It is compatible with `cache` as well as the BatchLoaders used with the `fastJoin` hook.
   
   > The `cache` hook can make [fastJoin](#fastjoin) hooks run more efficiently.
+  
+  MongoDB and Mongoose store record keys as bson objects rather than as scalars. The safest way to use the cache is in conjunction with the `makeCacheKey` option.
   
 - **options.clone**
 
@@ -343,6 +366,13 @@ Argument | Type | Default | Description
 
 {% hooksApi dePopulate %}
 
+- **Arguments** 
+  - `{Function} customDepop`
+
+Argument | Type | Default | Description
+---|:---:|---|---
+`customDepop` | `Function` | `rec => rec` | Additional modifications for a record.
+
 - **Example**
 
   ``` js
@@ -356,6 +386,8 @@ Argument | Type | Default | Description
 - **Details**
 
   Removes joined records, computed properties, and profile information created by [`populate`](#populate). Populated and serialized items may, after dePopulate, be used in service calls.
+
+  Removes fields created by resolver functions using `fgraphql`. Populated items may, after dePopulate, be used in a patch service call..
 
   
 {% hooksApiFootnote dePopulate %}
