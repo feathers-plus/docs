@@ -6,6 +6,14 @@ dropdown: frameworks
 repo: feathers-vuex
 ---
 
+## Use the `<feathers-vuex-find>` and `<feathers-vuex-get>` components
+
+Using the new `<feathers-vuex-find>` and `<feathers-vuex-get>` components provides concise access to the best features of `feathers-vuex`, including live queries, reactive lists, custom pagination tracking per component, and fall-through cacheing of local data in the Vuex store.  Check out the [Renderless Data Components](./components.html) docs for more details.
+
+## Use the `makeFindMixin` and `makeGetMixin` utilities
+
+The mixin utilities provide the same functionality as the components, but with more power and flexibility.  Check out the [Mixin docs](./mixins.html) for more details.
+
 ## Reactive Lists with Live Queries
 Using Live Queries will greatly simplify app development.  The `find` getter enables this feature.  Here's how you might setup a component to take advantage of them.  For the below example, let's create two live-query lists using two getters.
 
@@ -16,7 +24,7 @@ export default {
   name: 'some-component',
   computed: {
     ...mapState('appointments', { areAppointmentsLoading: 'isFindPending' }),
-    ...mapGetters('appointments', findAppointmentsInStore: 'find' ),
+    ...mapGetters('appointments', { findAppointmentsInStore: 'find' } ),
     // Query for future appointments
     queryUpcoming () {
       return { date: { $gt: new Date() }}
@@ -27,11 +35,11 @@ export default {
     },
     // The list of upcoming appointments.
     upcomingAppointments () {
-      return this.findApointmentsInStore({ query: this.queryUpcoming }).data
+      return this.findAppointmentsInStore({ query: this.queryUpcoming }).data
     },
     // The list of past appointments
     pastAppointments () {
-      return this.findApointmentsInStore({ query: this.queryPast }).data
+      return this.findAppointmentsInStore({ query: this.queryPast }).data
     }
   },
   methods: {
@@ -40,7 +48,7 @@ export default {
   created () {
     // Find all appointments. We'll use the getters to separate them.
     this.findAppointments({ query: {} })
-  })
+  }
 }
 ```
 
@@ -218,6 +226,34 @@ export default new Vuex.Store({
 ```
 
 With the above configuration, when you create a [`Todo` instance](/v1/feathers-vuex/model-classes.html), it will have the attributes provided as `instanceDefaults`.  This is especially useful for binding to form data.  If the attributes aren't defined while binding, the automatic Vue reactivity won't work.  Remember to not set any of the attributes to `undefined`, but instead use `null`.  If not, the reactivity breaks, and you might spend some time wondering why your form is broken.
+
+## Model-Specific Computed Properties
+
+You may find yourself in a position where model-specific computed properties would be very useful. (github issue)[https://github.com/feathers-plus/feathers-vuex/issues/163]  This is already possible using es5 accessors. You can use both getters and setters inside `instanceDefaults`:
+
+```js
+export default new Vuex.Store({
+  plugins: [
+    service('post', {
+      instanceDefaults: {
+        description: '',
+        isComplete: false,
+        comments: [],
+        get numberOfCommenters () {
+            // Put your logic here.
+        },
+        set someOtherProp () {
+            //  Setters also work
+        }
+      }
+    })
+  ]
+})
+```
+
+
+
+
 
 ## Relationships for Populated Data
 

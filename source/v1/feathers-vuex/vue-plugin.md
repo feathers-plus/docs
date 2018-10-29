@@ -6,7 +6,7 @@ dropdown: frameworks
 repo: feathers-vuex
 ---
 
-This `feathers-vuex` release includes a Vue plugin which gives all of your components easy access to the exciting new Models feature.  Here's how to use the plugin:
+This `feathers-vuex` release includes a Vue plugin which gives all of your components easy access to the exciting new Models feature.  It also automatically registers the `feathers-vuex-data` component.  You can pass `components: false` in the options to not globally register the component.  Here's how to use the plugin:
 
 ```js
 import Vue from 'vue'

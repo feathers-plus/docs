@@ -49,7 +49,7 @@ The following attributes are available in each service module's state:
 - `autoRemove {Boolean` - indicates that this service will not automatically remove results missing from subsequent requests.  Only use with feathers-rest. Default is false.
 - `replaceItems {Boolean}` - When set to true, updates and patches will replace the record in the store instead of merging changes.  Default is false
 - `idField {String}` - the name of the field that holds each item's id. *Default: `'id'`*
-- `paginate {Boolean}` - Indicates if the service has pagination turned on.  This changes the response of the `find` action and getter to match the response that Feathers gives.
+- `paginate {Boolean}` - Indicates if the service has pagination turned on.
 
 The following state attributes allow you to bind to the pending state of requests:
 - `isFindPending {Boolean}` - `true` if there's a pending `find` request.  `false` if not.
@@ -260,6 +260,7 @@ The `find` action queries data from the remote server.  It returns a promise tha
   pagination: {
     default: {
       query: {}, // Same as params.query
+      queriedAt: 1538594642481, // The timestamp when the query returned
       ids: [0, 1, 2], // the ids in the store for the records that were returned from the server
       limit: 0, // the response.limit
       skip: 0, // the response.skip
@@ -278,6 +279,7 @@ It's possible that you'll want to store pagination information for more than one
   pagination: {
     mainListView: {
       query: { $limit: 1 }, // Same as params.query
+      queriedAt: 1538594642481, // The timestamp when the query returned
       ids: [0], // the ids in the store for the records that were returned from the server
       limit: 1, // the response.limit
       skip: 0, // the response.skip
