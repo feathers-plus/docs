@@ -29,11 +29,13 @@ import { makeFindMixin } from 'feathers-vuex'
 export default {
   name: 'test-mixins',
   mixins: [
-    makeFindMixin({ service: 'todos', query: 'todosQuery' })
+    makeFindMixin({ service: 'todos' })
   ],
   computed: {
-    todosQuery () {
-      return {}
+    // It's going to automatically look for a prop named `todosPanos`
+    // This is based on the camelCased service name
+    todosParams () {
+      return { query: {} }
     }
   }
 }
@@ -55,22 +57,22 @@ The `makeFindMixin` and `makeGetMixin` utilities share the following options in 
 - **name {String}** - The name to use in all of the dynamically-generated property names. See the section about Dynamically Generated Props
 - **items {String}** - The attribute name to use for the records.
 
-- **query {String|Function}** - One of two possible query params.  (The other is `fetchQuery`)  When only `query` is used, it will be used for both the `find` getter and the `find` action.  When using server-side pagination, use `fetchQuery` for server communciation and the `query` prop for pulling data from the local store. If the query is `null` or `undefined`, the query against both the API and store will be skipped. The find getter will return an empty array. **Default {String}: `${camelCasedService}Query`** (So, by default, it will attempt to use the property on the component called serviceName + "Query")
+- **params {String|Function}** - One of two possible params attributes.  (The other is `fetchParams`)  When only `params` is provided, it will be used for both the `find` getter and the `find` action.  When using server-side pagination, use `fetchParams` for server communciation and the `params` prop for pulling data from the local store. If the params is `null` or `undefined`, the query against both the API will be skipped. The find getter will return an empty array. **Default {String}: `${camelCasedService}Params`** (So, by default, it will attempt to use the property on the component called serviceName + "Params")
   - **{String}** - The name of the attribute in the current component which holds or returns the query object.
   - **{Function}** - A provided function will become a computed property in the current component.
 
-- **watch {String|Array}** - specifies the attributes of the `query` or `fetchQuery` to watch.  When a watched prop changes, a new request will be made to the API server. Pass 'query' to watch the entire query object.  Pass 'query.name' to watch the 'name' property of the query. Watch is turned off by default, meaning only one initial request is made. **Default {String}: `${camelCasedService}Query`**
+- **watch {String|Array}** - specifies the attributes of the `params` or `fetchParams` to watch.  When a watched prop changes, a new request will be made to the API server. Pass 'params' to watch the entire params object.  Pass 'params.query.name' to watch the 'name' property of the query. Watch is turned off by default, meaning only one initial request is made. **Default {String}: `${camelCasedService}Params`**
 
-- **fetchQuery {String|Function}** - when provided, the `fetchQuery` serves as the query for the API server. The `query` param will be used against the service's local Vuex store. **Default: undefined**
-  - **{String}** - The name of the attribute in the current component which holds or returns the query object.
+- **fetchParams {String|Function}** - when provided, the `fetchParams` serves as the params for the API server request. When `fetchParams` is used, the `param` attribute will be used against the service's local Vuex store. **Default: undefined**
+  - **{String}** - The name of the attribute in the current component which holds or returns the params object.
   - **{Function}** - A provided function will become a computed property in the current component.
 
 - **queryWhen {Boolean|String|Function}** - the query to the server will only be made when this evaluates to true.  **Default: true**
   - **{Boolean}** - As a boolean, the value provided determines whether this is on or off.
   - **{String}** - The name of the component's prop to use as the value.
-  - **{Function}** - Any provided function will become a method in the component and will receive the current query object as an argument.
+  - **{Function}** - Any provided function will become a method in the component and will receive the current params object as an argument.
 
-- **local {Boolean|String|Function}** - when true, will only use the `query` prop to pull data from the local Vuex store. It will disable queries to the API server. The value of `local` will override `queryWhen`. **Default:false**
+- **local {Boolean|String|Function}** - when true, will only use the `params` prop to pull data from the local Vuex store. It will disable queries to the API server. The value of `local` will override `queryWhen`. **Default:false**
   - **{Boolean}** - As a boolean, the value provided determines whether this is on or off.
   - **{String}** - The name of the component's prop to use as the value.
   - **{Function}** - Any provided function will become a computed property in the component and will be used to determine its value.
@@ -79,7 +81,7 @@ The `makeFindMixin` and `makeGetMixin` utilities share the following options in 
 
 The `makeFindMixin` has these unique options:
 
-- **qid {String}** - The query identifier used for storing pagination data in the Vuex store. See the service module docs to see what you'll find inside.  The `qid` and its accompanying pagination data from the store will eventually be used for cacheing and preventing duplicate queries to the API.
+- **qid {String}** - The "query identifier" ("qid", for short) is used for storing pagination data in the Vuex store. See the service module docs to see what you'll find inside.  The `qid` and its accompanying pagination data from the store will eventually be used for cacheing and preventing duplicate queries to the API.
 
 ### Options for only `makeGetMixin`
 
@@ -176,14 +178,14 @@ export default {
   }),
   mixins: [
     makeFindMixin({
-      name: 'service',
       service () { return this.serviceName },
-      items: 'items'
+      name: 'service', // the default value when `service` is a function.
+      items: 'items' // the default value when `service` is a function.
     })
   ],
   computed: {
-    serviceQuery () {
-      return { $limit: 1 }
+    serviceParams () {
+      return { query: { $limit: 1 } }
     }
   },
   created () {
