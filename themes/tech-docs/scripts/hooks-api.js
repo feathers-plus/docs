@@ -36,6 +36,7 @@ const hooksRaw = {
   'keep-in-array': { tags: 'data', desc: 'Keep certain fields in a nested array inside the record(s), deleting the rest.',
     check: [1, 'before', ['create', 'update', 'patch']] },
   'keep-query' : { tags: ['query'], desc: 'Keep certain fields in the query object, deleting the rest.' },
+  'keep-query-in-array' : { tags: ['query'], desc: 'Keep certain fields in a nested array inside the query object, deleting the rest.' },
   'lower-case': { check: [1, 'before', ['create', 'update', 'patch']], tags: 'data', desc: 'Convert certain field values to lower case.' },
   'mongo-keys': { tags: ['mongo', 'data', 'relation'], desc: 'Wrap MongoDB foreign keys in ObjectID.',
     check: [0, 'before', null] },

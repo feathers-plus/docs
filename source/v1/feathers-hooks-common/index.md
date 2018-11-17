@@ -1193,6 +1193,41 @@ Argument | Type | Default | Description
 {% hooksApiFootnote keepQuery %}
 
 <!--=============================================================================================-->
+<h3 id="keepinarray">keepQueryInArray( arrayName, fieldNames )</h3>
+
+{% hooksApi keepQueryInArray %}
+
+<p class="tip">The keepQueryInArray hook will remove any fields not specified even if the service is being called from the server. You may want to condition the hook to run only for external transports, e.g. `iff(isProvider('external'), keepQueryInArray(...))`.</p>
+
+{% hooksApiFieldNames keepQueryInArray "The only fields you want to keep in a nested array inside the query object." %}
+
+- **Arguments**
+  - `{String} arrayName`
+  - `{Array< String >} fieldNames`
+
+Argument | Type | Default | Description
+---|---|---
+`arrayName` | `String` | | Field name containing an array of objects. Dot notation is supported.
+`fieldNames` | `Array< String >` | | Field names to keep in each object. Dot notation is supported.
+
+- **Example**
+
+  ``` js
+  const { keepQueryInArray } = require('feathers-hooks-common');
+    
+  module.exports = { before: {
+    find: keepQueryInArray('$or', ['name', 'dept', 'address.city']),
+  } };
+  ```
+
+- **Details**
+
+  Updates `context.params.query`.
+  Their values are returned if they are not an object, so a `null` value is supported.
+
+{% hooksApiFootnote keepQueryInArray %}
+
+<!--=============================================================================================-->
 <h3 id="lowercase">lowerCase( ... fieldNames )</h3>
   
 {% hooksApi lowerCase %}
