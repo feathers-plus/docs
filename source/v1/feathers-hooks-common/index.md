@@ -1842,7 +1842,7 @@ Argument | Type | Default | Description
 
 {% hooksApi skipRemainingHooks %}
 
-  <p class="tip">The database call itself will be shipped only if `context.result` has been set.</p>
+  <p class="tip">The service call will only be skipped if `context.result` has been set manually.</p>
 
 - **Arguments**
 
