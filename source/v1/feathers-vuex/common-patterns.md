@@ -200,32 +200,7 @@ In summary, you can plan on individual records in the action response data to be
 
 ## Basic Data Modeling with `instanceDefaults`
 
-Do you find yourself spending time writing defaults into your form components?  Maybe you wrote a utility for yourself or found one on npm that can do the trick for you.  That's a thing of the past.  You can now specify the default values for Model instances by using the `instanceDefaults` option when using the service plugin.  Here's what it looks like:
-
-```js
-import Vue from 'vue'
-import Vuex from 'vuex'
-import feathersVuex from 'feathers-vuex'
-import feathersClient from './feathers-client'
-
-const { service, auth, FeathersVuex } = feathersVuex(feathersClient, { idField: '_id' })
-
-Vue.use(FeathersVuex)
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  plugins: [
-    service('todos', {
-      instanceDefaults: {
-        description: '',
-        isComplete: false
-      }
-    })
-  ]
-})
-```
-
-With the above configuration, when you create a [`Todo` instance](/v1/feathers-vuex/model-classes.html), it will have the attributes provided as `instanceDefaults`.  This is especially useful for binding to form data.  If the attributes aren't defined while binding, the automatic Vue reactivity won't work.  Remember to not set any of the attributes to `undefined`, but instead use `null`.  If not, the reactivity breaks, and you might spend some time wondering why your form is broken.
+See the [instanceDefaults API](./model-classes.html#instanceDefaults)
 
 ## Model-Specific Computed Properties
 
