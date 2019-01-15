@@ -11,7 +11,9 @@ The Auth module helps setup your app for login / logout.  It includes the follow
 {
   accessToken: undefined, // The JWT
   payload: undefined, // The JWT payload
-  entityIdField: 'userId', // The property in the payload storing the user id - only in v1.7.0-pre.41 or later
+
+  // entityIdField is only in v1.7.0-pre.41 or later
+  entityIdField: 'userId', // The property in the payload storing the user id
 
   isAuthenticatePending: false,
   isLogoutPending: false,
