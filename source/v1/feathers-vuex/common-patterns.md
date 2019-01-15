@@ -14,6 +14,10 @@ Using the new `<feathers-vuex-find>` and `<feathers-vuex-get>` components provid
 
 The mixin utilities provide the same functionality as the components, but with more power and flexibility.  Check out the [Mixin docs](./mixins.html) for more details.
 
+## Working with TypeScript
+
+See [this issue](https://github.com/feathers-plus/feathers-vuex/issues/114) for suggestions for with TypeScript helpers.
+
 ## Reactive Lists with Live Queries
 Using Live Queries will greatly simplify app development.  The `find` getter enables this feature.  Here's how you might setup a component to take advantage of them.  For the below example, let's create two live-query lists using two getters.
 
