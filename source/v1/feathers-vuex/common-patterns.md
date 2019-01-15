@@ -18,6 +18,10 @@ The mixin utilities provide the same functionality as the components, but with m
 
 See [this issue](https://github.com/feathers-plus/feathers-vuex/issues/114) for suggestions for with TypeScript helpers.
 
+## Clearing data upon user logout
+
+The best solution is to simply refresh to clear memory.  The alternative to refreshing would be to perform manual cleanup of the service stores.  Refreshing is much simpler, so it's the officially supported solution.  Feel free to read [this issue](https://github.com/feathers-plus/feathers-vuex/issues/10) for more suggestions.
+
 ## Reactive Lists with Live Queries
 Using Live Queries will greatly simplify app development.  The `find` getter enables this feature.  Here's how you might setup a component to take advantage of them.  For the below example, let's create two live-query lists using two getters.
 
