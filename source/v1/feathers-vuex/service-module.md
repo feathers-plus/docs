@@ -22,6 +22,9 @@ Each service comes loaded with the following default state:
     replaceItems: false, // When set to true, updates and patches will replace the record in the store instead of merging changes
     paginate: false, // Indicates if pagination is enabled on the Feathers service.
 
+    setCurrentOnGet: true, // Automatically sets the `current` property to the record retrieved from get requests
+    setCurrentOnCreate: true, // Automatically sets the `current` property to the record returned from a create
+
     isFindPending: false,
     isGetPending: false,
     isCreatePending: false,
@@ -50,6 +53,8 @@ The following attributes are available in each service module's state:
 - `replaceItems {Boolean}` - When set to true, updates and patches will replace the record in the store instead of merging changes.  Default is false
 - `idField {String}` - the name of the field that holds each item's id. *Default: `'id'`*
 - `paginate {Boolean}` - Indicates if the service has pagination turned on.
+- `setCurrentOnGet {Boolean}` - Automatically sets the `current` property to the record retrieved from get requests. Default is true
+- `setCurrentOnCreate {Boolean}` - Automatically sets the `current` property to the record returned from create. Default is true
 
 The following state attributes allow you to bind to the pending state of requests:
 - `isFindPending {Boolean}` - `true` if there's a pending `find` request.  `false` if not.
