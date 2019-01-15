@@ -175,7 +175,7 @@ let params = {query: {completed: true}}
 store.dispatch('todos/find', params)
 ```
 
-See the section about pagination, below, for more information that is applicable to the `find` action.
+See the section about pagination, below, for more information that is applicable to the `find` action.  Make sure your returned records have a unique field that matches the `idField` option for the service plugin.
 
 ### `get(id)` or `get([id, params])`
 Query a single record from the server & add to Vuex store
@@ -190,6 +190,8 @@ let params = {}
 store.dispatch('todos/get', [1, params])
 ```
 
+Make sure your returned records have a unique field that matches the `idField` option for the service plugin.
+
 ### `create(data)`
 Create one or multiple records.
 - `data {Object|Array}` - if an object is provided, a single record will be created. If an array of objects is provided, multiple records will be created.
@@ -199,6 +201,7 @@ let newTodo = {description: 'write good tests'}
 store.dispatch('todos/create', newTodo)
 ```
 
+Make sure your returned records have a unique field that matches the `idField` option for the service plugin.
 
 ### `update(paramArray)`
 Update (overwrite) a record.
@@ -215,7 +218,8 @@ store.dispatch('todos/update', [1, data, params])
 ```
 
 Alternatively in a Vue component
-```
+
+```js
 import { mapActions } from 'vuex'
 export default {
   methods: {
@@ -227,6 +231,8 @@ export default {
   }
 }
 ```
+
+Make sure your returned records have a unique field that matches the `idField` option for the service plugin.
 
 ### `patch(paramArray)`
 Patch (merge in changes) one or more records
@@ -241,6 +247,7 @@ let params = {}
 store.dispatch('todos/patch', [1, data, params])
 ```
 
+Make sure your returned records have a unique field that matches the `idField` option for the service plugin.
 
 ### `remove(id)`
 Remove/delete the record with the given `id`.
@@ -249,6 +256,8 @@ Remove/delete the record with the given `id`.
 ```js
 store.dispatch('todos/remove', 1)
 ```
+
+Make sure your returned records have a unique field that matches the `idField` option for the service plugin.
 
 ## Querying with Find & Pagination
 Both the `find` action and the `find` getter support pagination.  There are differences in how they work.
