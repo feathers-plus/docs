@@ -86,7 +86,7 @@ const servicePlugin = service(servicePath, {
   actions: {
     afterFind ({ commit, dispatch, getters, state }, response) {
       if (response.summary) {
-        store.commit('handleSummaryData', response.summary)
+        commit('handleSummaryData', response.summary)
       }
     }
   },
