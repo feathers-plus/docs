@@ -22,6 +22,82 @@ See [this issue](https://github.com/feathers-plus/feathers-vuex/issues/114) for 
 
 The best solution is to simply refresh to clear memory.  The alternative to refreshing would be to perform manual cleanup of the service stores.  Refreshing is much simpler, so it's the officially supported solution.  Feel free to read [this issue](https://github.com/feathers-plus/feathers-vuex/issues/10) for more suggestions.
 
+## Accessing the store from hooks
+
+Because the service's Model [is available](./service-module.html#The-FeathersClient-Service) at `service.FeathersVuexModel`, you can access the store inside hooks.  This is especially handy if you have some custom attributes in a paginated server response.
+
+As an example, this `speeding-tickets` service has a `summary` attribute that comes back in the response.  We can
+
+```js
+import feathersVuex from 'feathers-vuex'
+import feathersClient from '../../feathers-client'
+
+const { service } = feathersVuex(feathersClient, { idField: '_id' })
+
+const servicePath = 'speeding-tickets'
+const servicePlugin = service(servicePath, {
+  instanceDefaults: {
+    vin: '',
+    plateState: ''
+  },
+  mutations: {
+    handleSummaryData (state, summaryData) {
+      state.mostRecentSummary = summaryData
+    }
+  }
+})
+
+feathersClient.service(servicePath)
+  .hooks({
+    after: {
+      find: [
+        context => {
+          const { service, result } = context
+
+          if (result.summary) {
+            store.commit('handleSummaryData', result.summary)
+          }
+        }
+      ]
+    }
+  })
+```
+
+## Handling custom server responses.
+
+Sometimes your server response may contain more attributes than just database records and pagination data.  You could handle this directly in a component, if it's only needed in that one component,  But, if you need it in multiple components, there are better options.
+
+Depending on what you need to do, you may be able to solve this by [accessing the store from hooks](#Accessing-the-store-from-hooks).  But that solution won't handle a scenario where you need the response data to be already populated in the store.
+
+If you need the response data to already be in the store, you can use the [`afterFind` action](./service-module.html#afterFind-response).  Here's what this looks like:
+
+```js
+import feathersVuex from 'feathers-vuex'
+import feathersClient from '../../feathers-client'
+
+const { service } = feathersVuex(feathersClient, { idField: '_id' })
+
+const servicePath = 'speeding-tickets'
+const servicePlugin = service(servicePath, {
+  instanceDefaults: {
+    vin: '',
+    plateState: ''
+  },
+  actions: {
+    afterFind ({ commit, dispatch, getters, state }, response) {
+      if (response.summary) {
+        store.commit('handleSummaryData', response.summary)
+      }
+    }
+  },
+  mutations: {
+    handleSummaryData (state, summaryData) {
+      state.mostRecentSummary = summaryData
+    }
+  }
+})
+```
+
 ## Reactive Lists with Live Queries
 Using Live Queries will greatly simplify app development.  The `find` getter enables this feature.  Here's how you might setup a component to take advantage of them.  For the below example, let's create two live-query lists using two getters.
 
@@ -150,7 +226,7 @@ feathersClient.service(servicePath)
       update: [],
       patch: [],
       remove: []
-    },
+    }
   })
 
 export default servicePlugin

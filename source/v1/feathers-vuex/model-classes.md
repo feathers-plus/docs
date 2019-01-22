@@ -8,6 +8,14 @@ repo: feathers-vuex
 
 Every service now includes a new `FeathersVuexModel` Class and new records are instantiated with that class before getting added to the store.
 
+## Model attributes
+
+The following attributes are available on each model:
+
+- `servicePath {String}` - `Model.servicePath` is the path passed to create the FeathersClient service.
+- `namespace {String}` - `Model.namespace` holds the value that was used to register the module with Vuex. This will match the `servicePath` unless you've provided a custom namespace in the [Service Module options](./index.html#Use).
+- `store {Vuex Store}` - Use `Model.store` to access the Vuex store. [example](./common-patterns.html#Accessing-the-store-from-hooks)
+
 ## Model Methods
 
 ### Model.find(params)

@@ -6,7 +6,49 @@ dropdown: frameworks
 repo: feathers-vuex
 ---
 
-The `Service Module` sets up services in the Vuex store.  Each service will have the below default state in its store.
+The `Service Module` creates plugins which can be used to connect a Feathers service to the Vuex store.  Once you create the plugin, you must register it in the `plugins` section of your store setup:
+
+Here's a basic example of creating a service plugin:
+
+```js
+// src/services/users.js
+import feathersVuex from 'feathers-vuex'
+import feathersClient from '../../feathers-client'
+
+const { service } = feathersVuex(feathersClient, { idField: '_id' })
+
+const servicePath = 'users'
+const servicePlugin = service(servicePath)
+
+export default servicePlugin
+```
+
+The above code block demonstrates setting up a service plugin, but the plugin doesn't run until you register it with Vuex, as shown in this next example:
+
+```js
+// src/store.js
+import Vue from 'vue'
+import Vuex from 'vuex'
+import feathersVuex from 'feathers-vuex'
+import feathersClient from '../feathers-client'
+import usersPlugin from './services/users'
+
+const { auth, FeathersVuex } = feathersVuex(feathersClient, { idField: '_id' })
+
+Vue.use(Vuex)
+Vue.use(FeathersVuex)
+
+export default new Vuex.Store({
+  plugins: [
+    users: usersPlugin,
+    auth({ userService: 'users' })
+  ]
+})
+```
+
+## The FeathersClient Service
+
+Once the service plugin has been registered with Vuex, the FeathersClient Service will have a new `service.FeathersVuexModel` property.  This provides access to the service's [Model class](./model-classes.html).
 
 ## Service State
 Each service comes loaded with the following default state:
@@ -176,6 +218,10 @@ store.dispatch('todos/find', params)
 ```
 
 See the section about pagination, below, for more information that is applicable to the `find` action.  Make sure your returned records have a unique field that matches the `idField` option for the service plugin.
+
+### `afterFind(response)`
+
+The `afterFind` action is called by the `find` action after a successful response is added to the store.  It is called with the current response.  By default, it is a no-op (it literally does nothing), and is just a placeholder for you to use when necessary.  See the sections on [customizing the default store](#Customizing-a-Service’s-Default-Store) and [Handling custom server responses](./common-patterns.html#Handling-custom-server-responses) for example usage.
 
 ### `get(id)` or `get([id, params])`
 Query a single record from the server & add to Vuex store
@@ -348,6 +394,11 @@ const store = new Vuex.Store({
         }
       },
       actions: {
+        // Overwriting the built-in `afterFind` action.
+        afterFind ({ commit, dispatch, getters, state }, response) {
+          // Do something with the response.
+          // Keep in mind that the data is already in the store.
+        },
         asyncStuff ({ commit, dispatch }, args) {
           commit('setTestToTrue')
 
