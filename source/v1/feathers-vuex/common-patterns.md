@@ -55,7 +55,7 @@ feathersClient.service(servicePath)
           const { service, result } = context
 
           if (result.summary) {
-            store.commit('handleSummaryData', result.summary)
+            service.FeathersVuexModel.store.commit('handleSummaryData', result.summary)
           }
         }
       ]
