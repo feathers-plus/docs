@@ -67,6 +67,9 @@ Each service comes loaded with the following default state:
     setCurrentOnGet: true, // Automatically sets the `current` property to the record retrieved from get requests
     setCurrentOnCreate: true, // Automatically sets the `current` property to the record returned from a create
 
+    paramsForServer: [], // Custom query operators that are ignored in the find getter, but will pass through to the server.
+    whitelist: [], // Custom query operators that will be allowed in the find getter.
+
     isFindPending: false,
     isGetPending: false,
     isCreatePending: false,
