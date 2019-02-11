@@ -92,7 +92,7 @@ export default new Vuex.Store({
       replaceItems: true, // If true, updates & patches replace the record in the store. Default is false, which merges in changes
       skipRequestIfExists: true, // For get action, if the record already exists in store, skip the remote request. It's false by default
       modelName: 'OldTask' // Default modelName would have been 'Task'
-    })
+    }),
 
     // Add custom state, getters, mutations, or actions, if needed.  See example in another section, below.
     service('things', {
@@ -100,14 +100,14 @@ export default new Vuex.Store({
       getters: {},
       mutations: {},
       actions: {}
-    })
+    }),
 
     // Setup a service with defaults for Model instances
     service('manufacturers', {
       instanceDefaults: {
         name: ''
       }
-    })
+    }),
     // Setup a service with light-weight relational data
     service('models', {
       instanceDefaults: {
@@ -115,7 +115,7 @@ export default new Vuex.Store({
         manufacturerId: '',
         manufacturer: 'Manufacturer' // Refers to data (populated on the server) that gets put in the `manufacturers` vuex store.
       }
-    })
+    }),
 
     // Setup the auth plugin.
     auth({ userService: 'users' })
