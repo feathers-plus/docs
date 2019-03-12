@@ -83,7 +83,7 @@ Argument | Type | Default | Description
       ]
   } };
   ```
-  Hooks `hook1`, `hook3` and `hook5` will run "normally", mutating `content.result`.
+  Hooks `hook1`, `hook3` and `hook5` will run "normally", mutating `context.result`.
   Hooks `hook2` and `hook4` will mutate `context.dispatch`.
   
 - **Details**
@@ -121,7 +121,7 @@ Argument | Type | Default | Description
       ]
   } };
   ```
-  Hooks `hook1`, `hook3` and `hook5` will run "normally", mutating `content.result`.
+  Hooks `hook1`, `hook3` and `hook5` will run "normally", mutating `context.result`.
   Hooks `hook2` and `hook4` will mutate `context.dispatch`.
   
 - **Details**
@@ -1850,7 +1850,7 @@ Argument | Type | Default | Description
 
 Argument | Type | Default | Description
 ---|:---:|---|---
-`predicate` | `Function`, `Boolean` | `content => content.result` | A predicate. If true the remaining hooks are skipped. The default checks if `context.result` has been set.
+`predicate` | `Function`, `Boolean` | `context => context.result` | A predicate. If true the remaining hooks are skipped. The default checks if `context.result` has been set.
 
 - **Example**
 

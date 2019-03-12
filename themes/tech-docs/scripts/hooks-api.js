@@ -6,7 +6,7 @@ const hooksRaw = {
   // fileName: 'fast-join',
   // src: 'https://github.com/feathers-plus/feathers-hooks-common/blob/master/lib/services/fast-join.js',
 
-  'act-on-default': { tags: ['code', 'cond', 'data'], desc: 'Runs a series of hooks which mutate context.data or content.result (the Feathers default).', srcFile: 'services/act-on-dispatch.js' },
+  'act-on-default': { tags: ['code', 'cond', 'data'], desc: 'Runs a series of hooks which mutate context.data or context.result (the Feathers default).', srcFile: 'services/act-on-dispatch.js' },
   'act-on-dispatch': { tags: ['code', 'cond', 'data'], desc: 'Runs a series of hooks which mutate context.dispatch.' },
   'alter-items': { tags: ['code', 'cond', 'data', 'pred', 'relation', 'imp'], desc: 'Make changes to data or result items. Very flexible.'},
   'cache': { tags: ['data', 'services', 'perf'], desc: 'Persistent, least-recently-used record cache for services.'},
