@@ -1872,9 +1872,9 @@ Argument | Type | Default | Description
   
 - **Details**
 
-  The remaining before hooks will be skipped is you use `shipRemainingHooks` as a before hook. However the after hooks will still be run.
+  The remaining before hooks will be skipped if you use `skipRemainingHooks` as a before hook. However the after hooks will still be run.
   
-  `shipRemainingHooks` skips the remaining hooks in the before, after or error hooks. It will skip the remaining hooks if used within the `combine` hook.
+  `skipRemainingHooks` skips the remaining hooks in the before, after or error hooks. It will skip the remaining hooks if used within the `combine` hook.
 
 {% hooksApiFootnote skipRemainingHooks %}
 
