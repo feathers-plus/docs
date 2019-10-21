@@ -45,6 +45,10 @@ module.exports = {
 };
 ```
 
+- **Details**
+
+Will throw a `BadRequest` error when trying to `update`, `patch` or `delete` multiple items.
+
 <!--=============================================================================================-->
 ## Find Hooks using Tags
 
