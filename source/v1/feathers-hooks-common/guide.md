@@ -91,7 +91,7 @@ We often want to combine rows from two or more tables based on a relationship be
   fastJoin(postResolvers, context => query) // supports queries from client
   ```
   
-The `fastJoin(resolvers, query)` API, like GraphQL, uses resolvers to provide a mapping between a portion of a operation and actual backend code responsible for handling it.
+The `fastJoin(resolvers, query)` API, like GraphQL, uses resolvers to provide a mapping between a portion of an operation and actual backend code responsible for handling it.
 
 It also takes an optional query with which you can customise the current operation. For example, the returned information may have to differ depending on the needs of the client making the service call. 
     
