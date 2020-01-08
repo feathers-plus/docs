@@ -15,6 +15,13 @@ repo: What's New
 
 ### feathers-hooks-common
 
+# 🚨 feathers-hooks-common has moved! 🚨
+
+As of version `5.0.0`, feathers-hooks-common has a new home at [https://common-hooks.feathersjs.com](https://common-hooks.feathersjs.com).
+
+[View the new docs](https://common-hooks.feathersjs.com)
+
+
 <p class="tip">Use feathers-hooks-common v3.10.0 with FeathersJS v3 (Auk).
 Use feathers-hooks-common v4.x.x with FeathersJS v4 (Buzzard).</p>
 
