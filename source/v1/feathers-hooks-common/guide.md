@@ -6,6 +6,12 @@ dropdown: extensions
 repo: feathers-hooks-common
 ---
 
+# 🚨 Docs have moved! 🚨
+
+As of version `5.0.0`, feathers-hooks-common has a new home at [https://common-hooks.feathersjs.com](https://common-hooks.feathersjs.com).
+
+[View the new docs](https://common-hooks.feathersjs.com)
+
 ## Making Hook Params Dynamic
 
 You will usually use static parameters for your hooks, e.g. `disallow('rest')`. However you will periodically need the parameters to vary depending on then current circumstances.

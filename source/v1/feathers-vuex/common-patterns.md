@@ -6,4 +6,4 @@ dropdown: frameworks
 repo: feathers-vuex
 ---
 
-This page has moved to https://feathers-vuex.feathers-plus.com/common-patterns.html.
+This page has moved to https://vuex.feathersjs.com/common-patterns.html.

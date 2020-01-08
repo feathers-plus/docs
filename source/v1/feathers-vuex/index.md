@@ -6,4 +6,4 @@ dropdown: frameworks
 repo: feathers-vuex
 ---
 
-This page has moved to https://feathers-vuex.feathers-plus.com/api-overview.html.
+This page has moved to https://vuex.feathersjs.com/api-overview.html.

@@ -6,4 +6,4 @@ dropdown: frameworks
 repo: feathers-vuex
 ---
 
-This page has moved to https://feathers-vuex.feathers-plus.com/auth-module.html
+This page has moved to https://vuex.feathersjs.com/auth-module.html

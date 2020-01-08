@@ -7,6 +7,13 @@ repo: feathers-hooks-common
 ---
 
 <!--=============================================================================================-->
+
+# 🚨 Docs have moved! 🚨
+
+As of version `5.0.0`, feathers-hooks-common has a new home at [https://common-hooks.feathersjs.com](https://common-hooks.feathersjs.com).
+
+[View the new docs](https://common-hooks.feathersjs.com)
+
 ## Usage
 
 Use feathers-hooks-common v4.x.x with FeathersJS Buzzard.

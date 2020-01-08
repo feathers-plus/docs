@@ -6,4 +6,4 @@ dropdown: frameworks
 repo: feathers-vuex
 ---
 
-This page has moved to https://feathers-vuex.feathers-plus.com/model-classes.html.
+This page has moved to https://vuex.feathersjs.com/model-classes.html.
