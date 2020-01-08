@@ -1,0 +1,623 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    <title>Guide — Feathers-Plus</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Feathers-Plus - Bridging FeathersJS and real world apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="alternate" hreflang="x-default" href="https://vuejs.org/v1/feathers-hooks-common/guide.html">
+    <link rel="alternate" hreflang="zh" href="https://cn.vuejs.org/v1/feathers-hooks-common/guide.html">
+    <link rel="alternate" hreflang="ja" href="https://jp.vuejs.org/v1/feathers-hooks-common/guide.html">
+    <link rel="alternate" hreflang="ru" href="https://ru.vuejs.org/v1/feathers-hooks-common/guide.html">
+    <link rel="alternate" hreflang="ko" href="https://kr.vuejs.org/v1/feathers-hooks-common/guide.html">
+    <link rel="alternate" hreflang="pt-BR" href="https://br.vuejs.org/v1/feathers-hooks-common/guide.html">
+    <link rel="alternate" hreflang="fr" href="https://fr.vuejs.org/v1/feathers-hooks-common/guide.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Guide — Feathers-Plus">
+    <meta property="og:description" content="Feathers-Plus - Bridging FeathersJS and real world apps.">
+    <meta property="og:image" content="https://feathers-plus.com//images/logo.png">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Guide — Feathers-Plus">
+    <meta name="twitter:description" content="Feathers-Plus - Bridging FeathersJS and real world apps.">
+    <meta name="twitter:image" content="https://feathers-plus.com/images/logo.png">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/images/icons//apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/images/icons//apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/icons//apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/images/icons//apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/images/icons//apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/icons//apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/icons//apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/icons//apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons//apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/icons//android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons//favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/icons//favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/icons//favicon-16x16.png">
+    <link rel="manifest" href="/images/icons//manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600|Roboto Mono" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Dosis:500&text=Vue.js" rel="stylesheet" type="text/css">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- main page styles ------------------------------------------------------------------------->
+    <link rel="stylesheet" href="/css/page.css">
+
+    <!-- this needs to be loaded before guide's inline scripts ------------------------------------>
+    <script src="/js/client-bundle.js"></script>
+    <script>window.PAGE_TYPE = "guide"</script>
+
+    <!-- ga --------------------------------------------------------------------------------------->
+    <!--
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-xxxxxxxx-1', 'feathers-plus.com');
+      ga('send', 'pageview');
+    </script>
+    --->
+  </head>
+  <body class="docs">
+    <div id="mobile-bar">
+      <a class="menu-button"></a>
+      <a class="logo" href="/"></a>
+    </div>
+
+    <!-- top nav bar ------------------------------------------------------------------------------>
+    <div id="header">
+  <a id="logo" href="/">
+    <img src="/images/logo.png">
+    <span>Feathers-Plus</span>
+  </a>
+  <ul id="nav">
+    <li>
+  <form id="search-form">
+    <input type="text" id="search-query-nav" class="search-query st-default-search-input">
+  </form>
+</li>
+<li class="nav-dropdown-container learn">
+  <a class="nav-link current">Extensions</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="/v1/feathers-hooks-common/" class="nav-link current">feathers-hooks-common</a></li>
+        <li><a href="/v1/authentication-management/" class="nav-link">authentication-management</a></li>
+      </ul>
+    </li>
+    <li><h4>Batch Loader</h4></li>
+    <li>
+      <ul>
+        <li><a href="/v1/batch-loader/" class="nav-link">batch-loader</a></li>
+        <li><a href="/v1/cache" class="nav-link">cache</a></li>
+      </ul>
+    </li>
+    <li><h4>Offline First</h4></li>
+    <li>
+      <ul>
+        <li><a href="/v1/offline-snapshot/" class="nav-link">offline-snapshot</a></li>
+        <li><a href="/v1/offline-realtime/" class="nav-link">offline-realtime</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+<li class="nav-dropdown-container ecosystem">
+  <a class="nav-link">Adapters</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="/v1/mongoose-advanced/" class="nav-link">mongoose-advanced</a></li>
+        <li><a href="/v1/graphql/" class="nav-link">graphql</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+<li class="nav-dropdown-container support-vue">
+  <a class="nav-link">Frameworks</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="https://vuex.feathersjs.com" target="_blank" class="nav-link">feathers-vuex</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+
+  </ul>
+</div>
+
+
+    <!-- body ------------------------------------------------------------------------------------->
+    
+      <div id="main" class="fix-sidebar">
+        
+          <!--  documentation page ---------------------------------------------------------------->
+          
+  <div class="sidebar">
+  <div class="sidebar-inner">
+    <ul class="main-menu">
+        <li>
+  <form id="search-form">
+    <input type="text" id="search-query-sidebar" class="search-query st-default-search-input">
+  </form>
+</li>
+<li class="nav-dropdown-container learn">
+  <a class="nav-link current">Extensions</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="/v1/feathers-hooks-common/" class="nav-link current">feathers-hooks-common</a></li>
+        <li><a href="/v1/authentication-management/" class="nav-link">authentication-management</a></li>
+      </ul>
+    </li>
+    <li><h4>Batch Loader</h4></li>
+    <li>
+      <ul>
+        <li><a href="/v1/batch-loader/" class="nav-link">batch-loader</a></li>
+        <li><a href="/v1/cache" class="nav-link">cache</a></li>
+      </ul>
+    </li>
+    <li><h4>Offline First</h4></li>
+    <li>
+      <ul>
+        <li><a href="/v1/offline-snapshot/" class="nav-link">offline-snapshot</a></li>
+        <li><a href="/v1/offline-realtime/" class="nav-link">offline-realtime</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+<li class="nav-dropdown-container ecosystem">
+  <a class="nav-link">Adapters</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="/v1/mongoose-advanced/" class="nav-link">mongoose-advanced</a></li>
+        <li><a href="/v1/graphql/" class="nav-link">graphql</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+<li class="nav-dropdown-container support-vue">
+  <a class="nav-link">Frameworks</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="https://vuex.feathersjs.com" target="_blank" class="nav-link">feathers-vuex</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+
+    </ul>
+    <div class="list">
+      <h3>feathers-hooks-common
+        <select class="version-select">
+          <option value="SELF" selected>1.0</option>
+        </select></h3>
+        <ul class="menu-root">
+  
+    
+    <li>
+      <a href="/v1/feathers-hooks-common/guide.html" class="sidebar-link current">Guide</a>
+    </li>
+  
+    
+    <li>
+      <a href="/v1/feathers-hooks-common/index.html" class="sidebar-link">API</a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+</div>
+
+
+<div class="content guide with-sidebar guide-guide">
+  
+    
+
+    
+  
+  
+    <h1>Guide</h1>
+  
+  <h1 id="🚨-Docs-have-moved-🚨"><a href="#🚨-Docs-have-moved-🚨" class="headerlink" title="🚨 Docs have moved! 🚨"></a>🚨 Docs have moved! 🚨</h1><p>As of version <code>5.0.0</code>, feathers-hooks-common has a new home at <a href="https://common-hooks.feathersjs.com" target="_blank" rel="noopener">https://common-hooks.feathersjs.com</a>.</p>
+<p><a href="https://common-hooks.feathersjs.com" target="_blank" rel="noopener">View the new docs</a></p>
+<h2 id="Making-Hook-Params-Dynamic"><a href="#Making-Hook-Params-Dynamic" class="headerlink" title="Making Hook Params Dynamic"></a>Making Hook Params Dynamic</h2><p>You will usually use static parameters for your hooks, e.g. <code>disallow(&#39;rest&#39;)</code>. However you will periodically need the parameters to vary depending on then current circumstances.</p>
+<p>This code will <strong>not work</strong> as hoped, as <code>disallowWhat</code> is evaluated when the module is required, not at each service call.<br><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">disallowWhat</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> someVariableCircumstance() ? <span class="string">'rest'</span> : <span class="string">'external'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; <span class="attr">before</span>: &#123;</span><br><span class="line">  all: disallow(disallowWhat())</span><br><span class="line">&#125; &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>This code will also <strong>not do</strong>, as most parameters do not permit functions, and <code>disallowWhat</code> will not be called for each service call.<br><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">disallowWhat</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> someVariableCircumstance() ? <span class="string">'rest'</span> : <span class="string">'external'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; <span class="attr">before</span>: &#123;</span><br><span class="line">  all: disallow(disallowWhat)</span><br><span class="line">&#125; &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>You are able to call <code>disallowWhat</code> for each service call as follows.<br><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">disallowWhat</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> someVariableCircumstance() ? <span class="string">'rest'</span> : <span class="string">'external'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; <span class="attr">before</span>: &#123;</span><br><span class="line">  all: <span class="function"><span class="params">context</span> =&gt;</span> disallow(disallowWhat())(context)</span><br><span class="line">&#125; &#125;;</span><br></pre></td></tr></table></figure></p>
+<p><code>disallowWhat</code> is called each time the hook is run. <code>disallow(disallowWhat())</code> creates a new hook with the value returned by <code>disallowWhat()</code>, and then that hook is invoked with <code>(context)</code>.</p>
+<p>Let’s look at another example. The <code>user</code> record identifies information the user permits to be public, in its <code>public</code> field. We can write a hook retaining only the fields allowed to be exposed.<br><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123; <span class="attr">after</span>: &#123;</span><br><span class="line">  <span class="keyword">get</span>: context =&gt; keep(...context.params.user.public)(context)</span><br><span class="line">&#125; &#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="fastJoin"><a href="#fastJoin" class="headerlink" title="fastJoin"></a>fastJoin</h2><p>We often want to combine rows from two or more tables based on a relationship between them. The <code>fastJoin</code> hook will select records that have matching values in both tables. It can batch service calls and cache records, thereby needing roughly an order of magnitude fewer database calls than the <code>populate</code> hook, i.e. <em>2</em> calls instead of <em>20</em>. It uses a <a href="http://graphql.org/" target="_blank" rel="noopener">GraphQL</a>-like imperative API.</p>
+<p><code>fastJoin</code> is not restricted to using data from Feathers services. Resources for which there are no Feathers adapters can <a href="/v1/batch-loader/common-patterns.html#Using-non-Feathers-services">also be used</a>. </p>
+<h3 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h3>  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> postResolvers = &#123;</span><br><span class="line">  joins: &#123;</span><br><span class="line">    author: ...,</span><br><span class="line">    starers: <span class="function"><span class="params">fieldNames</span> =&gt;</span> <span class="function"><span class="params">record</span> =&gt;</span> <span class="comment">/* modify record */</span>,</span><br><span class="line">    comments: &#123;</span><br><span class="line">      resolver: ...,</span><br><span class="line">      joins: &#123;</span><br><span class="line">        author: ...,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> query = &#123;</span><br><span class="line">  author: <span class="literal">true</span>, <span class="comment">// or falsy</span></span><br><span class="line">  starers: [<span class="string">'name'</span>], <span class="comment">// [param1, param2, ...]</span></span><br><span class="line">  comments: &#123;</span><br><span class="line">    args: [...], <span class="comment">// [param1, param2, ...]</span></span><br><span class="line">    author: <span class="literal">true</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Options for hook API</span></span><br><span class="line">fastJoin(postResolvers)</span><br><span class="line">fastJoin(postResolvers, query)</span><br><span class="line">fastJoin(<span class="function"><span class="params">context</span> =&gt;</span> postResolvers)</span><br><span class="line">fastJoin(postResolvers, context =&gt; query) <span class="comment">// supports queries from client</span></span><br></pre></td></tr></table></figure>
+<p>The <code>fastJoin(resolvers, query)</code> API, like GraphQL, uses resolvers to provide a mapping between a portion of a operation and actual backend code responsible for handling it.</p>
+<p>It also takes an optional query with which you can customise the current operation. For example, the returned information may have to differ depending on the needs of the client making the service call. </p>
+<p class="tip">The services in all these examples are assumed, for simplicity, to have pagination disabled. You will have to decode when to use <code>paginate: false</code> in your code.</p>
+
+<h3 id="Resolvers"><a href="#Resolvers" class="headerlink" title="Resolvers"></a>Resolvers</h3>  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// project/src/services/posts/posts.hooks.js</span></span><br><span class="line"><span class="keyword">const</span> &#123; fastJoin &#125; = <span class="built_in">require</span>(<span class="string">'feathers-hooks-common'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> postResolvers = &#123;</span><br><span class="line">  joins: &#123;</span><br><span class="line">    author: <span class="function">(<span class="params">...args</span>) =&gt;</span> <span class="keyword">async</span> post =&gt; &#123; post.author = (<span class="keyword">await</span> users.find(&#123; <span class="attr">query</span>: &#123;</span><br><span class="line">      id: post.userId</span><br><span class="line">    &#125; &#125;))[<span class="number">0</span>] &#125;,</span><br><span class="line">    </span><br><span class="line">    starers: <span class="function"><span class="params">$select</span> =&gt;</span> <span class="keyword">async</span> post =&gt; &#123; post.starers = <span class="keyword">await</span> users.find(&#123; <span class="attr">query</span>: &#123;</span><br><span class="line">      id: &#123; <span class="attr">$in</span>: post.starIds &#125;, <span class="attr">$select</span>: $select || [<span class="string">'name'</span>]</span><br><span class="line">    &#125; &#125;) &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; <span class="attr">after</span>: &#123;</span><br><span class="line">    all: [ fastJoin(postResolvers) ],</span><br><span class="line">&#125; &#125;;</span><br></pre></td></tr></table></figure>
+<p>The above example has two resolvers. Let’s focus on <code>author</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Code fragment</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>  <code>joins: {}</code></td>
+<td>Describes what operations to perform on each record stored in the hook.</td>
+</tr>
+<tr>
+<td>  <code>author:</code></td>
+<td>Every operation has a property name. You use these names in the optional query to control which resolvers are run.</td>
+</tr>
+<tr>
+<td>  <code>(...args) =&gt;</code></td>
+<td>You can pass parameters in the query to the resolvers.</td>
+</tr>
+<tr>
+<td>  <code>async post =&gt; {...}</code></td>
+<td>The record to be operated on is passed to the resolver func. The resolver function modifies it.</td>
+</tr>
+<tr>
+<td>  <code>=&gt; post.author =</code> <code>await users.find(</code> <code>id: post.userId)</code></td>
+<td>A field is added containing the associated <code>users</code> record.</td>
+</tr>
+<tr>
+<td>  <code>[0]</code></td>
+<td>Extract the single user record from the array returned by <code>users.find()</code>.</td>
+</tr>
+<tr>
+<td>  <code>fastJoin(postResolvers)</code></td>
+<td>When no query is provided, all resolvers are run with undefined params.</td>
+</tr>
+</tbody>
+</table>
+<p>The result would look like:</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Original record</span></span><br><span class="line">[ &#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">body</span>: <span class="string">'John post'</span>, <span class="attr">userId</span>: <span class="number">101</span>, <span class="attr">starIds</span>: [<span class="number">102</span>, <span class="number">103</span>, <span class="number">104</span>] &#125; ]</span><br><span class="line"></span><br><span class="line"><span class="comment">// Result</span></span><br><span class="line">[ &#123; <span class="attr">id</span>: <span class="number">1</span>,</span><br><span class="line">    body: <span class="string">'John post'</span>,</span><br><span class="line">    userId: <span class="number">101</span>,</span><br><span class="line">    starIds: [ <span class="number">102</span>, <span class="number">103</span>, <span class="number">104</span> ],</span><br><span class="line">    author: &#123; <span class="attr">id</span>: <span class="number">101</span>, <span class="attr">name</span>: <span class="string">'John'</span> &#125;,</span><br><span class="line">    starers: [ &#123; <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125;, &#123; <span class="attr">name</span>: <span class="string">'Barbara'</span> &#125;, &#123; <span class="attr">name</span>: <span class="string">'Aubree'</span> &#125; ]</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+<h3 id="Shaping-the-Result"><a href="#Shaping-the-Result" class="headerlink" title="Shaping the Result"></a>Shaping the Result</h3>  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> query = &#123;</span><br><span class="line">  author: <span class="literal">true</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; <span class="attr">after</span>: &#123;</span><br><span class="line">    all: [ fastJoin(postResolvers, query) ],</span><br><span class="line">&#125; &#125;;</span><br></pre></td></tr></table></figure>
+<p>The above query requests the author resolver be run, but not the starers resolver. This is a GraphQL concept which <em>shapes</em> the result. The result will not contain the <code>starers</code> field which the starers resolver would have otherwise added. </p>
+<blockquote>
+<p>All resolvers are run if query is not provided.</p>
+</blockquote>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Result</span></span><br><span class="line">[ &#123; <span class="attr">id</span>: <span class="number">1</span>,</span><br><span class="line">    body: <span class="string">'John post'</span>,</span><br><span class="line">    userId: <span class="number">101</span>,</span><br><span class="line">    starIds: [ <span class="number">102</span>, <span class="number">103</span>, <span class="number">104</span> ],</span><br><span class="line">    author: &#123; <span class="attr">id</span>: <span class="number">101</span>, <span class="attr">name</span>: <span class="string">'John'</span> &#125;</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+<h3 id="Customize-Resolver-Operation"><a href="#Customize-Resolver-Operation" class="headerlink" title="Customize Resolver Operation"></a>Customize Resolver Operation</h3>  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> query = &#123;</span><br><span class="line">  author: <span class="literal">true</span>,</span><br><span class="line">  starers: [[<span class="string">'id'</span>, <span class="string">'name'</span>]]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> postResolvers = &#123;</span><br><span class="line">  joins: &#123;</span><br><span class="line">    author: ...,</span><br><span class="line">    </span><br><span class="line">    starers: <span class="function"><span class="params">$select</span> =&gt;</span> <span class="keyword">async</span> post =&gt; &#123; post.starers = <span class="keyword">await</span> users.find(&#123;</span><br><span class="line">      query: &#123; <span class="attr">id</span>: &#123; <span class="attr">$in</span>: post.starIds &#125;, <span class="attr">$select</span>: $select || [<span class="string">'name'</span>] &#125;,</span><br><span class="line">      paginate: <span class="literal">false</span></span><br><span class="line">    &#125;) &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; <span class="attr">after</span>: &#123;</span><br><span class="line">    all: [ fastJoin(postResolvers, context =&gt; query) ],</span><br><span class="line">&#125; &#125;;</span><br></pre></td></tr></table></figure>
+<p>Parameters may be passed to the resolver functions. The <code>starers</code> field will contain both the <code>id</code> and <code>name</code> from the user record, rather than the default of only <code>name</code>.</p>
+<p>The <code>context =&gt; query</code> syntax shows the query can be dynamically modified based on information provided by the client.</p>
+<p>The <code>paginate:false</code> suppress pagination for this call, ensuring all the matching records are returned.</p>
+<blockquote>
+<p>Being able to create dynamic queries is an important concept to remember.</p>
+</blockquote>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Result</span></span><br><span class="line">[ &#123; <span class="attr">id</span>: <span class="number">1</span>,</span><br><span class="line">    body: <span class="string">'John post'</span>,</span><br><span class="line">    userId: <span class="number">101</span>,</span><br><span class="line">    starIds: [ <span class="number">102</span>, <span class="number">103</span>, <span class="number">104</span> ],</span><br><span class="line">    author: &#123; <span class="attr">id</span>: <span class="number">101</span>, <span class="attr">name</span>: <span class="string">'John'</span> &#125;,</span><br><span class="line">    starers: [</span><br><span class="line">      &#123; <span class="attr">id</span>: <span class="number">102</span>, <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125;,</span><br><span class="line">      &#123; <span class="attr">id</span>: <span class="number">103</span>, <span class="attr">name</span>: <span class="string">'Barbara'</span> &#125;,</span><br><span class="line">      &#123; <span class="attr">id</span>: <span class="number">104</span>, <span class="attr">name</span>: <span class="string">'Aubree'</span> &#125;]</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+<h3 id="Calculated-Fields"><a href="#Calculated-Fields" class="headerlink" title="Calculated Fields"></a>Calculated Fields</h3>  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> postResolvers = &#123;</span><br><span class="line">  joins: &#123;</span><br><span class="line">    ...,</span><br><span class="line">    starerCount: <span class="function"><span class="params">()</span> =&gt;</span> <span class="function"><span class="params">post</span> =&gt;</span> &#123; post.starerCount = post.starIds.length &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>A resolver function can make any sort of modification to the passed record; it is not limited to making service calls. Resolvers can use resources for which there is <a href="/v1/batch-loader/common-patterns.html#Using-non-Feathers-services">no Feathers adapter</a>.</p>
+<p>Here, the starerCount resolver adds the field <code>starerCount</code> containing a count of the <code>starIds</code>. </p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Result</span></span><br><span class="line">[ &#123; <span class="attr">id</span>: <span class="number">1</span>,</span><br><span class="line">    body: <span class="string">'John post'</span>,</span><br><span class="line">    userId: <span class="number">101</span>,</span><br><span class="line">    starIds: [ <span class="number">102</span>, <span class="number">103</span>, <span class="number">104</span> ],</span><br><span class="line">    starerCount: <span class="number">3</span>,</span><br><span class="line">    author: &#123; <span class="attr">id</span>: <span class="number">101</span>, <span class="attr">name</span>: <span class="string">'John'</span> &#125;,</span><br><span class="line">    starers: [ &#123; <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125;, &#123; <span class="attr">name</span>: <span class="string">'Barbara'</span> &#125;, &#123; <span class="attr">name</span>: <span class="string">'Aubree'</span> &#125; ]</span><br><span class="line">&#125; ]</span><br></pre></td></tr></table></figure>
+<h3 id="Recursive-Operations"><a href="#Recursive-Operations" class="headerlink" title="Recursive Operations"></a>Recursive Operations</h3><p>We have been operating on the passed record by adding data to it. We can also recursively operate of that added data. We have been using a convenience syntax for resolvers so far:<br>  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Convenience syntax</span></span><br><span class="line">starers: <span class="function"><span class="params">()</span> =&gt;</span> <span class="function"><span class="params">record</span> =&gt;</span> ...</span><br><span class="line"><span class="comment">// Equivalent to</span></span><br><span class="line">starers: &#123;</span><br><span class="line">  resolver: <span class="function"><span class="params">()</span> =&gt;</span> record ==&gt; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>The syntax for recursive operations uses the syntax below, where the <code>joins</code> will operate on the data returned by the comments resolver in the same fashion the top-level <code>joins</code> operated on the original record.<br>  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">comments: &#123;</span><br><span class="line">  resolver: <span class="function"><span class="params">()</span> =&gt;</span> <span class="function"><span class="params">records</span> =&gt;</span> ...,</span><br><span class="line">  joins: &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>The comments resolver below adds related comment records to the passed record. The resolver function returns those comments, and that is the data which we will recursively operate on.</p>
+<blockquote>
+<p>The resolver function must return the data that is to be recursively operated on. Forgetting to do this is a common mistake.</p>
+</blockquote>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> postResolvers = &#123;</span><br><span class="line">  joins: &#123;</span><br><span class="line">    comments: &#123;</span><br><span class="line">      resolver: <span class="function">(<span class="params">$select, $limit, $sort</span>) =&gt;</span> <span class="keyword">async</span> post =&gt; &#123;</span><br><span class="line">        post.comments = <span class="keyword">await</span> comments.find(&#123;</span><br><span class="line">          query: &#123; <span class="attr">postId</span>: post.id, <span class="attr">$select</span>: $select, <span class="attr">$limit</span>: $limit || <span class="number">5</span>, [$sort]: &#123; <span class="attr">createdAt</span>: <span class="number">-1</span> &#125; &#125;,</span><br><span class="line">          paginate: <span class="literal">false</span></span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">return</span> post.comments;</span><br><span class="line">      &#125;,</span><br><span class="line">      </span><br><span class="line">      joins: &#123;</span><br><span class="line">        author: <span class="function"><span class="params">$select</span> =&gt;</span> <span class="keyword">async</span> comment =&gt; &#123; comment.author = (<span class="keyword">await</span> users.find(&#123;</span><br><span class="line">          query: &#123; <span class="attr">id</span>: comment.userId, <span class="attr">$select</span>: $select &#125;,</span><br><span class="line">          paginate: <span class="literal">false</span></span><br><span class="line">        &#125;))[<span class="number">0</span>] &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> query = &#123;</span><br><span class="line">  comments: &#123;</span><br><span class="line">    args: [...],</span><br><span class="line">    author: [[<span class="string">'id'</span>, <span class="string">'name'</span>]]</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Original record</span></span><br><span class="line">[ &#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">body</span>: <span class="string">'John post'</span>, <span class="attr">userId</span>: <span class="number">101</span>, <span class="attr">starIds</span>: [<span class="number">102</span>, <span class="number">103</span>, <span class="number">104</span>] &#125; ]</span><br><span class="line">  </span><br><span class="line"><span class="comment">// Result</span></span><br><span class="line">[ &#123; <span class="attr">id</span>: <span class="number">1</span>,</span><br><span class="line">    body: <span class="string">'John post'</span>,</span><br><span class="line">    userId: <span class="number">101</span>,</span><br><span class="line">    starIds: [ <span class="number">102</span>, <span class="number">103</span>, <span class="number">104</span> ],</span><br><span class="line">    comments: </span><br><span class="line">     [ &#123; <span class="attr">id</span>: <span class="number">11</span>,</span><br><span class="line">         text: <span class="string">'John post Marshall comment 11'</span>,</span><br><span class="line">         postId: <span class="number">1</span>,</span><br><span class="line">         userId: <span class="number">102</span>,</span><br><span class="line">         author: &#123; <span class="attr">id</span>: <span class="number">102</span>, <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125; &#125;,</span><br><span class="line">       &#123; <span class="attr">id</span>: <span class="number">12</span>,</span><br><span class="line">         text: <span class="string">'John post Marshall comment 12'</span>,</span><br><span class="line">         postId: <span class="number">1</span>,</span><br><span class="line">         userId: <span class="number">102</span>,</span><br><span class="line">         author: &#123; <span class="attr">id</span>: <span class="number">102</span>, <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125; &#125;,</span><br><span class="line">       &#123; <span class="attr">id</span>: <span class="number">13</span>,</span><br><span class="line">         text: <span class="string">'John post Marshall comment 13'</span>,</span><br><span class="line">         postId: <span class="number">1</span>,</span><br><span class="line">         userId: <span class="number">102</span>,</span><br><span class="line">         author: &#123; <span class="attr">id</span>: <span class="number">102</span>, <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125; &#125; ]</span><br><span class="line">&#125; ]</span><br></pre></td></tr></table></figure>
+<h3 id="Keeping-Resolvers-DRY"><a href="#Keeping-Resolvers-DRY" class="headerlink" title="Keeping Resolvers DRY"></a>Keeping Resolvers DRY</h3><p>The comments records contain a <code>userId</code> field which we use to associate the user record. Comment records themselves may be associated with posts records, with other comment records, etc.</p>
+<p>We don’t want to have to include the resolver for the user record every time we include the comment record someplace. We can keep our resolvers <a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself" target="_blank" rel="noopener">DRY</a> by defining resolvers for each base table separately and then referring to those resolvers when we need them.</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> commentResolvers = &#123;</span><br><span class="line">  joins: &#123;</span><br><span class="line">    author: <span class="function"><span class="params">$select</span> =&gt;</span> <span class="keyword">async</span> comment =&gt; &#123; comment.author = (<span class="keyword">await</span> users.find(&#123;</span><br><span class="line">      query: &#123; <span class="attr">id</span>: comment.userId, <span class="attr">$select</span>: $select || [ <span class="string">'name'</span> ] &#125;,</span><br><span class="line">      paginate: <span class="literal">false</span></span><br><span class="line">    &#125;))[<span class="number">0</span>] &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> postResolvers = &#123;</span><br><span class="line">  joins: &#123;</span><br><span class="line">    comments: &#123;</span><br><span class="line">      resolver: <span class="function">(<span class="params">$select, $limit, $sort</span>) =&gt;</span> <span class="keyword">async</span> post =&gt; &#123;</span><br><span class="line">        post.comments = <span class="keyword">await</span> comments.find(&#123;</span><br><span class="line">          query: &#123; <span class="attr">postId</span>: post.id, <span class="attr">$select</span>: $select, <span class="attr">$limit</span>: $limit || <span class="number">5</span>, [$sort]: &#123; <span class="attr">createdAt</span>: <span class="number">-1</span> &#125; &#125;,</span><br><span class="line">          paginate: <span class="literal">false</span></span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">return</span> post.comments;</span><br><span class="line">      &#125;,</span><br><span class="line">      </span><br><span class="line">      joins: commentResolvers,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>The comments resolver no longer has its own resolvers defined inline within its <code>joins:</code>. A reference is made to the comments resolver definition. </p>
+<h3 id="Batch-loaders"><a href="#Batch-loaders" class="headerlink" title="Batch-loaders"></a>Batch-loaders</h3><p>We have been looking till now into the structure and flexibility of <code>fastJoin</code>. What we have done at so far makes as many database calls as the <code>populate</code> hook.</p>
+<p>We will use batch-loaders to dramatically reduce the number of database calls needed. Its not uncommon for operations that would have required <em>20</em> database calls to make only <em>2</em> using batch-loaders.</p>
+<p>You need to understand batch-loaders before we proceed, so <a href="../batch-loader/guide.html">read about them now.</a></p>
+<h3 id="Using-a-Simple-Batch-Loader"><a href="#Using-a-Simple-Batch-Loader" class="headerlink" title="Using a Simple Batch-Loader"></a>Using a Simple Batch-Loader</h3>  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; fastJoin &#125; = <span class="built_in">require</span>(<span class="string">'feathers-hooks-common'</span>);</span><br><span class="line"><span class="keyword">const</span> BatchLoader = <span class="built_in">require</span>(<span class="string">'@feathers-plus/batch-loader'</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; loaderFactory &#125; = BatchLoader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> postResolvers = &#123;</span><br><span class="line">  before: <span class="function"><span class="params">context</span> =&gt;</span> &#123;</span><br><span class="line">    context._loaders = &#123; <span class="attr">user</span>: &#123;&#125; &#125;;</span><br><span class="line">    context._loaders.user.id = loaderFactory(users, <span class="string">'id'</span>, <span class="literal">false</span>, &#123; <span class="attr">paginate</span>: <span class="literal">false</span> &#125;)(context);</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  joins: &#123;</span><br><span class="line">    author: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">async</span> (post, context) =&gt;</span><br><span class="line">      post.author = <span class="keyword">await</span> context._loaders.user.id.load(post.userId),</span><br><span class="line"></span><br><span class="line">    starers: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">async</span> (post, context) =&gt; !post.starIds ? <span class="literal">null</span> :</span><br><span class="line">      post.starers = <span class="keyword">await</span> context._loaders.user.id.loadMany(post.starIds),</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>Let’s look at the code in this example:</p>
+<table>
+<thead>
+<tr>
+<th>Code fragment</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>  <code>before:</code></td>
+<td>This function is executed before the operations start. Only the top-most <code>before</code> is run; any in recursive <code>joins</code> are ignored.</td>
+</tr>
+<tr>
+<td>  <code>context._loaders</code></td>
+<td>An empty object is initialized by <code>fastJoin</code>. This is implemented as a stack, any value existing before <code>fastJoin</code> starts is stashed, and later restored as the hook terminates.</td>
+</tr>
+<tr>
+<td>  <code>context._loaders.user.id</code></td>
+<td>You can avoid confusion by organizing batch-loaders unambiguously. In this example <code>user</code> indicates the batch-loader returns single <code>user</code> records; the <code>id</code> indicates its keys will match <code>user.id</code>.</td>
+</tr>
+<tr>
+<td>  <code>loaderFactory(users,</code> <code>&#39;id&#39;, false, { paginate: false })</code></td>
+<td>A convenience method for building straight forward batch-loaders. The batch loader reads record from the <code>users</code> service. The keys passed to it are <code>id</code> fields which it will match to <code>user.id</code>. The <code>false</code> indicates the batch loader returns single records for each key rather than an array of records. <code>params.pagination</code>is set to <code>false</code> to disable pagination.</td>
+</tr>
+<tr>
+<td>  <code>context._loaders</code> <code>.user.id.load()</code></td>
+<td>Obtains data from the batch-loader for one key. Externally it acts like <code>await users.find(...)</code>.</td>
+</tr>
+<tr>
+<td>  <code>context._loaders</code> <code>.user.id.loadMany()</code></td>
+<td>This is how you obtain records for multiple keys from the data-loader.</td>
+</tr>
+<tr>
+<td>  <code>!post.starIds ? null : ...</code></td>
+<td>Handle <code>posts.starIds</code> which may not exist.</td>
+</tr>
+</tbody>
+</table>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Original record</span></span><br><span class="line">[ &#123; <span class="attr">id</span>: <span class="number">1</span>, <span class="attr">body</span>: <span class="string">'John post'</span>, <span class="attr">userId</span>: <span class="number">101</span>, <span class="attr">starIds</span>: [<span class="number">102</span>, <span class="number">103</span>, <span class="number">104</span>] &#125; ]</span><br><span class="line">  </span><br><span class="line"><span class="comment">// Result</span></span><br><span class="line">[ &#123; <span class="attr">id</span>: <span class="number">1</span>,</span><br><span class="line">    body: <span class="string">'John post'</span>,</span><br><span class="line">    userId: <span class="number">101</span>,</span><br><span class="line">    starIds: [ <span class="number">102</span>, <span class="number">103</span>, <span class="number">104</span> ],</span><br><span class="line">    author: &#123; <span class="attr">id</span>: <span class="number">101</span>, <span class="attr">name</span>: <span class="string">'John'</span> &#125;,</span><br><span class="line">    starers: </span><br><span class="line">     [ &#123; <span class="attr">id</span>: <span class="number">102</span>, <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125;,</span><br><span class="line">       &#123; <span class="attr">id</span>: <span class="number">103</span>, <span class="attr">name</span>: <span class="string">'Barbara'</span> &#125;,</span><br><span class="line">       &#123; <span class="attr">id</span>: <span class="number">104</span>, <span class="attr">name</span>: <span class="string">'Aubree'</span> &#125; ]</span><br><span class="line">&#125; ]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>The batch-loader made just <em>2</em> database calls. <code>populate</code> would have made <em>8</em>.</p>
+</blockquote>
+<h3 id="Using-Batch-Loaders"><a href="#Using-Batch-Loaders" class="headerlink" title="Using Batch-Loaders"></a>Using Batch-Loaders</h3><p>The <code>loaderFactory(users, &#39;id&#39;, false)</code> above is just a convenience wrapper for building a BatchLoader. We can create our batch loaders directly should we need them to do more.</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; fastJoin, makeCallingParams &#125; = <span class="built_in">require</span>(<span class="string">'feathers-hooks-common'</span>);</span><br><span class="line"><span class="keyword">const</span> BatchLoader = <span class="built_in">require</span>(<span class="string">'@feathers-plus/batch-loader'</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; getResultsByKey, getUniqueKeys &#125; = BatchLoader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> postResolvers = &#123;</span><br><span class="line">  before: <span class="function"><span class="params">context</span> =&gt;</span> &#123;</span><br><span class="line">    context._loaders = &#123; <span class="attr">user</span>: &#123;&#125; &#125;;</span><br><span class="line">    </span><br><span class="line">    context._loaders.user.id = <span class="keyword">new</span> BatchLoader(<span class="keyword">async</span> (keys, context) =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> result = <span class="keyword">await</span> users.find(makeCallingParams(</span><br><span class="line">          context, &#123; <span class="attr">id</span>: &#123; <span class="attr">$in</span>: getUniqueKeys(keys) &#125; &#125;, <span class="literal">undefined</span>, &#123; <span class="attr">paginate</span>: <span class="literal">false</span> &#125;</span><br><span class="line">        ));</span><br><span class="line">        <span class="keyword">return</span> getResultsByKey(keys, result, user =&gt; user.id, <span class="string">'!'</span>);</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123; context &#125;</span><br><span class="line">    );</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  joins: &#123;</span><br><span class="line">    author: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">async</span> (post, context) =&gt;</span><br><span class="line">      post.author = <span class="keyword">await</span> context._loaders.user.id.load(post.userId),</span><br><span class="line"></span><br><span class="line">    starers: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">async</span> (post, context) =&gt; !post.starIds ? <span class="literal">null</span> :</span><br><span class="line">      post.starers = <span class="keyword">await</span> context._loaders.user.id.loadMany(post.starIds),</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>The <a href="../batch-loader">batch-loader guide</a> explains how to create batch-loaders.</p>
+</blockquote>
+<h3 id="Putting-It-All-Together"><a href="#Putting-It-All-Together" class="headerlink" title="Putting It All Together"></a>Putting It All Together</h3><p>Let’s finish by putting together all we’ve seen in a comprehensive example.</p>
+<p>Let’s also add a <code>reputation</code> array of objects to <code>posts</code>. This will show the increased flexibility of <code>fastJoin</code>, as <code>populate</code> cannot handle such a structure directly.</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// project/src/services/posts/posts.hooks.js</span></span><br><span class="line"><span class="keyword">const</span> &#123; fastJoin, makeCallingParams &#125; = <span class="built_in">require</span>(<span class="string">'feathers-hooks-common'</span>);</span><br><span class="line"><span class="keyword">const</span> BatchLoader = <span class="built_in">require</span>(<span class="string">'@feathers-plus/batch-loader'</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; getResultsByKey, getUniqueKeys &#125; = BatchLoader;</span><br><span class="line">  </span><br><span class="line"><span class="keyword">const</span> commentResolvers = &#123;</span><br><span class="line">  joins: &#123;</span><br><span class="line">    author: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">async</span> (comment, context) =&gt; !comment.userId ? <span class="literal">null</span> :</span><br><span class="line">      comment.userRecord = <span class="keyword">await</span> context._loaders.user.id.load(comment.userId)</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> postResolvers = &#123;</span><br><span class="line">  before: <span class="function"><span class="params">context</span> =&gt;</span> &#123;</span><br><span class="line">    context._loaders = &#123; <span class="attr">user</span>: &#123;&#125;, <span class="attr">comments</span>: &#123;&#125; &#125;;</span><br><span class="line"></span><br><span class="line">    context._loaders.user.id = <span class="keyword">new</span> BatchLoader(<span class="keyword">async</span> (keys, context) =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> result = <span class="keyword">await</span> users.find(makeCallingParams(</span><br><span class="line">          context, &#123; <span class="attr">id</span>: &#123; <span class="attr">$in</span>: getUniqueKeys(keys) &#125; &#125;, <span class="literal">undefined</span>, &#123; <span class="attr">paginate</span>: <span class="literal">false</span> &#125;</span><br><span class="line">        ));</span><br><span class="line">        <span class="keyword">return</span> getResultsByKey(keys, result, user =&gt; user.id, <span class="string">'!'</span>);</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123; context &#125;</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    context._loaders.comments.postId = <span class="keyword">new</span> BatchLoader(<span class="keyword">async</span> (keys, context) =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> result = <span class="keyword">await</span> comments.find(makeCallingParams(</span><br><span class="line">          context, &#123; <span class="attr">postId</span>: &#123; <span class="attr">$in</span>: getUniqueKeys(keys) &#125; &#125;, <span class="literal">undefined</span>, &#123; <span class="attr">paginate</span>: <span class="literal">false</span> &#125;</span><br><span class="line">        ));</span><br><span class="line">        <span class="keyword">return</span> getResultsByKey(keys, result, comment =&gt; comment.postId, <span class="string">'[!]'</span>);</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123; context &#125;</span><br><span class="line">    );</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  joins: &#123;</span><br><span class="line">    author: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">async</span> (post, context) =&gt;</span><br><span class="line">      post.userRecord = <span class="keyword">await</span> context._loaders.user.id.load(post.userId),</span><br><span class="line"></span><br><span class="line">    starers: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">async</span> (post, context) =&gt; !post.starIds ? <span class="literal">null</span> :</span><br><span class="line">      post.starIdsRecords = <span class="keyword">await</span> context._loaders.user.id.loadMany(post.starIds),</span><br><span class="line">      </span><br><span class="line">    reputation_author: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">async</span> (post, context) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (!post.reputation) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">      <span class="keyword">const</span> authors = <span class="keyword">await</span> context._loaders.user.id.loadMany(post.reputation.map(<span class="function"><span class="params">rep</span> =&gt;</span> rep.userId));</span><br><span class="line">      post.reputation.forEach(<span class="function">(<span class="params">rep, i</span>) =&gt;</span> &#123; rep.author = authors[i].name; &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    comments: &#123;</span><br><span class="line">      resolver: <span class="function">(<span class="params">...args</span>) =&gt;</span> <span class="keyword">async</span> (post, context) =&gt;</span><br><span class="line">        post.commentRecords = <span class="keyword">await</span> context._loaders.comments.postId.load(post.id),</span><br><span class="line">      joins: commentResolvers,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> query = &#123;</span><br><span class="line">  author: <span class="literal">true</span>,</span><br><span class="line">  starers: [[<span class="string">'id'</span>, <span class="string">'name'</span>]],</span><br><span class="line">  comments: &#123;</span><br><span class="line">    args: <span class="literal">null</span>,</span><br><span class="line">    author: [[<span class="string">'id'</span>, <span class="string">'name'</span>]]</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123; <span class="attr">after</span>: &#123;</span><br><span class="line">    all: [ fastJoin(postResolvers, context =&gt; query) ],</span><br><span class="line">&#125; &#125;;</span><br></pre></td></tr></table></figure>
+<p>We are using 2 batch-loaders, one for single user records, the other for arrays of comment records.</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Original records</span></span><br><span class="line">[ &#123; <span class="attr">id</span>: <span class="number">1</span>,</span><br><span class="line">    body: <span class="string">'John post'</span>,</span><br><span class="line">    userId: <span class="number">101</span>,</span><br><span class="line">    starIds: [<span class="number">102</span>, <span class="number">103</span>, <span class="number">104</span>],</span><br><span class="line">    reputation: [ <span class="comment">// The `populate` hook cannot handle this structure.</span></span><br><span class="line">      &#123; <span class="attr">userId</span>: <span class="number">102</span>, <span class="attr">points</span>: <span class="number">1</span> &#125;,</span><br><span class="line">      &#123; <span class="attr">userId</span>: <span class="number">103</span>, <span class="attr">points</span>: <span class="number">1</span> &#125;,</span><br><span class="line">      &#123; <span class="attr">userId</span>: <span class="number">104</span>, <span class="attr">points</span>: <span class="number">1</span> &#125;</span><br><span class="line">    ]&#125;,</span><br><span class="line">  &#123; <span class="attr">id</span>: <span class="number">2</span>, <span class="attr">body</span>: <span class="string">'Marshall post'</span>, <span class="attr">userId</span>: <span class="number">102</span>, <span class="attr">starIds</span>: [<span class="number">101</span>, <span class="number">103</span>, <span class="number">104</span>] &#125;,</span><br><span class="line">  &#123; <span class="attr">id</span>: <span class="number">3</span>, <span class="attr">body</span>: <span class="string">'Barbara post'</span>, <span class="attr">userId</span>: <span class="number">103</span> &#125;,</span><br><span class="line">  &#123; <span class="attr">id</span>: <span class="number">4</span>, <span class="attr">body</span>: <span class="string">'Aubree post'</span>, <span class="attr">userId</span>: <span class="number">104</span> &#125;</span><br><span class="line">]</span><br><span class="line">  </span><br><span class="line"><span class="comment">// Results</span></span><br><span class="line">[ &#123; <span class="attr">id</span>: <span class="number">1</span>,</span><br><span class="line">    body: <span class="string">'John post'</span>,</span><br><span class="line">    userId: <span class="number">101</span>,</span><br><span class="line">    starIds: [ <span class="number">102</span>, <span class="number">103</span>, <span class="number">104</span> ],</span><br><span class="line">    reputation: </span><br><span class="line">     [ &#123; <span class="attr">userId</span>: <span class="number">102</span>, <span class="attr">points</span>: <span class="number">1</span>, <span class="attr">author</span>: <span class="string">'Marshall'</span> &#125;,</span><br><span class="line">       &#123; <span class="attr">userId</span>: <span class="number">103</span>, <span class="attr">points</span>: <span class="number">1</span>, <span class="attr">author</span>: <span class="string">'Barbara'</span> &#125;,</span><br><span class="line">       &#123; <span class="attr">userId</span>: <span class="number">104</span>, <span class="attr">points</span>: <span class="number">1</span>, <span class="attr">author</span>: <span class="string">'Aubree'</span> &#125; ],</span><br><span class="line">    author: &#123; <span class="attr">id</span>: <span class="number">101</span>, <span class="attr">name</span>: <span class="string">'John'</span> &#125;,</span><br><span class="line">    comments: </span><br><span class="line">     [ &#123; <span class="attr">id</span>: <span class="number">11</span>,</span><br><span class="line">         text: <span class="string">'John post Marshall comment 11'</span>,</span><br><span class="line">         postId: <span class="number">1</span>,</span><br><span class="line">         userId: <span class="number">102</span>,</span><br><span class="line">         author: &#123; <span class="attr">id</span>: <span class="number">102</span>, <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125; &#125;,</span><br><span class="line">       &#123; <span class="attr">id</span>: <span class="number">12</span>,</span><br><span class="line">         text: <span class="string">'John post Marshall comment 12'</span>,</span><br><span class="line">         postId: <span class="number">1</span>,</span><br><span class="line">         userId: <span class="number">102</span>,</span><br><span class="line">         author: &#123; <span class="attr">id</span>: <span class="number">102</span>, <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125; &#125;,</span><br><span class="line">       &#123; <span class="attr">id</span>: <span class="number">13</span>,</span><br><span class="line">         text: <span class="string">'John post Marshall comment 13'</span>,</span><br><span class="line">         postId: <span class="number">1</span>,</span><br><span class="line">         userId: <span class="number">102</span>,</span><br><span class="line">         author: &#123; <span class="attr">id</span>: <span class="number">102</span>, <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125; &#125; ],</span><br><span class="line">    starers: </span><br><span class="line">     [ &#123; <span class="attr">id</span>: <span class="number">102</span>, <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125;,</span><br><span class="line">       &#123; <span class="attr">id</span>: <span class="number">103</span>, <span class="attr">name</span>: <span class="string">'Barbara'</span> &#125;,</span><br><span class="line">       &#123; <span class="attr">id</span>: <span class="number">104</span>, <span class="attr">name</span>: <span class="string">'Aubree'</span> &#125; ] &#125;,</span><br><span class="line">  &#123; <span class="attr">id</span>: <span class="number">2</span>,</span><br><span class="line">    body: <span class="string">'Marshall post'</span>,</span><br><span class="line">    userId: <span class="number">102</span>,</span><br><span class="line">    starIds: [ <span class="number">101</span>, <span class="number">103</span>, <span class="number">104</span> ],</span><br><span class="line">    author: &#123; <span class="attr">id</span>: <span class="number">102</span>, <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125;,</span><br><span class="line">    comments: </span><br><span class="line">     [ &#123; <span class="attr">id</span>: <span class="number">14</span>,</span><br><span class="line">         text: <span class="string">'Marshall post John comment 14'</span>,</span><br><span class="line">         postId: <span class="number">2</span>,</span><br><span class="line">         userId: <span class="number">101</span>,</span><br><span class="line">         author: &#123; <span class="attr">id</span>: <span class="number">101</span>, <span class="attr">name</span>: <span class="string">'John'</span> &#125; &#125;,</span><br><span class="line">       &#123; <span class="attr">id</span>: <span class="number">15</span>,</span><br><span class="line">         text: <span class="string">'Marshall post John comment 15'</span>,</span><br><span class="line">         postId: <span class="number">2</span>,</span><br><span class="line">         userId: <span class="number">101</span>,</span><br><span class="line">         author: &#123; <span class="attr">id</span>: <span class="number">101</span>, <span class="attr">name</span>: <span class="string">'John'</span> &#125; &#125; ],</span><br><span class="line">    starers: </span><br><span class="line">     [ &#123; <span class="attr">id</span>: <span class="number">101</span>, <span class="attr">name</span>: <span class="string">'John'</span> &#125;,</span><br><span class="line">       &#123; <span class="attr">id</span>: <span class="number">103</span>, <span class="attr">name</span>: <span class="string">'Barbara'</span> &#125;,</span><br><span class="line">       &#123; <span class="attr">id</span>: <span class="number">104</span>, <span class="attr">name</span>: <span class="string">'Aubree'</span> &#125; ] &#125;,</span><br><span class="line">  &#123; <span class="attr">id</span>: <span class="number">3</span>,</span><br><span class="line">    body: <span class="string">'Barbara post'</span>,</span><br><span class="line">    userId: <span class="number">103</span>,</span><br><span class="line">    author: &#123; <span class="attr">id</span>: <span class="number">103</span>, <span class="attr">name</span>: <span class="string">'Barbara'</span> &#125;,</span><br><span class="line">    comments: </span><br><span class="line">     [ &#123; <span class="attr">id</span>: <span class="number">16</span>,</span><br><span class="line">         text: <span class="string">'Barbara post John comment 16'</span>,</span><br><span class="line">         postId: <span class="number">3</span>,</span><br><span class="line">         userId: <span class="number">101</span>,</span><br><span class="line">         author: &#123; <span class="attr">id</span>: <span class="number">101</span>, <span class="attr">name</span>: <span class="string">'John'</span> &#125; &#125; ] &#125;,</span><br><span class="line">  &#123; <span class="attr">id</span>: <span class="number">4</span>,</span><br><span class="line">    body: <span class="string">'Aubree post'</span>,</span><br><span class="line">    userId: <span class="number">104</span>,</span><br><span class="line">    author: &#123; <span class="attr">id</span>: <span class="number">104</span>, <span class="attr">name</span>: <span class="string">'Aubree'</span> &#125;,</span><br><span class="line">    comments: </span><br><span class="line">     [ &#123; <span class="attr">id</span>: <span class="number">17</span>,</span><br><span class="line">         text: <span class="string">'Aubree post Marshall comment 17'</span>,</span><br><span class="line">         postId: <span class="number">4</span>,</span><br><span class="line">         userId: <span class="number">102</span>,</span><br><span class="line">         author: &#123; <span class="attr">id</span>: <span class="number">102</span>, <span class="attr">name</span>: <span class="string">'Marshall'</span> &#125; &#125; ] &#125;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>Each batch-loader made just one database call:</p>
+<ul>
+<li><code>users.find({ query: { id: { $in: [ 101, 102, 103, 104] } } })</code></li>
+<li><code>comments.find({ query: { postId: { $in: [ 1, 2, 3, 4 ] } } })</code></li>
+</ul>
+<blockquote>
+<p>Only <em>2</em> database calls were needed to construct the result above. <code>populate</code> requires <em>22</em> calls.</p>
+</blockquote>
+<h3 id="Using-a-Persistent-Cache"><a href="#Using-a-Persistent-Cache" class="headerlink" title="Using a Persistent Cache"></a>Using a Persistent Cache</h3><p>Our BatchLoaders have been batching service calls together and keeping those results in a cache. This way those records don’t have to be read again.</p>
+<p>However each BatchLoader has been starting each request with an empty cache. So if 2 sequential <code>fastJoin</code> hook calls each need user id 101, they both need to <strong>prime</strong> their cache by each reading that record.</p>
+<p>We can improve the situation by using persistent caches with the BatchLoaders. A persistent cache stores records so future requests for those records can be served faster; the records stored in the cache are duplicates of records stored in the database.</p>
+<p>Let’s see how we can use the <a href="./index.html#cache">cache hook</a> as it maintains a persistent cache for the service its registered on.</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; cache, fastJoin, makeCallingParams &#125; = <span class="built_in">require</span>(<span class="string">'feathers-hooks-common'</span>);</span><br><span class="line"><span class="keyword">const</span> BatchLoader = <span class="built_in">require</span>(<span class="string">'@feathers-plus/batch-loader'</span>);</span><br><span class="line"><span class="keyword">const</span> CacheMap = <span class="built_in">require</span>(<span class="string">'@feathers-plus/cache'</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; getResultsByKey, getUniqueKeys &#125; = BatchLoader;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create a cache for a maximum of 100 users</span></span><br><span class="line"><span class="keyword">const</span> cacheMapUsers = CacheMap(&#123; <span class="attr">max</span>: <span class="number">100</span> &#125;); </span><br><span class="line"></span><br><span class="line"><span class="comment">// Create a batchLoader using the persistent cache</span></span><br><span class="line"><span class="keyword">const</span> userBatchLoader = <span class="keyword">new</span> BatchLoader(<span class="keyword">async</span> keys =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> result = <span class="keyword">await</span> users.find(makeCallingParams(</span><br><span class="line">    &#123;&#125;, &#123; <span class="attr">id</span>: &#123; <span class="attr">$in</span>: getUniqueKeys(keys) &#125; &#125;, <span class="literal">undefined</span>, &#123; <span class="attr">paginate</span>: <span class="literal">false</span> &#125;</span><br><span class="line">  ));</span><br><span class="line">  <span class="keyword">return</span> getResultsByKey(keys, result, user =&gt; user.id, <span class="string">'!'</span>);</span><br><span class="line">&#125;,</span><br><span class="line">  &#123; <span class="attr">cacheMap</span>: cacheMapUsers &#125;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> postResolvers = &#123;</span><br><span class="line">  before: <span class="function"><span class="params">context</span> =&gt;</span> &#123;</span><br><span class="line">    context._loaders = &#123; <span class="attr">user</span>: &#123;&#125; &#125;;</span><br><span class="line">    context._loaders.user.id = userBatchLoader;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  joins: &#123;</span><br><span class="line">    author: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">async</span> (post, context) =&gt;</span><br><span class="line">      post.author = <span class="keyword">await</span> context._loaders.user.id.load(post.userId),</span><br><span class="line"></span><br><span class="line">    starers: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">async</span> (post, context) =&gt; !post.starIds ? <span class="literal">null</span> :</span><br><span class="line">      post.starers = <span class="keyword">await</span> context._loaders.user.id.loadMany(post.starIds),</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> query = &#123;</span><br><span class="line">  author: <span class="literal">true</span>,</span><br><span class="line">  starers: [[<span class="string">'id'</span>, <span class="string">'name'</span>]],</span><br><span class="line">  comments: &#123;</span><br><span class="line">    args: <span class="literal">null</span>,</span><br><span class="line">    author: [[<span class="string">'id'</span>, <span class="string">'name'</span>]]</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  before: &#123;</span><br><span class="line">    all: cache(cacheMapUsers)</span><br><span class="line">  &#125;,</span><br><span class="line">  after: &#123;</span><br><span class="line">    all: [</span><br><span class="line">      cache(cacheMapUsers),</span><br><span class="line">      fastJoin(postResolvers, () =&gt; query)</span><br><span class="line">    ],</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>The <code>cache</code> hook <strong>must</strong> be registered in both <code>before</code> and <code>after</code>.</p>
+</blockquote>
+<p>  The number of service calls needed to run the <code>query</code> above <strong>the second time</strong>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Using</th>
+<th style="text-align:center">number of service calls</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><code>populate</code></td>
+<td style="text-align:center"><strong>22</strong></td>
+</tr>
+<tr>
+<td style="text-align:right"><code>fastJoin</code> alone</td>
+<td style="text-align:center"><strong>2</strong></td>
+</tr>
+<tr>
+<td style="text-align:right"><code>fastJoin</code> and <code>cache</code></td>
+<td style="text-align:center"><strong>0</strong></td>
+</tr>
+</tbody>
+</table>
+<p>  The <code>cache</code> hook also makes <code>get</code> service calls more efficient.</p>
+<h3 id="The-GraphQL-Feathers-Adapter"><a href="#The-GraphQL-Feathers-Adapter" class="headerlink" title="The GraphQL Feathers Adapter"></a>The GraphQL Feathers Adapter</h3><p>By now you have an understanding of the foundations of Facebook’s <a href="http://graphql.org/" target="_blank" rel="noopener">GraphQL</a>. GraphQL however is more powerful and flexible.</p>
+<p>You may want to read about the Feathers service adapter <a href="../graphql">@feathers-plus/graphql</a>. <strong>It supports SQL and non-SQL databases,</strong> and automatically generates the resolver functions.</p>
+<!--=============================================================================================-->
+<!--=============================================================================================-->
+<!--=============================================================================================-->
+<h2 id="Populate"><a href="#Populate" class="headerlink" title="Populate"></a>Populate</h2><h3 id="populate-options-Object-HookFunc-source"><a href="#populate-options-Object-HookFunc-source" class="headerlink" title="populate(options: Object): HookFunc source"></a><code>populate(options: Object): HookFunc</code> <a href="https://github.com/feathersjs/feathers-hooks-common/blob/master/src/services/populate.js" target="_blank" rel="noopener">source</a></h3><p>Populates items <em>recursively</em> to any depth. Supports 1:1, 1:n and n:1 relationships.</p>
+<ul>
+<li>Used as a <strong>before</strong> or <strong>after</strong> hook on any service method.</li>
+<li>Supports multiple result items, including paginated <code>find</code>.</li>
+<li>Permissions control what a user may see.</li>
+<li>Provides performance profile information.</li>
+<li>Backward compatible with the old FeathersJS <code>populate</code> hook.</li>
+</ul>
+<h3 id="Examples"><a href="#Examples" class="headerlink" title="Examples"></a>Examples</h3><ul>
+<li>1:1 relationship</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// users like &#123; _id: '111', name: 'John', roleId: '555' &#125;</span></span><br><span class="line"><span class="comment">// roles like &#123; _id: '555', permissions: ['foo', bar'] &#125;</span></span><br><span class="line"><span class="keyword">import</span> &#123; populate &#125; <span class="keyword">from</span> <span class="string">'feathers-hooks-common'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> userRoleSchema = &#123;</span><br><span class="line">  include: &#123;</span><br><span class="line">    service: <span class="string">'roles'</span>,</span><br><span class="line">    nameAs: <span class="string">'role'</span>,</span><br><span class="line">    parentField: <span class="string">'roleId'</span>,</span><br><span class="line">    childField: <span class="string">'_id'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">app.service(<span class="string">'users'</span>).hooks(&#123;</span><br><span class="line">  after: &#123;</span><br><span class="line">    all: populate(&#123; <span class="attr">schema</span>: userRoleSchema &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// result like</span></span><br><span class="line"><span class="comment">// &#123; _id: '111', name: 'John', roleId: '555',</span></span><br><span class="line"><span class="comment">//   role: &#123; _id: '555', permissions: ['foo', bar'] &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>1:n relationship</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// users like &#123; _id: '111', name: 'John', roleIds: ['555', '666'] &#125;</span></span><br><span class="line"><span class="comment">// roles like &#123; _id: '555', permissions: ['foo', 'bar'] &#125;</span></span><br><span class="line"><span class="keyword">const</span> userRolesSchema = &#123;</span><br><span class="line">  include: &#123;</span><br><span class="line">    service: <span class="string">'roles'</span>,</span><br><span class="line">    nameAs: <span class="string">'roles'</span>,</span><br><span class="line">    parentField: <span class="string">'roleIds'</span>,</span><br><span class="line">    childField: <span class="string">'_id'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">usersService.hooks(&#123;</span><br><span class="line">  after: &#123;</span><br><span class="line">    all: populate(&#123; <span class="attr">schema</span>: userRolesSchema &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// result like</span></span><br><span class="line"><span class="comment">// &#123; _id: '111', name: 'John', roleIds: ['555', '666'], roles: [</span></span><br><span class="line"><span class="comment">//   &#123; _id: '555', permissions: ['foo', 'bar'] &#125;</span></span><br><span class="line"><span class="comment">//   &#123; _id: '666', permissions: ['fiz', 'buz'] &#125;</span></span><br><span class="line"><span class="comment">// ]&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>n:1 relationship</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// posts like &#123; _id: '111', body: '...' &#125;</span></span><br><span class="line"><span class="comment">// comments like &#123; _id: '555', text: '...', postId: '111' &#125;</span></span><br><span class="line"><span class="keyword">const</span> postCommentsSchema = &#123;</span><br><span class="line">  include: &#123;</span><br><span class="line">    service: <span class="string">'comments'</span>,</span><br><span class="line">    nameAs: <span class="string">'comments'</span>,</span><br><span class="line">    parentField: <span class="string">'_id'</span>,</span><br><span class="line">    childField: <span class="string">'postId'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">postService.hooks(&#123;</span><br><span class="line">  after: &#123;</span><br><span class="line">    all: populate(&#123; <span class="attr">schema</span>: postCommentsSchema &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// result like</span></span><br><span class="line"><span class="comment">// &#123; _id: '111', body: '...' &#125;, comments: [</span></span><br><span class="line"><span class="comment">//   &#123; _id: '555', text: '...', postId: '111' &#125;</span></span><br><span class="line"><span class="comment">//   &#123; _id: '666', text: '...', postId: '111' &#125;</span></span><br><span class="line"><span class="comment">// ]&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Multiple and recursive includes</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> schema = &#123;</span><br><span class="line">  service: <span class="string">'...'</span>,</span><br><span class="line">  permissions: <span class="string">'...'</span>,</span><br><span class="line">  include: [</span><br><span class="line">    &#123;</span><br><span class="line">      service: <span class="string">'users'</span>,</span><br><span class="line">      nameAs: <span class="string">'authorItem'</span>,</span><br><span class="line">      parentField: <span class="string">'author'</span>,</span><br><span class="line">      childField: <span class="string">'id'</span>,</span><br><span class="line">      include: [ ... ],</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      service: <span class="string">'comments'</span>,</span><br><span class="line">      parentField: <span class="string">'id'</span>,</span><br><span class="line">      childField: <span class="string">'postId'</span>,</span><br><span class="line">      query: &#123;</span><br><span class="line">        $limit: <span class="number">5</span>,</span><br><span class="line">        $select: [<span class="string">'title'</span>, <span class="string">'content'</span>, <span class="string">'postId'</span>],</span><br><span class="line">        $sort: &#123;<span class="attr">createdAt</span>: <span class="number">-1</span>&#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      select: <span class="function">(<span class="params">hook, parent, depth</span>) =&gt;</span> (&#123; <span class="attr">$limit</span>: <span class="number">6</span> &#125;),</span><br><span class="line">      asArray: <span class="literal">true</span>,</span><br><span class="line">      provider: <span class="literal">undefined</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      service: <span class="string">'users'</span>,</span><br><span class="line">      permissions: <span class="string">'...'</span>,</span><br><span class="line">      nameAs: <span class="string">'readers'</span>,</span><br><span class="line">      parentField: <span class="string">'readers'</span>,</span><br><span class="line">      childField: <span class="string">'id'</span></span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports.after = &#123;</span><br><span class="line">  all: populate(&#123; schema, checkPermissions, <span class="attr">profile</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Flexible relationship, similar to the n:1 relationship example above</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// posts like &#123; _id: '111', body: '...' &#125;</span></span><br><span class="line"><span class="comment">// comments like &#123; _id: '555', text: '...', postId: '111' &#125;</span></span><br><span class="line"><span class="keyword">const</span> postCommentsSchema = &#123;</span><br><span class="line">  include: &#123;</span><br><span class="line">    service: <span class="string">'comments'</span>,</span><br><span class="line">    nameAs: <span class="string">'comments'</span>,</span><br><span class="line">    select: <span class="function">(<span class="params">hook, parentItem</span>) =&gt;</span> (&#123; <span class="attr">postId</span>: parentItem._id &#125;),</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">postService.hooks(&#123;</span><br><span class="line">  after: &#123;</span><br><span class="line">    all: populate(&#123; <span class="attr">schema</span>: postCommentsSchema &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// result like</span></span><br><span class="line"><span class="comment">// &#123; _id: '111', body: '...' &#125;, comments: [</span></span><br><span class="line"><span class="comment">//   &#123; _id: '555', text: '...', postId: '111' &#125;</span></span><br><span class="line"><span class="comment">//   &#123; _id: '666', text: '...', postId: '111' &#125;</span></span><br><span class="line"><span class="comment">// ]&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Options"><a href="#Options" class="headerlink" title="Options"></a>Options</h3><ul>
+<li><code>schema</code> (<em>required</em>, object or function) How to populate the items. <a href="#schema">Details are below.</a><ul>
+<li>Function signature <code>(hook: Hook, options: Object): Object</code></li>
+<li><code>hook</code> The hook.</li>
+<li><code>options</code> The <code>options</code> passed to the populate hook.</li>
+</ul>
+</li>
+<li><code>checkPermissions</code> [optional, default () =&gt; true] Function to check if the user is allowed to perform this populate,<br>or include this type of item. Called whenever a <code>permissions</code> property is found.<ul>
+<li>Function signature <code>(hook: Hook, service: string, permissions: any, depth: number): boolean</code></li>
+<li><code>hook</code> The hook.</li>
+<li><code>service</code> The name of the service being included, e.g. users, messages.</li>
+<li><code>permissions</code> The value of the permissions property.</li>
+<li><code>depth</code> How deep the include is in the schema. Top of schema is 0.</li>
+<li>Return truesy to allow the include.</li>
+</ul>
+</li>
+<li><code>profile</code> [optional, default false] If <code>true</code>, the populated result is to contain a performance profile.<br>Must be <code>true</code>, truesy is insufficient.</li>
+</ul>
+<h3 id="Schema"><a href="#Schema" class="headerlink" title="Schema"></a>Schema</h3><p>The data currently in the hook will be populated according to the schema. The schema starts with:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> schema = &#123;</span><br><span class="line">  service: <span class="string">'...'</span>,</span><br><span class="line">  permissions: <span class="string">'...'</span>,</span><br><span class="line">  include: [ ... ]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>service</code> (<em>optional</em>) The name of the service this schema is to be used with.<br>This can be used to prevent a schema designed to populate ‘blog’ items<br>from being incorrectly used with <code>comment</code> items.</li>
+<li><code>permissions</code> (<em>optional</em>, any type of value) Who is allowed to perform this populate. See <code>checkPermissions</code> above.</li>
+<li><code>include</code> (<em>optional</em>) Which services to join to the data.</li>
+</ul>
+<h4 id="Include"><a href="#Include" class="headerlink" title="Include"></a>Include</h4><p>The <code>include</code> array has an element for each service to join. They each may have:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&#123; <span class="attr">service</span>: <span class="string">'comments'</span>,</span><br><span class="line">  nameAs: <span class="string">'commentItems'</span>,</span><br><span class="line">  permissions: <span class="string">'...'</span>,</span><br><span class="line">  parentField: <span class="string">'id'</span>,</span><br><span class="line">  childField: <span class="string">'postId'</span>,</span><br><span class="line">  query: &#123;</span><br><span class="line">    $limit: <span class="number">5</span>,</span><br><span class="line">    $select: [<span class="string">'title'</span>, <span class="string">'content'</span>, <span class="string">'postId'</span>],</span><br><span class="line">    $sort: &#123;<span class="attr">createdAt</span>: <span class="number">-1</span>&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  select: <span class="function">(<span class="params">hook, parent, depth</span>) =&gt;</span> (&#123; <span class="attr">$limit</span>: <span class="number">6</span> &#125;),</span><br><span class="line">  asArray: <span class="literal">true</span>,</span><br><span class="line">  paginate: <span class="literal">false</span>,</span><br><span class="line">  provider: <span class="literal">undefined</span>,</span><br><span class="line">  useInnerPopulate: <span class="literal">false</span>,</span><br><span class="line">  include: [ ... ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>ProTip</strong> Instead of setting <code>include</code> to a 1-element array,<br>you can set it to the include object itself,<br>e.g. <code>include: { service: ..., nameAs: ..., ... }</code>.</p>
+</blockquote>
+<ul>
+<li><code>service</code> [required, string] The name of the service providing the items.</li>
+<li><code>nameAs</code> [optional, string, default is service] Where to place the items from the join.<br>Dot notation is allowed.</li>
+<li><code>permissions</code> [optional, any type of value] Who is allowed to perform this join. See <code>checkPermissions</code> above.</li>
+<li><code>parentField</code> [required if neither query nor select, string] The name of the field in the parent item for the <a href="#relation">relation</a>.<br>Dot notation is allowed.</li>
+<li><code>childField</code> [required if neither query nor select, string] The name of the field in the child item for the <a href="#relation">relation</a>.<br>Dot notation is allowed and will result in a query like <code>{ &#39;name.first&#39;: &#39;John&#39; }</code><br>which is not suitable for all DBs.<br>You may use <code>query</code> or <code>select</code> to create a query suitable for your DB.</li>
+<li><code>query</code> [optional, object] An object to inject into the query in <code>service.find({ query: { ... } })</code>.</li>
+<li><code>select</code> [optional, function] A function whose result is injected into the query.<ul>
+<li>Function signature <code>(hook: Hook, parentItem: Object, depth: number): Object</code></li>
+<li><code>hook</code> The hook.</li>
+<li><code>parentItem</code> The parent item to which we are joining.</li>
+<li><code>depth</code> How deep the include is in the schema. Top of schema is 0.</li>
+</ul>
+</li>
+<li><code>asArray</code> [optional, boolean, default false] Force a single joined item to be stored as an array.</li>
+<li><code>paginate</code> {optional, boolean or number, default false]<br>Controls pagination for this service.<ul>
+<li><code>false</code> No pagination. The default.</li>
+<li><code>true</code> Use the configuration provided when the service was configured/</li>
+<li>A number. The maximum number of items to include.</li>
+</ul>
+</li>
+<li><code>provider</code> [optional] <code>find</code> calls are made to obtain the items to be joined.<br>These, by default, are initialized to look like they were made<br>by the same provider as that getting the base record.<br>So when populating the result of a call made via <code>socketio</code>,<br>all the join calls will look like they were made via <code>socketio</code>.<br>Alternative you can set <code>provider: undefined</code> and the calls for that join will<br>look like they were made by the server.<br>The hooks on the service may behave differently in different situations.</li>
+<li><code>useInnerPopulate</code> [optional] Populate, when including records from a child service,<br>ignores any populate hooks defined for that child service.<br>The useInnerPopulate option will run those populate hooks.<br>This allows the populate for a base record to include child records<br>containing their own immediate child records,<br>without the populate for the base record knowing what those grandchildren populates are.</li>
+<li><code>include</code> [optional] The new items may themselves include other items. The includes are recursive.</li>
+</ul>
+<p>Populate forms the query <code>[childField]: parentItem[parentField]</code> when the parent value is not an array.<br>This will include all child items having that value.</p>
+<p>Populate forms the query <code>[childField]: { $in: parentItem[parentField] }</code> when the parent value is an array.<br>This will include all child items having any of those values.</p>
+<p>A populate hook for, say, <code>posts</code> may include items from <code>users</code>.<br>Should the <code>users</code> hooks also include a populate,<br>that <code>users</code> populate hook will not be run for includes arising from <code>posts</code>.</p>
+<blockquote>
+<p><strong>ProTip</strong> The populate interface only allows you to directly manipulate <code>hook.params.query</code>.<br>You can manipulate the rest of <code>hook.params</code> by using the<br><a href="https://docs.feathersjs.com/v/auk/hooks/common/utils.html#client" target="_blank" rel="noopener"><code>client</code></a> hook,<br>along with something like <code>query: { ..., $client: { paramsProp1: ..., paramsProp2: ... } }</code>.</p>
+</blockquote>
+<h3 id="Added-properties"><a href="#Added-properties" class="headerlink" title="Added properties"></a>Added properties</h3><p>Some additional properties are added to populated items. The result may look like:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&#123; ...</span><br><span class="line">  _include: [ <span class="string">'post'</span> ],</span><br><span class="line">  _elapsed: &#123; <span class="attr">post</span>: <span class="number">487947</span>, <span class="attr">total</span>: <span class="number">527118</span> &#125;,</span><br><span class="line">  post:</span><br><span class="line">    &#123; ...</span><br><span class="line">      _include: [ <span class="string">'authorItem'</span>, <span class="string">'commentsInfo'</span>, <span class="string">'readersInfo'</span> ],</span><br><span class="line">      _elapsed: &#123; <span class="attr">authorItem</span>: <span class="number">321973</span>, <span class="attr">commentsInfo</span>: <span class="number">469375</span>, <span class="attr">readersInfo</span>: <span class="number">479874</span>, <span class="attr">total</span>: <span class="number">487947</span> &#125;,</span><br><span class="line">      _computed: [ <span class="string">'averageStars'</span>, <span class="string">'views'</span> ],</span><br><span class="line">      authorItem: &#123; ... &#125;,</span><br><span class="line">      commentsInfo: [ &#123; ... &#125;, &#123; ... &#125; ],</span><br><span class="line">      readersInfo: [ &#123; ... &#125;, &#123; ... &#125; ]</span><br><span class="line">&#125; &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>_include</code> The property names containing joined items.</li>
+<li><code>_elapsed</code> The elapsed time in nano-seconds (where 1,000,000 ns === 1 ms) taken to perform each include,<br>as well as the total taken for them all.<br>This delay is mostly attributed to your DB.</li>
+<li><code>_computed</code> The property names containing values computed by the <code>serialize</code> hook.</li>
+</ul>
+<p>The <a href="#depopulate">depopulate</a> hook uses these fields to remove all joined and computed values.<br>This allows you to then <code>service.patch()</code> the item in the hook.</p>
+<h3 id="Joining-without-using-related-fields"><a href="#Joining-without-using-related-fields" class="headerlink" title="Joining without using related fields"></a>Joining without using related fields</h3><p>Populate can join child records to a parent record using the related columns<br><code>parentField</code> and <code>childField</code>.<br>However populate’s <code>query</code> and <code>select</code> options may be used to related the<br>records without needing to use the related columns.<br>This is a more flexible, non-SQL-like way of relating records.<br>It easily supports dynamic, run-time schemas since the <code>select</code> option may be<br>a function.</p>
+<h3 id="Populate-examples"><a href="#Populate-examples" class="headerlink" title="Populate examples"></a>Populate examples</h3><h4 id="Selecting-schema-based-on-UI-needs"><a href="#Selecting-schema-based-on-UI-needs" class="headerlink" title="Selecting schema based on UI needs"></a>Selecting schema based on UI needs</h4><p>Consider a Purchase Order item.<br>An Accounting oriented UI will likely want to populate the PO with Invoice items.<br>A Receiving oriented UI will likely want to populate with Receiving Slips.</p>
+<p>Using a function for <code>schema</code> allows you to select an appropriate schema based on the need.<br>The following example shows how the client can ask for the type of schema it needs.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// on client</span></span><br><span class="line"><span class="keyword">import</span> &#123; paramsForServer &#125; <span class="keyword">from</span> <span class="string">'feathers-hooks-common'</span>;</span><br><span class="line">purchaseOrders.get(id, paramsForServer(&#123; <span class="attr">schema</span>: <span class="string">'po-acct'</span> &#125;)); <span class="comment">// pass schema name to server</span></span><br><span class="line"><span class="comment">// or</span></span><br><span class="line">purchaseOrders.get(id, paramsForServer(&#123; <span class="attr">schema</span>: <span class="string">'po-rec'</span> &#125;));</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// on server</span></span><br><span class="line"><span class="keyword">import</span> &#123; paramsFromClient &#125; <span class="keyword">from</span> <span class="string">'feathers-hooks-common'</span>;</span><br><span class="line"><span class="keyword">const</span> poSchemas = &#123;</span><br><span class="line">  <span class="string">'po-acct'</span>: <span class="comment">/* populate schema for Accounting oriented PO e.g. &#123; include: ... &#125; */</span>,</span><br><span class="line">  <span class="string">'po-rec'</span>: <span class="comment">/* populate schema for Receiving oriented PO */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">purchaseOrders.before(&#123;</span><br><span class="line">  all: paramsfromClient(<span class="string">'schema'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">purchaseOrders.after(&#123;</span><br><span class="line">  all: populate(&#123; <span class="attr">schema</span>: <span class="function"><span class="params">hook</span> =&gt;</span> poSchemas[hook.params.schema] &#125;),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="Using-permissions"><a href="#Using-permissions" class="headerlink" title="Using permissions"></a>Using permissions</h4><p>For a simplistic example,<br>assume <code>hook.params.users.permissions</code> is an array of the service names the user may use,<br>e.g. <code>[&#39;invoices&#39;, &#39;billings&#39;]</code>.<br>These can be used to control which types of items the user can see.</p>
+<p>The following populate will only be performed for users whose <code>user.permissions</code> contains <code>&#39;invoices&#39;</code>.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> schema = &#123;</span><br><span class="line">  include: [</span><br><span class="line">    &#123;</span><br><span class="line">      service: <span class="string">'invoices'</span>,</span><br><span class="line">      permissions: <span class="string">'invoices'</span>,</span><br><span class="line">      ...</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">purchaseOrders.after(&#123;</span><br><span class="line">  all: populate(schema, (hook, service, permissions) =&gt; hook.params.user.permissions.includes(service))</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="Validate"><a href="#Validate" class="headerlink" title="Validate"></a>Validate</h2><h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p>Comprehensive validation may include the following:</p>
+<ul>
+<li>Object schema validation. Checking the item object contains the expected properties with values in the expected format. The values might get sanitized. Knowing the item is well formed makes further validation simpler.</li>
+<li>Re-running any validation supposedly already done on the front-end. It would be an asset if the server can re-run the same code the front-end used.</li>
+<li>Performing any validation and sanitization unique to the server.</li>
+</ul>
+<p>A full featured example of such a process appears below. It validates and sanitizes a new user before adding the user to the database.</p>
+<ul>
+<li>The form expects to be notified of errors in the format <code>{ email: &#39;Invalid email.&#39;, password: &#39;Password must be at least 8 characters.&#39; }</code>.</li>
+<li>The form calls the server for async checking of selected fields when control leaves those fields. This for example could check that an email address is not already used by another user.</li>
+<li>The form does local sync validation when the form is submitted.</li>
+<li>The code performing the validations on the front-end is also used by the server.</li>
+<li>The server performs schema validation using Walmart’s <a href="https://github.com/hapijs/joi" target="_blank" rel="noopener">Joi</a>.</li>
+<li>The server does further validation and sanitization.</li>
+</ul>
+<h3 id="Validation-using-Validate"><a href="#Validation-using-Validate" class="headerlink" title="Validation using Validate"></a>Validation using Validate</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// file /server/services/users/users.hooks.js</span></span><br><span class="line"><span class="keyword">const</span> auth = <span class="built_in">require</span>(<span class="string">'feathers-authentication'</span>).hooks;</span><br><span class="line"><span class="keyword">const</span> &#123; callbackToPromise, remove, validate &#125; = <span class="built_in">require</span>(<span class="string">'feathers-hooks-common'</span>);</span><br><span class="line"><span class="keyword">const</span> validateSchema = <span class="built_in">require</span>(<span class="string">'feathers-hooks-validate-joi'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> clientValidations = <span class="built_in">require</span>(<span class="string">'/common/usersClientValidations'</span>);</span><br><span class="line"><span class="keyword">const</span> serverValidations = <span class="built_in">require</span>(<span class="string">'/server/validations/usersServerValidations'</span>);</span><br><span class="line"><span class="keyword">const</span> schemas = <span class="built_in">require</span>(<span class="string">'/server/validations/schemas'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> serverValidationsSignup = callbackToPromise(serverValidations.signup, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">exports.before = &#123;</span><br><span class="line">  create: [</span><br><span class="line">    validateSchema.form(schemas.signup, schemas.options), <span class="comment">// schema validation</span></span><br><span class="line">    validate(clientValidations.signup), <span class="comment">// re-run form sync validation</span></span><br><span class="line">    validate(<span class="function"><span class="params">values</span> =&gt;</span> clientValidations.signupAsync(values, <span class="string">'someMoreParams'</span>)), <span class="comment">// re-run form async</span></span><br><span class="line">    validate(serverValidationsSignup), <span class="comment">// run server validation</span></span><br><span class="line">    remove(<span class="string">'confirmPassword'</span>),</span><br><span class="line">    auth.hashPassword()</span><br><span class="line">  ]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="Validation-routines-for-front-and-back-end"><a href="#Validation-routines-for-front-and-back-end" class="headerlink" title="Validation routines for front and back-end."></a>Validation routines for front and back-end.</h3><p>Validations used on front-end. They are re-run by the server.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// file /common/usersClientValidations</span></span><br><span class="line"><span class="comment">// Validations for front-end. Also re-run on server.</span></span><br><span class="line"><span class="keyword">const</span> clientValidations = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// sync validation of signup form on form submit</span></span><br><span class="line">clientValidations.signup = <span class="function"><span class="params">values</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> errors = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  checkName(values.name, errors);</span><br><span class="line">  checkUsername(values.username, errors);</span><br><span class="line">  checkEmail(values.email, errors);</span><br><span class="line">  checkPassword(values.password, errors);</span><br><span class="line">  checkConfirmPassword(values.password, values.confirmPassword, errors);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> errors;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// async validation on exit from some fields on form</span></span><br><span class="line">clientValidations.signupAsync = <span class="function"><span class="params">values</span> =&gt;</span></span><br><span class="line">  <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> errs = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// set a dummy error</span></span><br><span class="line">    errs.email = <span class="string">'Already taken.'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">Object</span>.keys(errs).length) &#123;</span><br><span class="line">      resolve(<span class="literal">null</span>); <span class="comment">// 'null' as we did not sanitize 'values'</span></span><br><span class="line">    &#125;</span><br><span class="line">    reject(<span class="keyword">new</span> errors.BadRequest(<span class="string">'Values already taken.'</span>, &#123; <span class="attr">errors</span>: errs &#125;));</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = clientValidations;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkName</span>(<span class="params">name, errors, fieldName = <span class="string">'name'</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="regexp">/^[\\sa-zA-Z]&#123;8,30&#125;$/</span>.test((name || <span class="string">''</span>).trim())) &#123;</span><br><span class="line">    errors[fieldName] = <span class="string">'Name must be 8 or more letters or spaces.'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Schema definitions used by the server.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// file /server/validations/schemas</span></span><br><span class="line"><span class="keyword">const</span> Joi = <span class="built_in">require</span>(<span class="string">'joi'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> username = Joi.string().trim().alphanum().min(<span class="number">5</span>).max(<span class="number">30</span>).required();</span><br><span class="line"><span class="keyword">const</span> password = Joi.string().trim().regex(<span class="regexp">/^[\sa-zA-Z0-9]+$/</span>, <span class="string">'letters, numbers, spaces'</span>)</span><br><span class="line">  .min(<span class="number">8</span>).max(<span class="number">30</span>).required();</span><br><span class="line"><span class="keyword">const</span> email = Joi.string().trim().email().required();</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  options: &#123; <span class="attr">abortEarly</span>: <span class="literal">false</span>, <span class="attr">convert</span>: <span class="literal">true</span>, <span class="attr">allowUnknown</span>: <span class="literal">false</span>, <span class="attr">stripUnknown</span>: <span class="literal">true</span> &#125;,</span><br><span class="line">  signup: Joi.object().keys(&#123;</span><br><span class="line">    name: Joi.string().trim().min(<span class="number">8</span>).max(<span class="number">30</span>).required(),</span><br><span class="line">    username,</span><br><span class="line">    password,</span><br><span class="line">    confirmPassword: password.label(<span class="string">'Confirm password'</span>),</span><br><span class="line">    email</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>Validations run by the server.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// file /server/validations/usersServerValidations</span></span><br><span class="line"><span class="comment">// Validations on server. A callback function is used to show how the hook handles it.</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  signup: <span class="function">(<span class="params">data, cb</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> formErrors = &#123;&#125;;</span><br><span class="line">    <span class="keyword">const</span> sanitized = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Object</span>.keys(data).forEach(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">      sanitized[key] = (data[key] || <span class="string">''</span>).trim();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    cb(<span class="built_in">Object</span>.keys(formErrors).length &gt; <span class="number">0</span> ? formErrors : <span class="literal">null</span>, sanitized);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>.</p>
+
+  
+    <div class="guide-links">
+      <!-- link to previous page -->
+      
+      <!-- link to next page -->
+      
+        <span style="float: right;"><a href="/v1/feathers-hooks-common/index.html">API</a> →</span>
+      
+    </div>
+  
+  <div class="footer">
+
+    Caught a mistake or want to contribute to the documentation?
+    <a href="https://github.com/feathers-plus/docs/blob/master/source/v1/feathers-hooks-common/guide.md" target="_blank">
+      Edit this page on Github!
+    </a>
+  </div>
+</div>
+
+        
+      </div>
+      <script src="/js/smooth-scroll.min.js"></script>
+    
+
+    <!-- main custom script for sidebars, version selects etc. ------------------------------------>
+    <script src="/js/css.escape.js"></script>
+    <script src="/js/common.js"></script>
+
+    <!-- search ----------------------------------------------------------------------------------->
+    <!--
+    <link href="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/css/search.css">
+    <script src="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+    <script>
+    [
+      '#search-query-nav',
+      '#search-query-sidebar',
+      '#search-query-menu'
+    ].forEach(function (selector) {
+      if (!document.querySelector(selector)) return
+      // search index defaults to v2
+      var match = window.location.pathname.match(/^\/(v\d+)/)
+      var version = match ? match[1] : 'v2'
+      docsearch({
+      appId: 'BH4D9OD16A',
+      apiKey: '85cc3221c9f23bfbaa4e3913dd7625ea',
+      indexName: 'vuejs',
+      inputSelector: selector,
+      algoliaOptions: { facetFilters: ["version:" + version] }
+      })
+    })
+    </script>
+    -->
+
+    <!-- fastclick -------------------------------------------------------------------------------->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      FastClick.attach(document.body)
+    }, false)
+    </script>
+  </body>
+</html>

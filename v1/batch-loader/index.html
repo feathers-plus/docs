@@ -1,0 +1,914 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta name="generator" content="Hexo 3.9.0">
+    <title>API — Feathers-Plus</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Feathers-Plus - Bridging FeathersJS and real world apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="alternate" hreflang="x-default" href="https://vuejs.org/v1/batch-loader/index.html">
+    <link rel="alternate" hreflang="zh" href="https://cn.vuejs.org/v1/batch-loader/index.html">
+    <link rel="alternate" hreflang="ja" href="https://jp.vuejs.org/v1/batch-loader/index.html">
+    <link rel="alternate" hreflang="ru" href="https://ru.vuejs.org/v1/batch-loader/index.html">
+    <link rel="alternate" hreflang="ko" href="https://kr.vuejs.org/v1/batch-loader/index.html">
+    <link rel="alternate" hreflang="pt-BR" href="https://br.vuejs.org/v1/batch-loader/index.html">
+    <link rel="alternate" hreflang="fr" href="https://fr.vuejs.org/v1/batch-loader/index.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="API — Feathers-Plus">
+    <meta property="og:description" content="Feathers-Plus - Bridging FeathersJS and real world apps.">
+    <meta property="og:image" content="https://feathers-plus.com//images/logo.png">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="API — Feathers-Plus">
+    <meta name="twitter:description" content="Feathers-Plus - Bridging FeathersJS and real world apps.">
+    <meta name="twitter:image" content="https://feathers-plus.com/images/logo.png">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/images/icons//apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/images/icons//apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/icons//apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/images/icons//apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/images/icons//apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/icons//apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/icons//apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/icons//apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons//apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/icons//android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons//favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/icons//favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/icons//favicon-16x16.png">
+    <link rel="manifest" href="/images/icons//manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600|Roboto Mono" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Dosis:500&text=Vue.js" rel="stylesheet" type="text/css">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- main page styles ------------------------------------------------------------------------->
+    <link rel="stylesheet" href="/css/page.css">
+
+    <!-- this needs to be loaded before guide's inline scripts ------------------------------------>
+    <script src="/js/client-bundle.js"></script>
+    <script>window.PAGE_TYPE = "guide"</script>
+
+    <!-- ga --------------------------------------------------------------------------------------->
+    <!--
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-xxxxxxxx-1', 'feathers-plus.com');
+      ga('send', 'pageview');
+    </script>
+    --->
+  </head>
+  <body class="docs">
+    <div id="mobile-bar">
+      <a class="menu-button"></a>
+      <a class="logo" href="/"></a>
+    </div>
+
+    <!-- top nav bar ------------------------------------------------------------------------------>
+    <div id="header">
+  <a id="logo" href="/">
+    <img src="/images/logo.png">
+    <span>Feathers-Plus</span>
+  </a>
+  <ul id="nav">
+    <li>
+  <form id="search-form">
+    <input type="text" id="search-query-nav" class="search-query st-default-search-input">
+  </form>
+</li>
+<li class="nav-dropdown-container learn">
+  <a class="nav-link current">Extensions</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="/v1/feathers-hooks-common/" class="nav-link">feathers-hooks-common</a></li>
+        <li><a href="/v1/authentication-management/" class="nav-link">authentication-management</a></li>
+      </ul>
+    </li>
+    <li><h4>Batch Loader</h4></li>
+    <li>
+      <ul>
+        <li><a href="/v1/batch-loader/" class="nav-link current">batch-loader</a></li>
+        <li><a href="/v1/cache" class="nav-link">cache</a></li>
+      </ul>
+    </li>
+    <li><h4>Offline First</h4></li>
+    <li>
+      <ul>
+        <li><a href="/v1/offline-snapshot/" class="nav-link">offline-snapshot</a></li>
+        <li><a href="/v1/offline-realtime/" class="nav-link">offline-realtime</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+<li class="nav-dropdown-container ecosystem">
+  <a class="nav-link">Adapters</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="/v1/mongoose-advanced/" class="nav-link">mongoose-advanced</a></li>
+        <li><a href="/v1/graphql/" class="nav-link">graphql</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+<li class="nav-dropdown-container support-vue">
+  <a class="nav-link">Frameworks</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="https://vuex.feathersjs.com" target="_blank" class="nav-link">feathers-vuex</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+
+  </ul>
+</div>
+
+
+    <!-- body ------------------------------------------------------------------------------------->
+    
+      <div id="main" class="fix-sidebar">
+        
+          <!--  documentation page ---------------------------------------------------------------->
+          
+  <div class="sidebar">
+  <div class="sidebar-inner">
+    <ul class="main-menu">
+        <li>
+  <form id="search-form">
+    <input type="text" id="search-query-sidebar" class="search-query st-default-search-input">
+  </form>
+</li>
+<li class="nav-dropdown-container learn">
+  <a class="nav-link current">Extensions</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="/v1/feathers-hooks-common/" class="nav-link">feathers-hooks-common</a></li>
+        <li><a href="/v1/authentication-management/" class="nav-link">authentication-management</a></li>
+      </ul>
+    </li>
+    <li><h4>Batch Loader</h4></li>
+    <li>
+      <ul>
+        <li><a href="/v1/batch-loader/" class="nav-link current">batch-loader</a></li>
+        <li><a href="/v1/cache" class="nav-link">cache</a></li>
+      </ul>
+    </li>
+    <li><h4>Offline First</h4></li>
+    <li>
+      <ul>
+        <li><a href="/v1/offline-snapshot/" class="nav-link">offline-snapshot</a></li>
+        <li><a href="/v1/offline-realtime/" class="nav-link">offline-realtime</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+<li class="nav-dropdown-container ecosystem">
+  <a class="nav-link">Adapters</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="/v1/mongoose-advanced/" class="nav-link">mongoose-advanced</a></li>
+        <li><a href="/v1/graphql/" class="nav-link">graphql</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+<li class="nav-dropdown-container support-vue">
+  <a class="nav-link">Frameworks</a><span class="arrow"></span>
+  <ul class="nav-dropdown">
+    <li>
+      <ul>
+        <li><a href="https://vuex.feathersjs.com" target="_blank" class="nav-link">feathers-vuex</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+
+    </ul>
+    <div class="list">
+      <h3>batch-loader
+        <select class="version-select">
+          <option value="SELF" selected>1.0</option>
+        </select></h3>
+        <ul class="menu-root">
+  
+    
+    <li>
+      <a href="/v1/batch-loader/guide.html" class="sidebar-link">Guide</a>
+    </li>
+  
+    
+    <li>
+      <a href="/v1/batch-loader/index.html" class="sidebar-link current">API</a>
+    </li>
+  
+    
+    <li>
+      <a href="/v1/batch-loader/common-patterns.html" class="sidebar-link">Common Patterns</a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+</div>
+
+
+<div class="content guide with-sidebar index-guide">
+  
+    
+
+    
+  
+  
+    <h1>API</h1>
+  
+  <!--- Usage --------------------------------------------------------------------------------------->
+<h2 id="Usage">Usage</h2>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install --save @feathers-plus/batch-loader</span><br><span class="line"></span><br><span class="line"><span class="comment">// JS</span></span><br><span class="line"><span class="keyword">const</span> BatchLoader = <span class="built_in">require</span>(<span class="string">'@feathers-plus/batch-loader'</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; getResultsByKey, getUniqueKeys &#125; = BatchLoader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> usersLoader = <span class="keyword">new</span> BatchLoader(<span class="keyword">async</span> (keys, context) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> usersRecords = <span class="keyword">await</span> users.find(&#123; <span class="attr">query</span>: &#123; <span class="attr">id</span>: &#123; <span class="attr">$in</span>: getUniqueKeys(keys) &#125; &#125; &#125;);</span><br><span class="line">    <span class="keyword">return</span> getResultsByKey(keys, usersRecords, user =&gt; user.id, <span class="string">''</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123; <span class="attr">context</span>: &#123;&#125; &#125;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> user = <span class="keyword">await</span> usersLoader.load(key);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>May be used on the client.</p>
+</blockquote>
+<!--- class BatchLoader --------------------------------------------------------------------------->
+<h2 id="class-batchloader">class BatchLoader( batchLoadFunc [, options] )</h2>
+
+<p>Create a new batch-loader given a batch loading function and options.</p>
+<ul>
+<li><strong>Arguments:</strong><ul>
+<li><code>{Function} batchLoadFunc</code></li>
+<li><code>{Object} [ options ]</code><ul>
+<li><code>{Boolean} batch</code></li>
+<li><code>{Boolean} cache</code></li>
+<li><code>{Function} cacheKeyFn</code></li>
+<li><code>{Object} cacheMap</code></li>
+<li><code>{Object} context</code></li>
+<li><code>{Number} maxBatchSize</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>batchLoadFunc</code></td>
+<td style="text-align:center"><code>Function</code></td>
+<td></td>
+<td>See <a href="guide.html#batch-function">Batch Function</a>.</td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td style="text-align:center"><code>Object</code></td>
+<td></td>
+<td>Options.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th><code>options</code></th>
+<th>Argument</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code>batch</code></td>
+<td>Boolean</td>
+<td><code>true</code></td>
+<td>Set to false to disable batching, invoking <code>batchLoadFunc</code> with a single load key.</td>
+</tr>
+<tr>
+<td></td>
+<td><code>cache</code></td>
+<td>Boolean</td>
+<td><code>true</code></td>
+<td>Set to false to disable memoization caching, creating a new Promise and new key in the <code>batchLoadFunc</code> for every load of the same key.</td>
+</tr>
+<tr>
+<td></td>
+<td><code>cacheKeyFn</code></td>
+<td>Function</td>
+<td><code>key =&gt; key</code></td>
+<td>Produces cache key for a given load key. Useful when keys are objects and two objects should be considered equivalent.</td>
+</tr>
+<tr>
+<td></td>
+<td><code>cacheMap</code></td>
+<td>Object</td>
+<td><code>new Map()</code></td>
+<td>Instance of Map (or an object with a similar API) to be used as cache. See below.</td>
+</tr>
+<tr>
+<td></td>
+<td><code>context</code></td>
+<td>Object</td>
+<td><code>null</code></td>
+<td>A context object to pass into <code>batchLoadFunc</code> as its second argument.</td>
+</tr>
+<tr>
+<td></td>
+<td><code>maxBatchSize</code></td>
+<td>Number</td>
+<td><code>Infinity</code></td>
+<td>Limits the number of keys when calling <code>batchLoadFunc</code>.</td>
+</tr>
+</tbody>
+</table>
+
+  <ul><li>
+    <strong>Returns</strong>
+    <ul><li>
+      <code>{Object} batchLoader</code>
+    </li></ul>
+  </li></ul>
+  
+  <table>
+  <thead>
+  <tr>
+    <th style="text-align:left">Name</th>
+    <th style="text-align:center">Type</th>
+    <th style="text-align:left">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td style="text-align:left"><code>batchLoader</code></td>
+    <td style="text-align:center"><code>Object</code></td>
+    <td style="text-align:left">BatchLoader instance.</td>
+  </tr>
+  </tbody>
+  </table>
+<ul>
+<li><p><strong>Example</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> BatchLoader = <span class="built_in">require</span>(<span class="string">'@feathers-plus/batch-loader'</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; getResultsByKey, getUniqueKeys &#125; = BatchLoader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> usersLoader = <span class="keyword">new</span> BatchLoader(<span class="keyword">async</span> (keys, context) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> data = <span class="keyword">await</span> users.find(&#123; <span class="attr">query</span>: &#123; <span class="attr">id</span>: &#123; <span class="attr">$in</span>: getUniqueKeys(keys) &#125; &#125;, <span class="attr">paginate</span>: <span class="literal">false</span> &#125;);</span><br><span class="line">    <span class="keyword">return</span> getResultsByKey(keys, data, user =&gt; user.id, <span class="string">''</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123; <span class="attr">context</span>: &#123;&#125;, <span class="attr">batch</span>: <span class="literal">true</span>, <span class="attr">cache</span>: <span class="literal">true</span> &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Pagination</strong></p>
+<p>The number of results returned by a query using <code>$in</code> is controlled by the pagination <code>max</code> set for that Feathers service. You need to specify a <code>paginate: false</code> option to ensure that records for all the keys are returned.</p>
+<p>The maximum number of keys the <code>batchLoadFunc</code> is called with can be controlled by the BatchLoader itself with the <code>maxBatchSize</code> option. </p>
+</li>
+<li><p><strong>option.cacheMap</strong></p>
+<p>The default cache will grow without limit, which is reasonable for short lived batch-loaders which are rebuilt on every request. The number of records cached can be limited with a  <em>least-recently-used</em> cache:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> BatchLoader = <span class="built_in">require</span>(<span class="string">'@feathers-plus/batch-loader'</span>);</span><br><span class="line"><span class="keyword">const</span> cache = <span class="built_in">require</span>(<span class="string">'@feathers-plus/cache'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> usersLoader = <span class="keyword">new</span> BatchLoader(</span><br><span class="line">  keys =&gt; &#123; ... &#125;,</span><br><span class="line">  &#123; <span class="attr">cacheMap</span>: cache(&#123; <span class="attr">max</span>: <span class="number">100</span> &#125;)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>You can consider wrapping npm’s <code>lru</code> on the browser.</p>
+</blockquote>
+<ul>
+<li><strong>See also:</strong> <a href="./guide.html">Guide</a></li>
+</ul>
+
+  <ul>
+    <li><strong>Is anything wrong, unclear, missing?</strong>: <a href="https://github.com/feathers-plus/docs/issues/new?title=Comment%20-%20BatchLoader%20-%20classBatchLoader&body=Comment%20-%20BatchLoader%20-%20classBatchLoader" target="_blank" _blank" rel="noopener">Leave a comment.</a></li>
+  </ul>
+<!--- getUniqueKeys ------------------------------------------------------------------------------->
+<h2 id="get-unique-keys">static BatchLoader.getUniqueKeys( keys )</h2>
+
+<p>Returns the unique elements in an array.</p>
+<ul>
+<li><strong>Arguments:</strong><ul>
+<li><code>{Array&lt;String | Number&gt;} keys</code></li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keys</code></td>
+<td><code>Array&lt;</code> <code>String /</code> <code>Number &gt;</code></td>
+<td></td>
+<td>The keys. May contain duplicates.</td>
+</tr>
+</tbody>
+</table>
+
+  <ul><li>
+    <strong>Returns</strong>
+    <ul><li>
+      <code>{Array< String / Number >} keys</code>
+    </li></ul>
+  </li></ul>
+  
+  <table>
+  <thead>
+  <tr>
+    <th style="text-align:left">Name</th>
+    <th style="text-align:center">Type</th>
+    <th style="text-align:left">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td style="text-align:left"><code>keys</code></td>
+    <td style="text-align:center"><code>Array< String / Number ></code></td>
+    <td style="text-align:left">The keys with no duplicates.</td>
+  </tr>
+  </tbody>
+  </table>
+<ul>
+<li><p><strong>Example:</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> usersLoader = <span class="keyword">new</span> BatchLoader(<span class="keyword">async</span> keys =&gt;</span><br><span class="line">  <span class="keyword">const</span> data = users.find(&#123; <span class="attr">query</span>: &#123; <span class="attr">id</span>: &#123; <span class="attr">$in</span>: getUniqueKeys(keys) &#125; &#125; &#125;)</span><br><span class="line">  ...</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><strong>Details</strong></p>
+<p>The array of keys may contain duplicates when the batch-loader’s memoization cache is disabled.</p>
+<p class="tip">Function does not handle keys of type Object nor Array.</p>
+
+</li>
+</ul>
+
+  <ul>
+    <li><strong>Is anything wrong, unclear, missing?</strong>: <a href="https://github.com/feathers-plus/docs/issues/new?title=Comment%20-%20BatchLoader%20-%20getUniqueKeys&body=Comment%20-%20BatchLoader%20-%20getUniqueKeys" target="_blank" _blank" rel="noopener">Leave a comment.</a></li>
+  </ul>
+<!--- getResultsByKey ----------------------------------------------------------------------------->
+<h2 id="get-results-by-key">static BatchLoader.getResultsByKey( keys, records, getRecordKeyFunc, type [, options] )</h2>
+
+<p>Reorganizes the records from the service call into the result expected from the batch function.</p>
+<ul>
+<li><strong>Arguments:</strong><ul>
+<li><code>{Array&lt;String | Number&gt;} keys</code></li>
+<li><code>{Array&lt;Object&gt;} records</code></li>
+<li><code>{Function} getRecordKeyFunc</code></li>
+<li><code>{String} type</code></li>
+<li><code>{Object} [ options ]</code><ul>
+<li><code>{null | []} defaultElem</code></li>
+<li><code>{Function} onError</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keys</code></td>
+<td style="text-align:center"><code>Array&lt;</code> <code>String /</code> <code>Number&gt;</code></td>
+<td></td>
+<td>An array of <code>key</code> elements, which the value the batch loader function will use to find the records requested.</td>
+</tr>
+<tr>
+<td><code>records</code></td>
+<td style="text-align:center"><code>Array&lt;</code> <code>Object &gt;</code></td>
+<td></td>
+<td>An array of records which, in total, resolve all the <code>keys</code>.</td>
+</tr>
+<tr>
+<td><code>getRecordKeyFunc</code></td>
+<td style="text-align:center"><code>Function</code></td>
+<td></td>
+<td>See below.</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td style="text-align:center"><code>String</code></td>
+<td></td>
+<td>The type of value the batch loader must return for each key.</td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td style="text-align:center"><code>Object</code></td>
+<td></td>
+<td>Options.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th><code>type</code></th>
+<th style="text-align:center">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td style="text-align:center"><code>&#39;&#39;</code></td>
+<td>An optional single record.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"><code>&#39;!&#39;</code></td>
+<td>A required single record.</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center"><code>&#39;[]&#39;</code></td>
+<td>A required array including 0, 1 or more records.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th><code>options</code></th>
+<th>Argument</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code>defaultElem</code></td>
+<td style="text-align:center"><code>{null / []}</code></td>
+<td><code>null</code></td>
+<td>The value to return for a <code>key</code> having no record(s). </td>
+</tr>
+<tr>
+<td></td>
+<td><code>onError</code></td>
+<td style="text-align:center"><code>Function</code></td>
+<td><code>(i, msg) =&gt; {}</code></td>
+<td>Handler for detected errors, e.g. <code>(i, msg) =&gt;</code> <code>{ throw new Error(msg,</code> <code>&#39;on element&#39;, i); }</code></td>
+</tr>
+</tbody>
+</table>
+
+  <ul><li>
+    <strong>Returns</strong>
+    <ul><li>
+      <code>{Array< Object >} results</code>
+    </li></ul>
+  </li></ul>
+  
+  <table>
+  <thead>
+  <tr>
+    <th style="text-align:left">Name</th>
+    <th style="text-align:center">Type</th>
+    <th style="text-align:left">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td style="text-align:left"><code>results</code></td>
+    <td style="text-align:center"><code>Array< Object ></code></td>
+    <td style="text-align:left">The result for each key. <code>results[i]</code> is the result for <code>keys[i]</code>.</td>
+  </tr>
+  </tbody>
+  </table>
+<ul>
+<li><p><strong>Example</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> usersLoader = <span class="keyword">new</span> BatchLoader(<span class="keyword">async</span> keys =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> data = users.find(&#123; <span class="attr">query</span>: &#123; <span class="attr">id</span>: &#123; <span class="attr">$in</span>: getUniqueKeys(keys) &#125; &#125; &#125;)</span><br><span class="line">  <span class="keyword">return</span> getResultsByKey(keys, data, user =&gt; user.id, <span class="string">''</span>, &#123; <span class="attr">defaultElem</span>: [] &#125;)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Details</strong>  </p>
+<p class="tip">Function does not handle keys of type Object nor Array.</p>
+</li>
+<li><p><strong>getRecordKeyFunc</strong></p>
+<p>A function which, given a record, returns the key it satisfies, e.g.</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">user =&gt; user.id</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>See also:</strong> <a href="./guide.html#Batch-Function">Batch-Function</a></p>
+</li>
+</ul>
+
+  <ul>
+    <li><strong>Is anything wrong, unclear, missing?</strong>: <a href="https://github.com/feathers-plus/docs/issues/new?title=Comment%20-%20BatchLoader%20-%20getResultsByKey&body=Comment%20-%20BatchLoader%20-%20getResultsByKey" target="_blank" _blank" rel="noopener">Leave a comment.</a></li>
+  </ul>
+<!--- load ---------------------------------------------------------------------------------------->
+<h2 id="load">batchLoader.load( key )</h2>
+
+<p>Loads a key, returning a Promise for the value represented by that key.</p>
+<ul>
+<li><strong>Arguments:</strong><ul>
+<li><code>{String | Number | Object | Array} key</code></li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key</code></td>
+<td style="text-align:center"><code>String</code> <code>Number</code> <code>Object</code> <code>Array</code></td>
+<td></td>
+<td>The key the batch-loader uses to find the result(s).</td>
+</tr>
+</tbody>
+</table>
+
+  <ul><li>
+    <strong>Returns</strong>
+    <ul><li>
+      <code>{Promise< Object >} promise</code>
+    </li></ul>
+  </li></ul>
+  
+  <table>
+  <thead>
+  <tr>
+    <th style="text-align:left">Name</th>
+    <th style="text-align:center">Type</th>
+    <th style="text-align:left">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td style="text-align:left"><code>promise</code></td>
+    <td style="text-align:center"><code>Promise< Object ></code></td>
+    <td style="text-align:left">Resolves to the result(s).</td>
+  </tr>
+  </tbody>
+  </table>
+<ul>
+<li><p><strong>Example:</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> batchLoader = <span class="keyword">new</span> BatchLoader( ... );</span><br><span class="line"><span class="keyword">const</span> user = <span class="keyword">await</span> batchLoader.load(key);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+  <ul>
+    <li><strong>Is anything wrong, unclear, missing?</strong>: <a href="https://github.com/feathers-plus/docs/issues/new?title=Comment%20-%20BatchLoader%20-%20load&body=Comment%20-%20BatchLoader%20-%20load" target="_blank" _blank" rel="noopener">Leave a comment.</a></li>
+  </ul>
+<!--- loadMany ------------------------------------------------------------------------------------>
+<h2 id="loadmany">batchLoader.loadMany( keys )</h2>
+
+<p>Loads multiple keys, promising a arrays of values. </p>
+<ul>
+<li><strong>Arguments</strong><ul>
+<li><code>{Array&lt;String | Number | Object | Array&gt;} keys</code></li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keys</code></td>
+<td style="text-align:center"><code>Array&lt;</code> <code>String /</code> <code>Number /</code> <code>Object /</code> <code>Array&gt;</code></td>
+<td></td>
+<td>The keys the batch-loader will return result(s) for.</td>
+</tr>
+</tbody>
+</table>
+
+  <ul><li>
+    <strong>Returns</strong>
+    <ul><li>
+      <code>{Promise[ Array< Object > ]} promise</code>
+    </li></ul>
+  </li></ul>
+  
+  <table>
+  <thead>
+  <tr>
+    <th style="text-align:left">Name</th>
+    <th style="text-align:center">Type</th>
+    <th style="text-align:left">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td style="text-align:left"><code>promise</code></td>
+    <td style="text-align:center"><code>Promise[ Array< Object > ]</code></td>
+    <td style="text-align:left">Resolves to an array of result(s). <code>promise[i]</code> is the result for <code>keys[i]</code>.</td>
+  </tr>
+  </tbody>
+  </table>
+<ul>
+<li><p><strong>Example</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> usersLoader = <span class="keyword">new</span> BatchLoader( ... );</span><br><span class="line"><span class="keyword">const</span> users = <span class="keyword">await</span> usersLoader.loadMany([ key1, key2 ]);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Details</strong></p>
+<p>This is a convenience method. <code>usersLoader.loadMany([ key1, key2 ])</code> is equivalent to the more verbose:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.all([</span><br><span class="line">  usersLoader.load(key1),</span><br><span class="line">  usersLoader.load(key2)</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+  <ul>
+    <li><strong>Is anything wrong, unclear, missing?</strong>: <a href="https://github.com/feathers-plus/docs/issues/new?title=Comment%20-%20BatchLoader%20-%20loadMany&body=Comment%20-%20BatchLoader%20-%20loadMany" target="_blank" _blank" rel="noopener">Leave a comment.</a></li>
+  </ul>
+<!--- clear --------------------------------------------------------------------------------------->
+<h2 id="clear">batchLoader.clear( key )</h2>
+
+<p>Clears the value at key from the cache, if it exists.</p>
+<ul>
+<li><strong>Arguments:</strong><ul>
+<li><code>{String | Number | Object | Array} key</code></li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key</code></td>
+<td style="text-align:center"><code>String</code> <code>Number</code> <code>Object</code> <code>Array</code></td>
+<td></td>
+<td>The key to remove from the cache.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Details</strong></li>
+</ul>
+<p>The key is matches using strict equality. This is particularly important for <code>Object</code> and <code>Array</code> keys.</p>
+
+  <ul>
+    <li><strong>Is anything wrong, unclear, missing?</strong>: <a href="https://github.com/feathers-plus/docs/issues/new?title=Comment%20-%20BatchLoader%20-%20clear&body=Comment%20-%20BatchLoader%20-%20clear" target="_blank" _blank" rel="noopener">Leave a comment.</a></li>
+  </ul>
+<!--- clearAll ------------------------------------------------------------------------------------>
+<h2 id="clearall">batchLoader.clearAll()</h2>
+
+<p>Clears the entire cache. </p>
+<ul>
+<li><p><strong>Details</strong></p>
+<p>To be used when some event results in unknown invalidations across this particular batch-loader.</p>
+</li>
+</ul>
+
+  <ul>
+    <li><strong>Is anything wrong, unclear, missing?</strong>: <a href="https://github.com/feathers-plus/docs/issues/new?title=Comment%20-%20BatchLoader%20-%20clearAll&body=Comment%20-%20BatchLoader%20-%20clearAll" target="_blank" _blank" rel="noopener">Leave a comment.</a></li>
+  </ul>
+<!--- prime --------------------------------------------------------------------------------------->
+<h2 id="prime">batchLoader.prime( key, value )</h2>
+
+<p>Primes the cache with the provided key and value. </p>
+<ul>
+<li><strong>Arguments:</strong><ul>
+<li><code>{String | Number | Object | Array} key</code></li>
+<li><code>{Object} record</code></li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key</code></td>
+<td style="text-align:center"><code>String</code> <code>Number</code> <code>Object</code> <code>Array</code></td>
+<td></td>
+<td>The key in the cache for the record.</td>
+</tr>
+<tr>
+<td><code>record</code></td>
+<td style="text-align:center"><code>Object</code></td>
+<td></td>
+<td>The value for the <code>key</code>.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p><strong>Details</strong></p>
+<p><strong>If the key already exists, no change is made.</strong> To forcefully prime the cache, clear the key first with <code>batchloader.clear(key)</code>.</p>
+</li>
+</ul>
+
+  <ul>
+    <li><strong>Is anything wrong, unclear, missing?</strong>: <a href="https://github.com/feathers-plus/docs/issues/new?title=Comment%20-%20BatchLoader%20-%20prime&body=Comment%20-%20BatchLoader%20-%20prime" target="_blank" _blank" rel="noopener">Leave a comment.</a></li>
+  </ul>
+<!--- What's New --------------------------------------------------------------------------->
+<h2 id="whats-new">What’s New</h2>
+
+<p>The details are at <a href="https://github.com/feathers-plus/batch-loader/blob/master/CHANGELOG.md" target="_blank" rel="noopener">Changelog.</a></p>
+<h4 id="Feb-2018"><a href="#Feb-2018" class="headerlink" title="Feb. 2018"></a>Feb. 2018</h4><ul>
+<li>Added information about pagination within the <code>batchLoadFunc</code>.</li>
+</ul>
+
+  
+    <div class="guide-links">
+      <!-- link to previous page -->
+      
+        <span>← <a href="/v1/batch-loader/guide.html">Guide</a></span>
+      
+      <!-- link to next page -->
+      
+        <span style="float: right;"><a href="/v1/batch-loader/common-patterns.html">Common Patterns</a> →</span>
+      
+    </div>
+  
+  <div class="footer">
+
+    Caught a mistake or want to contribute to the documentation?
+    <a href="https://github.com/feathers-plus/docs/blob/master/source/v1/batch-loader/index.md" target="_blank">
+      Edit this page on Github!
+    </a>
+  </div>
+</div>
+
+        
+      </div>
+      <script src="/js/smooth-scroll.min.js"></script>
+    
+
+    <!-- main custom script for sidebars, version selects etc. ------------------------------------>
+    <script src="/js/css.escape.js"></script>
+    <script src="/js/common.js"></script>
+
+    <!-- search ----------------------------------------------------------------------------------->
+    <!--
+    <link href="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/css/search.css">
+    <script src="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+    <script>
+    [
+      '#search-query-nav',
+      '#search-query-sidebar',
+      '#search-query-menu'
+    ].forEach(function (selector) {
+      if (!document.querySelector(selector)) return
+      // search index defaults to v2
+      var match = window.location.pathname.match(/^\/(v\d+)/)
+      var version = match ? match[1] : 'v2'
+      docsearch({
+      appId: 'BH4D9OD16A',
+      apiKey: '85cc3221c9f23bfbaa4e3913dd7625ea',
+      indexName: 'vuejs',
+      inputSelector: selector,
+      algoliaOptions: { facetFilters: ["version:" + version] }
+      })
+    })
+    </script>
+    -->
+
+    <!-- fastclick -------------------------------------------------------------------------------->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      FastClick.attach(document.body)
+    }, false)
+    </script>
+  </body>
+</html>
