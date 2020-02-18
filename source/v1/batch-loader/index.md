@@ -99,6 +99,47 @@ Argument | Type | Default | Description
 
 {% apiFootnote classBatchLoader BatchLoader %}
 
+<!--- loaderFactory ------------------------------------------------------------------------------->
+<h2 id="loader-factory">static BatchLoader.loaderFactory( service, id, multi, options  )</h2>
+
+Helper method to create basic loaders.
+
+- **Arguments:**
+  - `{Object} service`
+  - `{String} id`
+  - `{Boolean} multi`
+  - `{Object} [ options ]`
+    - `{Function} getKey`
+    - `{Array<String>} paramNames`
+    - `{Object} injects`
+  
+Argument | Type | Default | Description
+---|---|---|---
+`service` | `Object` | | The service of the records to be fetched.
+`id` | `String` | | The name of the unique property on the record to be fetched. For example, `'id'` or `'_id'`.
+`multi` | `Boolean` | `false` | Should the loader be allowed to return multiple records. This is shorthand for the `'[!]'` or `'!'` syntax
+`options` | `Object` | `{}` | Options
+
+`options` | Argument | Type | Default | Description
+---|---|---|---|---
+ | `getKey` | Function | `rec => rec[id]` | Function to resolve the corresponding `id` parameter on each record. Passed to `getResultsByKey` under the hood.
+ | `paramNames` | [String] | | String param names to be kept from context and passed to service call. See [source](https://github.com/feathers-plus/batch-loader/blob/e22aaaac8766f6b35bbfe19718f928106521ca50/lib/index.js#L286)
+ | `injects` | Object | | Object of params to be added to service call. See [source](https://github.com/feathers-plus/batch-loader/blob/e22aaaac8766f6b35bbfe19718f928106521ca50/lib/index.js#L286)
+
+{% apiReturns class-batchloader "BatchLoader instance." batchLoader Object %}
+
+- **Example:**
+
+  ``` js
+  const usersLoader = BatchLoader.loaderFactory(app.service('users'), 'id');
+  ```
+  
+- **Details**
+
+  The loaderFactory method creates a simple batchLoader that is suitable for most cases. This simple one-liner creates the same batchLoader instance as the example for the `class BatchLoader` above.
+    
+  
+{% apiFootnote getUniqueKeys BatchLoader %}
 <!--- getUniqueKeys ------------------------------------------------------------------------------->
 <h2 id="get-unique-keys">static BatchLoader.getUniqueKeys( keys )</h2>
 
